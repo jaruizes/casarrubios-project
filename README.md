@@ -24,6 +24,7 @@ In this repository, I'll try to cover these topics:
 - Kubernetes (check if is possible RH)
 - Monitoring & Observability
 - Serverless: lambdas & functions, containers (ECS Fargate)
+- Platform Engineering, DevEx
 - IaC (AWS, Azure, GCP):
   - Terraform
   - CDK
