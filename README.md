@@ -11,6 +11,7 @@ In this repository, I'll try to cover these topics:
 - Databases: Postgresql, MySQL, Mongo, ElasticSearch
 - EDA: definition, design, infra
 - Kafka, KStreams, KSQL, KConnect
+- Working with legacy systems
 - Spark, Flink
 - CDC (Debezium,...)
 - Gen AI, RAG, LocalAI,...
