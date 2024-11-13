@@ -57,4 +57,19 @@ So, we can see five domains (as I said, I'm not a retail expert). The details ab
 - **Sales**: it's responsible of managing prices, promotions and get insights from orders
 - **Warehouse**: this domain is responsible of managing stock
 
-Now, we are going to define some relationships between domains:
+
+
+Now, we are going to define some relationships between domains. Let's check the following image:
+
+![business-relations](doc/img/business-relations.jpg)
+
+
+
+In the image above, we can observe these relationships:
+
+- **Customers <> Products**: Customers domain will retrieve the product catalog from Products domain
+- **Products <> Warehouse:** new products are desgined and created in this area so, when a new product is created and registered in the catalog, it's necessary to inform to Warehouse in order to provide stock for that new product. When some stock is provided, Warehouse notifies to Products in order to activate the new product to be sold.
+- **Products <> Sales:** Sales is responsible for managing prices and promotions so, this domain will update products prices and set promotions when needed (Black Friday, Christmas, etc...)
+- **Customers <> Orders**: Customers will send the new orders to Orders domain and Orders domain will provide the list of orders and their status to Customers domain
+- **Orders <> Warehouse**: when an order is requested to created, Orders domain is responsible of creating that order, checking wether stock is available or not and whem the order is created, the order must be updated when there were a change from Warehouse
+- **Order <> Sales**: Sales will retrive data about orders for getting insights and making predictions 
