@@ -1,10 +1,10 @@
-# Casarrubios' project
+# Casarrubios project
 
-This repository is going to be used as a portfolio and I'm going to use an use case to cover several topics from architecture, software and so on. For this reason, solutions in this repository could be more complex than it should be but, as I mentioned, the target of this repository is being used as a didactical tool.
+This repository will serve as a portfolio, showcasing various topics in architecture, software development, and more through a use case. For this reason, the solutions in this repository may be more complex than it should be but, as I mentioned, the goal of this repository is to use it as a didactical and playground tool.
 
 
 
-The idea is to include the most of these topics:
+The aim is to include the most of these topics:
 
 - GenAI and RAG
 - Front: Angular, Vue, React
@@ -37,7 +37,7 @@ Later on, I'll include Kubernetes (local) and, eventually, cloud infrastructure 
 
 The use case selected is the recruitment process. We are a company that publishes positions in a portal and people interested on these open positions can apply to them.
 
-The idea is to use artificial intelligence to be more efficient doing the screening phase and try to automatize the process of selecting the best curriculums n each open position. The following picture shows the process:
+The aim is to leverage artificial intelligence to be more efficient during the screening phase and automate the process of selecting the best resumes for each open position. The following picture shows the process:
 
 
 
@@ -53,14 +53,16 @@ The following picture illustrates the logical architecture of the MVP:
 
 
 
-Let's go into more detail. We can see two different contexts in order to clearly separate concerns:
+Let's dive into the details. 
+
+We can see two different contexts in order to clearly separate concerns:
 
 - Candidates
 
-  This is the context related to candidates. This context is the applications owner and a candidate can perform the following actions:
+  This is the context related to candidates. This context is the owner of applications and a candidate can perform the following actions:
 
   -  check open positions
-  - apply to a position and uploading a resume
+  - apply to a position and uploading their resume
 
   
 
@@ -68,9 +70,9 @@ Let's go into more detail. We can see two different contexts in order to clearly
 
   - Frontend
 
-    - Candidates App: this the contact point for candidates. There are two views or options: view the list of open positions and select one and apply.
+    - Candidates App: this is the contact point for candidates. There are two views or options: view the list of open positions and select one and apply.
 
-    - Candidates BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all the requests to backend (business) services
+    - Candidates BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all requests to backend (business) services
 
   - Backend services:
 
@@ -98,7 +100,7 @@ Let's go into more detail. We can see two different contexts in order to clearly
 
     - Recruitment App: this the contact point for recruiters. There are three views or options: manage positions, view candidates registered and check matches between candidates and positions.
 
-    - Recruitment BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all the requests to backend (business) services
+    - Recruitment BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all requests to backend (business) services
 
   - Backend services:
 
