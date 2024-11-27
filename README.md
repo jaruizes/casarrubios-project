@@ -1,75 +1,119 @@
-# TOPICS TO COVER
+# Casarrubios' project
 
-In this repository, I'll try to cover these topics:
+This repository is going to be used as a portfolio and I'm going to use an use case to cover several topics from architecture, software and so on. For this reason, solutions in this repository could be more complex than it should be but, as I mentioned, the target of this repository is being used as a didactical tool.
 
-- Angular, React, Vue
-- Microservices & Microfrontends
-- DDD, Contexts
-- API: BFF, Management (quotas, throttling, security, testing,...)
-- API First: synchronous & asynchronous
-- Schema Registry
-- Authorization & Authentication, OAuth, OpenID
-- Quarkus, Spring, Python, ¿Go?
-- Working with legacy systems
-- Databases:
-  - Postgresql, MySQL
-  - Redis
-  - Mongo
-  - ElasticSearch
-  - DuckDB
-- EDA: definition, design, infra
-- Kafka, KStreams, KSQL, KConnect
-- Spark, Flink
-- CDC (Debezium,...)
-- Gen AI, RAG, LocalAI,...
-- K8s & Istio
-- Data & Analytics
-  - Databricks
-  - Snowflake
-  - NiFi
-  - Airflow
-  - Iceberg
-  - Apache Superset
+
+
+The idea is to include the most of these topics:
+
+- GenAI and RAG
+- Front: Angular, Vue, React
+- Backend: Spring Boot, Quarkus, Node
+- Authorization, Authentication
+- APIs: 
+  - Synchronous: Api first, BFF, OpenAPI
+  - Asynchronous: Event first, AsyncAPI, Cloud Events
+  - Schema Registry
+  - Management
+- Databases: SQL and NoSQL
+- Kafka, Kafka Connect, KStreams
+- CDC: Debezium
 - Testcontainers
-- Automated testing
 - CI/CD
-- Kubernetes (check if is possible RH)
-- Monitoring & Observability
-- Serverless: lambdas & functions, containers (ECS Fargate)
-- Platform Engineering, DevEx
-- IaC (AWS, Azure, GCP):
-  - Terraform
-  - CDK
-
-The idea is to use a set of applications and systems working together in order to apply each topic to the use case where it is most relevant and explain the reason for using it. If there are several alternatives, I'll show the pros and cons of each one.
-
-# Business domains
-
-The first step we're going to do is to define business domains. I'm not a subject matter expert in retail or in ecommerce so I've tried to define my own retail. The following picture describes the domains defined:
-
-![business-domains](doc/img/business-domains.jpg)
-
-So, we can see five domains (as I said, I'm not a retail expert). The details about them are:
-
-- **Customers**: this domain is responsible of managing everything related to customer, that is, register process, customer application, notifications, etc...In this domain, I'm going to include a recommendation system in order to offer the best products for each client depending on navigation, needs, etc...
-- **Products**: it's responsible of defining products (catalog)
-- **Orders**: it manages the order workflow, that means, from an order is created to it is payed and closed. I'm going to include all capabilities relative to payments also in this domain (it could be an independent domain).
-- **Sales**: it's responsible of managing prices, promotions and get insights from orders
-- **Warehouse**: this domain is responsible of managing stock
+- Monitoring & Observability: OpenTelemetry, Prometheus, Grafana, Jaeger, ELK
 
 
 
-Now, we are going to define some relationships between domains. Let's check the following image:
+Initially, all the infrastructure will be local, based on Docker and Docker Compose. 
 
-![business-relations](doc/img/business-relations.jpg)
+Later on, I'll include Kubernetes (local) and, eventually, cloud infrastructure to cover:
+
+- IaC: Terraform & CDK
+- AWS: EKS, Lambda, Fargate, RDS, DMS, Cognito, Bedrock
 
 
 
-In the image above, we can observe these relationships:
+# Use case (What?)
 
-- **Customers <> Products**: Customers domain will retrieve the product catalog from Products domain
-- **Products <> Warehouse:** new products are desgined and created in this area so, when a new product is created and registered in the catalog, it's necessary to inform to Warehouse in order to provide stock for that new product. When some stock is provided, Warehouse notifies to Products in order to activate the new product to be sold.
-- **Products <> Sales:** Sales is responsible for managing prices and promotions so, this domain will update products prices and set promotions when needed (Black Friday, Christmas, etc...)
-- **Customers <> Orders**: Customers will send the new orders to Orders domain and Orders domain will provide the list of orders and their status to Customers domain
-- **Orders <> Warehouse**: when an order is requested to created, Orders domain is responsible of creating that order, checking wether stock is available or not and whem the order is created, the order must be updated when there were a change from Warehouse
-- **Order <> Sales**: Sales will retrive data about orders for getting insights and making predictions 
+The use case selected is the recruitment process. We are a company that publishes positions in a portal and people interested on these open positions can apply to them.
+
+The idea is to use artificial intelligence to be more efficient doing the screening phase and try to automatize the process of selecting the best curriculums n each open position. The following picture shows the process:
+
+
+
+![what_usecase](doc/img/what_usecase.jpg)
+
+
+
+# Logical Architecture (How?) 
+
+The following picture illustrates the logical architecture of the MVP:
+
+![how_logical_architecture](doc/img/how_logical_architecture.jpg)
+
+
+
+Let's go into more detail. We can see two different contexts in order to clearly separate concerns:
+
+- Candidates
+
+  This is the context related to candidates. This context is the applications owner and a candidate can perform the following actions:
+
+  -  check open positions
+  - apply to a position and uploading a resume
+
+  
+
+  This context has the following components or pieces:
+
+  - Frontend
+
+    - Candidates App: this the contact point for candidates. There are two views or options: view the list of open positions and select one and apply.
+
+    - Candidates BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all the requests to backend (business) services
+
+  - Backend services:
+
+    - Applications: this service implements the logic associated with apply to a position and upload a resume. 
+    - Applications publisher: it's in charge of detecting new applications and publishing in order to notify to recruiter context
+    - Positions: this service implements the logic associated with get the open positions.
+    - Positions Updater: this service updates the open positions database when a new position is published or closed from the recruiter context.
+
+  
+
+  
+
+- Recruiters
+
+  This is the context related to recruiters and the owner of positions. In this context, recruiters can perform the following actions:
+
+  - manage positions: create, open, update, close or delete positions
+  - check candidates: view candidates registered in the system (because they are applied to a some position)
+
+  
+
+  This context has the following components or pieces:
+
+  - Frontend
+
+    - Recruitment App: this the contact point for recruiters. There are three views or options: manage positions, view candidates registered and check matches between candidates and positions.
+
+    - Recruitment BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all the requests to backend (business) services
+
+  - Backend services:
+
+    - Positions: it implements the logic associated with positions (create, open, update, close or delete)
+    - Positions Publisher: when a position is opened or closed, it's responsible for notifying to candidates context in order to update its position list
+    - Applications: this service implements the logic associated with check candidates and resumes. 
+    - Applications updater: it's in charge of updating the database associated with candidatos and resumes
+    - Scoring: when a new application is received, it's responsible of evaluating it and assigning scores related to the open positions registered
+    - Matching: this service implements the logic associated with get the matches saved in the database, associated with candidates and positions.
+
+  
+
+
+
+
+
+
+
