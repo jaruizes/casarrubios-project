@@ -1,4 +1,4 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities;
 
 import jakarta.persistence.*;
 

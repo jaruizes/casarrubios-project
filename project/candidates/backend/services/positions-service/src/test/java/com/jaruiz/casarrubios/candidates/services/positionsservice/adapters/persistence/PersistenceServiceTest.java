@@ -1,13 +1,12 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.PersistenceService;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.PostgresRepository;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.ConditionEntity;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.PositionEntity;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.RequirementEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.PostgresRepository;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities.ConditionEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities.PositionEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities.RequirementEntity;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Position;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

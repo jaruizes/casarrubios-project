@@ -1,10 +1,10 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.api;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api;
 
 import java.util.List;
 
-import com.jaruiz.casarrubios.candidates.services.positionsservice.api.rest.PositionsRestController;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.api.rest.dto.PositionDTO;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.api.rest.dto.PositionDetailDTO;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest.PositionsRestController;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest.dto.PositionDTO;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest.dto.PositionDetailDTO;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.exceptions.PositionNotFoundException;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Condition;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Position;

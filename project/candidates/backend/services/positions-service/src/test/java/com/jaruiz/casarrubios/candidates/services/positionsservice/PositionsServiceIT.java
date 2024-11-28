@@ -1,9 +1,9 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.it;
+package com.jaruiz.casarrubios.candidates.services.positionsservice;
 
 import java.util.Arrays;
 
-import com.jaruiz.casarrubios.candidates.services.positionsservice.api.rest.dto.PositionDTO;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.api.rest.dto.PositionDetailDTO;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest.dto.PositionDTO;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest.dto.PositionDetailDTO;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;

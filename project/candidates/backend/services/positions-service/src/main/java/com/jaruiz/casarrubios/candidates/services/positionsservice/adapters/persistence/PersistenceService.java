@@ -1,12 +1,12 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.PostgresRepository;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.ConditionEntity;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.PositionEntity;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.RequirementEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.PostgresRepository;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities.ConditionEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities.PositionEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities.RequirementEntity;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Condition;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Position;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Requirement;
