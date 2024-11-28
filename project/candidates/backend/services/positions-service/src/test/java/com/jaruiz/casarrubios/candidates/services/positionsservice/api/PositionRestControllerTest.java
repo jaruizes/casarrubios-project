@@ -41,10 +41,19 @@ public class PositionRestControllerTest {
 
         assertNotNull(positionDTO);
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+        assertTrue(positionDTO.getId() != null && positionDTO.getId() > 0);
         assertTrue(positionDTO.getTitle() != null && !positionDTO.getTitle().isEmpty());
         assertTrue(positionDTO.getDescription() != null && !positionDTO.getDescription().isEmpty());
         assertTrue(positionDTO.getRequirements() != null && !positionDTO.getRequirements().isEmpty());
         assertTrue(positionDTO.getConditions() != null && !positionDTO.getConditions().isEmpty());
+
+        positionDTO.getRequirements().forEach(requirement -> {
+            assertTrue(requirement.getDescription() != null && !requirement.getDescription().isEmpty());
+        });
+
+        positionDTO.getConditions().forEach(condition -> {
+            assertTrue(condition.getDescription() != null && !condition.getDescription().isEmpty());
+        });
     }
 
     @Test
@@ -84,6 +93,12 @@ public class PositionRestControllerTest {
         assertNotNull(positions);
         assertFalse(positions.isEmpty());
         assertEquals(200, responseEntity.getStatusCode().value());
+
+        positions.forEach(position -> {
+            assertTrue(position.getId() != null && position.getId() > 0);
+            assertTrue(position.getTitle() != null && !position.getTitle().isEmpty());
+            assertTrue(position.getDescription() != null && !position.getDescription().isEmpty());
+        });
     }
 
     @Test

@@ -32,10 +32,21 @@ public class PositionServiceTest {
         try {
             final Position position = positionService.getPositionDetail(1L);
             assertNotNull(position);
+            assertTrue(position.getId() > 0);
             assertTrue(position.getTitle() != null && !position.getTitle().isEmpty());
             assertTrue(position.getDescription() != null && !position.getDescription().isEmpty());
             assertTrue(position.getRequirements() != null && !position.getRequirements().isEmpty());
             assertTrue(position.getConditions() != null && !position.getConditions().isEmpty());
+
+            position.getRequirements().forEach(requirement -> {
+                assertTrue(requirement.getId() > 0);
+                assertTrue(requirement.getDescription() != null && !requirement.getDescription().isEmpty());
+            });
+
+            position.getConditions().forEach(condition -> {
+                assertTrue(condition.getId() > 0);
+                assertTrue(condition.getDescription() != null && !condition.getDescription().isEmpty());
+            });
 
         } catch (PositionNotFoundException e) {
             fail("Position not found");
