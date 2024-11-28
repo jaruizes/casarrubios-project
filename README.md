@@ -115,7 +115,21 @@ We can see two different contexts in order to clearly separate concerns:
 
 
 
+# Physical Architectures (With What?) -- WIP
+
+In this section I'll expose several alternatives to implement each logical component.
 
 
 
+
+
+
+
+
+
+# Some concepts -- WIP 
+
+This section is dedicated to explain different concepts, patterns, technology,...,etc associated with the implementation of the project:
+
+- [Testcontainers](doc/testcontainers.md)
 
