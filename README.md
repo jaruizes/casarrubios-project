@@ -1,8 +1,10 @@
-# Casarrubios project
+# Casarrubios project (WIP)
+
+![wip](doc/img/wip.jpg)
+
+
 
 This repository will serve as a portfolio, showcasing various topics in architecture, software development, and more through a use case. For this reason, the solutions in this repository may be more complex than it should be but, as I mentioned, the goal of this repository is to use it as a didactical and playground tool.
-
-
 
 The aim is to include the most of these topics:
 
@@ -127,9 +129,12 @@ In this section I'll expose several alternatives to implement each logical compo
 
 
 
-# Some concepts -- WIP 
+# Some concepts implemented (WIP) 
 
 This section is dedicated to explain different concepts, patterns, technology,...,etc associated with the implementation of the project:
 
 - [Testcontainers](doc/testcontainers.md)
+- [API Contract First - OpenAPI](doc/api-first-openapi.md)
+- [Mutation Testing](doc/mutation-tests.md)
+- [Hibernate - Eager/Lazy loading](doc/hibernate-lazy-eager.md) 
 
