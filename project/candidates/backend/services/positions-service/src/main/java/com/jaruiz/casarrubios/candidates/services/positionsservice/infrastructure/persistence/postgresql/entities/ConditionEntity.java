@@ -1,11 +1,10 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence.postgresql.entities;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities;
 
-import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Position;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "CONDITIONS")
-public class ConditionsEntity {
+public class ConditionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

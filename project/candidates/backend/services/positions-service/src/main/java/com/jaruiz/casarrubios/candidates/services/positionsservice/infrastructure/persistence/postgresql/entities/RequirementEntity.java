@@ -1,10 +1,10 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence.postgresql.entities;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "REQUIREMENTS")
-public class RequirementsEntity {
+public class RequirementEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

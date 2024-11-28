@@ -1,12 +1,12 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence.postgresql.PostgresRepository;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence.postgresql.entities.ConditionsEntity;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence.postgresql.entities.PositionEntity;
-import com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence.postgresql.entities.RequirementsEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.PostgresRepository;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.ConditionEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.PositionEntity;
+import com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities.RequirementEntity;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Condition;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Position;
 import com.jaruiz.casarrubios.candidates.services.positionsservice.business.model.Requirement;
@@ -70,14 +70,14 @@ public class PersistenceService implements PersistencePort {
             conditions);
     }
 
-    private Requirement requirementsEntityToRequirements(RequirementsEntity requirementsEntity) {
-        return new Requirement(requirementsEntity.getId(),
-            requirementsEntity.getDescription());
+    private Requirement requirementsEntityToRequirements(RequirementEntity requirementEntity) {
+        return new Requirement(requirementEntity.getId(),
+            requirementEntity.getDescription());
     }
 
-    private Condition conditionsEntityToConditions(ConditionsEntity conditionsEntity) {
-        return new Condition(conditionsEntity.getId(),
-            conditionsEntity.getDescription());
+    private Condition conditionsEntityToConditions(ConditionEntity conditionEntity) {
+        return new Condition(conditionEntity.getId(),
+            conditionEntity.getDescription());
     }
 
 }

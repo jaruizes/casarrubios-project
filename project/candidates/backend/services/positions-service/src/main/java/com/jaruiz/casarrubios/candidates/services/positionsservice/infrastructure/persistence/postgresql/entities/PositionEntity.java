@@ -1,4 +1,4 @@
-package com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.output.persistence.postgresql.entities;
+package com.jaruiz.casarrubios.candidates.services.positionsservice.infrastructure.persistence.postgresql.entities;
 
 import java.util.List;
 
@@ -15,10 +15,10 @@ public class PositionEntity {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
-    private List<RequirementsEntity> requirements;
+    private List<RequirementEntity> requirements;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
-    private List<ConditionsEntity> conditions;
+    private List<ConditionEntity> conditions;
 
     public long getId() {
         return id;
@@ -44,19 +44,19 @@ public class PositionEntity {
         this.description = description;
     }
 
-    public List<RequirementsEntity> getRequirements() {
+    public List<RequirementEntity> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(List<RequirementsEntity> requirements) {
+    public void setRequirements(List<RequirementEntity> requirements) {
         this.requirements = requirements;
     }
 
-    public List<ConditionsEntity> getConditions() {
+    public List<ConditionEntity> getConditions() {
         return conditions;
     }
 
-    public void setConditions(List<ConditionsEntity> conditions) {
+    public void setConditions(List<ConditionEntity> conditions) {
         this.conditions = conditions;
     }
 }
