@@ -117,7 +117,7 @@ We can see two different contexts in order to clearly separate concerns:
 
 
 
-# Physical Architectures (With What?) -- WIP
+# Physical Architectures (With What?)
 
 In this section I'll expose several alternatives to implement each logical component.
 
@@ -129,7 +129,7 @@ In this section I'll expose several alternatives to implement each logical compo
 
 
 
-# Some concepts implemented (WIP) 
+# Some topics implemented
 
 This section is dedicated to explain different concepts, patterns, technology,...,etc associated with the implementation of the project:
 
