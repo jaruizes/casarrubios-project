@@ -13,13 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/positions", produces = "application/json")
 public class PositionsRestController implements PositionsApi {
     private static final Logger logger = LoggerFactory.getLogger(PositionsRestController.class);
     private final PositionServicePort positionService;
@@ -28,8 +24,7 @@ public class PositionsRestController implements PositionsApi {
         this.positionService = positionService;
     }
 
-    @GetMapping(path = "/{positionId}")
-    public ResponseEntity<PositionDetailDTO> getPositionDetail(@PathVariable("positionId") Long positionId) {
+    public ResponseEntity<PositionDetailDTO> getPositionDetail(Long positionId) {
         logger.info("GET received: getting position with id {}", positionId);
 
         if (positionId == null) {
@@ -50,7 +45,6 @@ public class PositionsRestController implements PositionsApi {
         }
     }
 
-    @GetMapping
     public ResponseEntity<List<PositionDTO>> getAllPositions() {
         logger.info("GET received: getting all positions");
         final List<PositionDTO> positionDTOS = this.positionService.getPositions().stream().map(this::positionToPositionDTO).toList();
