@@ -2,6 +2,8 @@ package com.jaruiz.casarrubios.candidates.services.applications.business.model;
 
 import java.util.UUID;
 
+import okio.Path;
+
 public class Application {
 
     private final UUID id;
@@ -18,6 +20,12 @@ public class Application {
 
     public boolean isComplete() {
         return candidate.isComplete() && (cvFile != null && cvFile.length > 0) && positionId != null;
+    }
+
+    public String getFilePath() {
+        return String.valueOf(getPositionId())
+                     .concat(Path.DIRECTORY_SEPARATOR)
+                     .concat(getId().toString());
     }
 
     public UUID getId() {

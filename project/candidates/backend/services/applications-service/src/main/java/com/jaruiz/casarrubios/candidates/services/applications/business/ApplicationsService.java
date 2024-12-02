@@ -2,7 +2,9 @@ package com.jaruiz.casarrubios.candidates.services.applications.business;
 
 import java.util.UUID;
 
+import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationFileNotStoredException;
 import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationIncompleteException;
+import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationsGeneralException;
 import com.jaruiz.casarrubios.candidates.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.candidates.services.applications.business.ports.FileStoragePort;
 import com.jaruiz.casarrubios.candidates.services.applications.business.ports.MetadataStoragePort;
@@ -10,9 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-@Service
-public class ApplicationsService {
+@Service public class ApplicationsService {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationsService.class);
+    public static final String FILE_NOT_STORED_ERROR = "0001";
+    public static final String METADATA_NOT_STORED_ERROR = "0002";
 
     private final FileStoragePort fileStorage;
     private final MetadataStoragePort metadataStorage;
@@ -22,21 +25,38 @@ public class ApplicationsService {
         this.metadataStorage = metadataStorage;
     }
 
-
-    public UUID uploadCV(Application application) throws ApplicationIncompleteException {
+    public UUID uploadCV(Application application) throws ApplicationsGeneralException, ApplicationIncompleteException {
         logger.info("Uploading CV [positionId = {}, name = {}, surname = {}]", application.getPositionId(), application.getName(), application.getSurname());
 
         if (!application.isComplete()) {
             logger.error("Application is incomplete");
-            throw new ApplicationIncompleteException(application.getId());
+            throw new ApplicationIncompleteException();
         }
 
-        final String versionId = this.fileStorage.storeFile(application);
-        this.metadataStorage.saveMetada(application);
+        try {
+            this.fileStorage.storeFile(application);
+            logger.info("CV stored [positionId = {}, name = {}, surname = {}, path = {}]", application.getPositionId(), application.getName(),
+                application.getSurname(), application.getFilePath());
 
-        logger.info("CV uploaded [positionId = {}, name = {}, surname = {}, versionId = {}]", application.getPositionId(), application.getName(), application.getSurname(), versionId);
+            this.metadataStorage.saveMetada(application);
+            logger.info("CV metadata saved to database [positionId = {}, name = {}, surname = {}, path = {}]", application.getPositionId(), application.getName(),
+                application.getSurname(), application.getFilePath());
 
-        return application.getId();
+            return application.getId();
+
+        } catch (ApplicationFileNotStoredException e) {
+            logger.error("Error storing CV [positionId = {}, name = {}, surname = {}]", application.getPositionId(), application.getName(), application.getSurname());
+            logger.error(e.getMessage());
+
+            throw new ApplicationsGeneralException(application.getId(), FILE_NOT_STORED_ERROR);
+        } catch (Exception e) {
+            logger.error("Error saving CV metadata to database [positionId = {}, name = {}, surname = {}, path = {}]", application.getPositionId(), application.getName(),
+                application.getSurname(), application.getFilePath());
+            logger.error(e.getMessage());
+
+            this.fileStorage.deleteFile(application.getFilePath());
+            throw new ApplicationsGeneralException(application.getId(), METADATA_NOT_STORED_ERROR);
+        }
     }
 
 }

@@ -3,7 +3,10 @@ package com.jaruiz.casarrubios.candidates.services.applications.adapters.filesto
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
+import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationFileNotStoredException;
 import com.jaruiz.casarrubios.candidates.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.candidates.services.applications.business.ports.FileStoragePort;
 import com.jaruiz.casarrubios.candidates.services.applications.infrastructure.config.Config;
@@ -21,7 +24,7 @@ public class FileStorageAdapter implements FileStoragePort {
     }
 
     @Override
-    public String storeFile(Application application) {
+    public String storeFile(Application application) throws ApplicationFileNotStoredException {
         final String bucketName = config.getBucketName();
 
         try {
@@ -31,7 +34,6 @@ public class FileStorageAdapter implements FileStoragePort {
             }
 
             final InputStream inputStream = new ByteArrayInputStream(application.getCvFile());
-
             var response = minioClient.putObject(
                 PutObjectArgs.builder()
                              .bucket(bucketName)
@@ -39,16 +41,16 @@ public class FileStorageAdapter implements FileStoragePort {
                              .stream(
                                  inputStream, inputStream.available(), -1)
                              .contentType("application/pdf")
+                             .userMetadata(getMetadata(application))
                              .build());
 
             return response.object();
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred: " + e.getMessage());
+            throw new ApplicationFileNotStoredException(application.getId());
         }
     }
 
     public void deleteFile(String path) {
-        final String bucketName = config.getBucketName();
         try {
             RemoveObjectArgs args = RemoveObjectArgs.builder()
                                                     .bucket(config.getBucketName())
@@ -58,5 +60,15 @@ public class FileStorageAdapter implements FileStoragePort {
         } catch (Exception e) {
             throw new RuntimeException("Error occurred: " + e.getMessage());
         }
+    }
+
+    private Map<String, String> getMetadata(Application application) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("name", application.getName());
+        metadata.put("surname", application.getSurname());
+        metadata.put("email", application.getEmail());
+        metadata.put("phone", application.getPhone());
+        metadata.put("positionId", String.valueOf(application.getPositionId()));
+        return metadata;
     }
 }

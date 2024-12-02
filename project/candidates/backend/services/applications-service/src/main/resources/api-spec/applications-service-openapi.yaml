@@ -32,6 +32,16 @@ paths:
                     $ref: '#/components/schemas/ApplicationResponseDTO'
           400:
             description: Bad format
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ApplicationErrorDTO'
+          500:
+            description: Internal server error
+            content:
+                application/json:
+                    schema:
+                      $ref: '#/components/schemas/ApplicationErrorDTO'
 components:
   schemas:
     ApplicationDTO:
@@ -88,6 +98,19 @@ components:
             type: string
             description: The ID of the application
             example: 0181b9de-2a43-40cb-a2fc-ca58b62f4658
+    ApplicationErrorDTO:
+        type: object
+        properties:
+          applicationId:
+            type: string
+            description: The ID of the application
+            example: 0181b9de-2a43-40cb-a2fc-ca58b62f4658
+          errorCode:
+            type: string
+            description: The error code
+            example: 0001
+        required:
+          - errorCode
 
 
   
