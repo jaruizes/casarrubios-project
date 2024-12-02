@@ -27,6 +27,7 @@ and the code associated to Position changes (add or remove attributes, types, et
 The first step is to configure in the `pom.xml` file using the `pitest-maven` plugin. Below is the relevant configuration:
 
 ```xml
+
 <plugin>
     <groupId>org.pitest</groupId>
     <artifactId>pitest-maven</artifactId>
@@ -51,17 +52,17 @@ The first step is to configure in the `pom.xml` file using the `pitest-maven` pl
         <timeoutConstant>15000</timeoutConstant>
         <verbose>true</verbose>
         <targetClasses>
-            <param>com.jaruiz.casarrubios.candidates.services.positionsservice.*</param>
+            <param>com.jaruiz.casarrubios.candidates.services.positions.*</param>
         </targetClasses>
         <targetTests>
-            <param>com.jaruiz.casarrubios.candidates.services.positionsservice.*</param>
+            <param>com.jaruiz.casarrubios.candidates.services.positions.*</param>
         </targetTests>
         <features>
             <feature>+auto_threads</feature>
         </features>
         <excludedClasses>
-            <param>com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest.dto.*</param>
-            <param>com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.persistence.postgresql.entities.*</param>
+            <param>com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.*</param>
+            <param>com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.*</param>
         </excludedClasses>
     </configuration>
 </plugin>

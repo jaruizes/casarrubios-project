@@ -1,3 +1,5 @@
+
+
 -- Tabla principal para las posiciones abiertas
 CREATE TABLE POSITIONS (
                            id SERIAL PRIMARY KEY,
@@ -19,6 +21,20 @@ CREATE TABLE CONDITIONS (
                             position_id INT NOT NULL REFERENCES positions(id) ON DELETE CASCADE,
                             description TEXT NOT NULL
 );
+
+
+
+CREATE TABLE APPLICATIONS (
+                           id VARCHAR(255) PRIMARY KEY,
+                           name VARCHAR(255) NOT NULL,
+                           surname VARCHAR(255) NOT NULL,
+                           email VARCHAR(255) NOT NULL,
+                           phone VARCHAR(255) NOT NULL,
+                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
 
 
 INSERT INTO public.positions (id, title, description, created_at) VALUES (1, 'Arquitecto Software', e'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur laoreet nisl urna, vel convallis felis ultrices at. Aliquam velit ante, interdum sit amet eros vel, consectetur hendrerit nunc. Sed vulputate felis risus, eu suscipit urna lobortis quis. Nullam egestas viverra quam a iaculis. Etiam mattis, ante in dapibus tristique, sem felis porta nunc, quis cursus est nibh at leo. Morbi facilisis ullamcorper lacus, at imperdiet arcu fringilla pharetra. Donec nisi lectus, lobortis eget vestibulum sollicitudin, fringilla non odio. Donec at mollis erat. Fusce dui enim, maximus in metus gravida, sodales suscipit lorem. Donec tempor consequat consectetur.

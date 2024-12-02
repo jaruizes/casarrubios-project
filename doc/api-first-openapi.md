@@ -73,8 +73,8 @@ The first step is configuring the Maven plugin:
                   <skipDefaultInterface>true</skipDefaultInterface>
                   <readOnly>true</readOnly>
                   <useTags>true</useTags>
-                  <apiPackage>com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest</apiPackage>
-                  <modelPackage>com.jaruiz.casarrubios.candidates.services.positionsservice.adapters.api.rest.dto</modelPackage>
+                  <apiPackage>com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest</apiPackage>
+                  <modelPackage>com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto</modelPackage>
               </configOptions>
             </configuration>
         </execution>

@@ -1,0 +1,93 @@
+openapi: 3.1.0
+info:
+  title: Applications API (Candidates)
+  description: |-
+    This is the specification for the Applications API. This API is used to upload a CV to apply a position.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080/positions'
+    description: Local server
+tags:
+  - name: applications
+    description: Operations about applications
+paths:
+    /applications:
+      post:
+        summary: Upload a CV associated to an open position
+        operationId: uploadCV
+        tags:
+          - applications
+        requestBody:
+          required: true
+          content:
+            multipart/form-data:
+              schema:
+                $ref: '#/components/schemas/ApplicationDTO'
+        responses:
+          201:
+            description: OK
+            content:
+              application/json:
+                  schema:
+                    $ref: '#/components/schemas/ApplicationResponseDTO'
+          400:
+            description: Bad format
+components:
+  schemas:
+    ApplicationDTO:
+      type: object
+      properties:
+        candidate:
+          $ref: '#/components/schemas/CandidateDTO'
+        positionId:
+          type: integer
+          format: int64
+          description: The ID of the position
+          example: 1789
+        cvFile:
+          type: string
+          format: binary
+          description: The CV file in PDF format
+      required:
+        - candidate
+        - positionId
+        - cvFile
+    CandidateDTO:
+        type: object
+        properties:
+          name:
+            type: string
+            description: The first name of the candidate
+            example: John
+          surname:
+            type: string
+            description: The surname of the candidate
+            example: Doe
+          email:
+            type: string
+            description: The email address of the candidate
+            example: john.doe@example.com
+          phone:
+            type: string
+            description: The phone number of the candidate
+            example: +1234567890
+        required:
+          - name
+          - surname
+          - email
+          - phone
+    ApplicationResponseDTO:
+        type: object
+        properties:
+          position:
+            type: integer
+            format: int64
+            description: The ID of the position applied
+            example: 1789
+          applicationId:
+            type: string
+            description: The ID of the application
+            example: 0181b9de-2a43-40cb-a2fc-ca58b62f4658
+
+
+  

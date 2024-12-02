@@ -10,7 +10,17 @@ services:
       - POSTGRES_DB=candidates
     volumes:
       - "./postgresql/candidates-inventory.sql:/docker-entrypoint-initdb.d/1.sql"
-
+  minio:
+    image: quay.io/minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
 
 #  zookeeper:
 #    image: confluentinc/cp-zookeeper:7.5.0
@@ -326,3 +336,6 @@ services:
 #volumes:
 #  grafana_data:
 #  prom_data:
+
+volumes:
+  minio_data:
