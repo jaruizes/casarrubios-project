@@ -8,12 +8,18 @@
     "database.password": "postgres",
     "database.dbname" : "candidates",
     "database.server.name": "postgresql",
+    "key.converter.schemas.enable": "false",
+    "value.converter.schemas.enable": "false",
     "schema.include": "app2",
     "plugin.name": "pgoutput",
     "topic.prefix": "dbz",
     "slot.name": "debezium",
+    "table.include.list": "CANDIDATES.APPLICATIONS",
     "topic.creation.enable": "true",
     "topic.creation.default.replication.factor": "1",
-    "topic.creation.default.partitions": "1"
+    "topic.creation.default.partitions": "1",
+    "transforms": "dropBefore",
+    "transforms.dropBefore.type": "org.apache.kafka.connect.transforms.ReplaceField$Value",
+    "transforms.dropBefore.blacklist": "before"
   }
 }
