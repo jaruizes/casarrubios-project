@@ -127,3 +127,42 @@ public void givenSomePositions_whenGetAllPositions_thenListOfPositionsIsReturned
 The first time the test is executed, the image will be downloaded:
 
 ![testcontainers-download-image](img/testcontainers-download-image.jpg)
+
+
+
+## Testcontainers with Podman (MacOS)
+
+I'm executing Testcontainers with Podman in my Macbook (Apple Silicon). I realized that there were many containers (Ryuk) running when all the test executions had ended. Those containers were created by Testcontainers:
+
+```
+23:28:22.349 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Creating container for image: testcontainers/ryuk:0.11.0
+23:28:22.408 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Container testcontainers/ryuk:0.11.0 is starting: 56c7495c1513582600542313277676aeae76ef1a0dc1772a2bd92792b7af6506
+23:28:22.914 [main] INFO tc.testcontainers/ryuk:0.11.0 -- Container testcontainers/ryuk:0.11.0 started in PT0.56438S
+```
+
+
+
+So, each time a test was executed, a new Ryuk container was created.
+
+
+
+**What is Ruyk?**
+
+As the Testcontainers documentation said: "is responsible for container removal and automatic cleanup of dead containers at JVM shutdown".
+
+It's funny because it doesn't remove itself...
+
+![ryuk_container](img/ryuk_container.jpg)
+
+
+
+**How I fixed it?**
+
+TL;DR; Reading Testcontainers [documentation](https://java.testcontainers.org/features/configuration/#disabling-ryuk)
+
+Basically, the solution is set an environment variable to disable the creation of ryuk containers (if you need it)
+
+```
+TESTCONTAINERS_RYUK_DISABLED=true
+```
+
