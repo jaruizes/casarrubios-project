@@ -30,6 +30,7 @@ CREATE TABLE APPLICATIONS (
                            surname VARCHAR(255) NOT NULL,
                            email VARCHAR(255) NOT NULL,
                            phone VARCHAR(255) NOT NULL,
+                           cv VARCHAR(255) NOT NULL,
                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
