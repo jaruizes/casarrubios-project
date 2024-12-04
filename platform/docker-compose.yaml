@@ -8,7 +8,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=casarrubios
+      - POSTGRES_DB=candidates
     volumes:
       - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
       - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
@@ -102,6 +102,7 @@ services:
       STATUS_STORAGE_REPLICATION_FACTOR: 1
       KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      ENABLE_DEBEZIUM_SCRIPTING: 'true'
     healthcheck:
         test: [ "CMD", "nc", "-z", "localhost", "8083" ]
         interval: 30s

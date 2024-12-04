@@ -14,7 +14,7 @@ CREATE TABLE CANDIDATES.POSITIONS
 CREATE TABLE CANDIDATES.REQUIREMENTS
 (
     id          SERIAL PRIMARY KEY,
-    position_id INT  NOT NULL REFERENCES positions (id) ON DELETE CASCADE,
+    position_id INT  NOT NULL REFERENCES CANDIDATES.positions (id) ON DELETE CASCADE,
     description TEXT NOT NULL
 );
 
@@ -22,7 +22,7 @@ CREATE TABLE CANDIDATES.REQUIREMENTS
 CREATE TABLE CANDIDATES.CONDITIONS
 (
     id          SERIAL PRIMARY KEY,
-    position_id INT  NOT NULL REFERENCES positions (id) ON DELETE CASCADE,
+    position_id INT  NOT NULL REFERENCES CANDIDATES.positions (id) ON DELETE CASCADE,
     description TEXT NOT NULL
 );
 
@@ -42,7 +42,7 @@ CREATE TABLE CANDIDATES.APPLICATIONS
 
 
 INSERT INTO CANDIDATES.positions (id, title, description, created_at)
-VALUES (1, 'Arquitecto Software', e 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur laoreet nisl urna, vel convallis felis ultrices at. Aliquam velit ante, interdum sit amet eros vel, consectetur hendrerit nunc. Sed vulputate felis risus, eu suscipit urna lobortis quis. Nullam egestas viverra quam a iaculis. Etiam mattis, ante in dapibus tristique, sem felis porta nunc, quis cursus est nibh at leo. Morbi facilisis ullamcorper lacus, at imperdiet arcu fringilla pharetra. Donec nisi lectus, lobortis eget vestibulum sollicitudin, fringilla non odio. Donec at mollis erat. Fusce dui enim, maximus in metus gravida, sodales suscipit lorem. Donec tempor consequat consectetur.
+VALUES (1, 'Arquitecto Software', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur laoreet nisl urna, vel convallis felis ultrices at. Aliquam velit ante, interdum sit amet eros vel, consectetur hendrerit nunc. Sed vulputate felis risus, eu suscipit urna lobortis quis. Nullam egestas viverra quam a iaculis. Etiam mattis, ante in dapibus tristique, sem felis porta nunc, quis cursus est nibh at leo. Morbi facilisis ullamcorper lacus, at imperdiet arcu fringilla pharetra. Donec nisi lectus, lobortis eget vestibulum sollicitudin, fringilla non odio. Donec at mollis erat. Fusce dui enim, maximus in metus gravida, sodales suscipit lorem. Donec tempor consequat consectetur.
 
 Aenean congue, ante efficitur mollis cursus, turpis mauris aliquet justo, et aliquet nisl diam et nisi. Ut quis metus ac velit eleifend gravida sed eu ligula. Aenean lectus lacus, consequat vitae dictum a, ultricies at odio. Nunc tincidunt nisl et nisi sagittis iaculis. Integer blandit risus at lorem placerat fermentum. Integer malesuada molestie turpis sed viverra. Sed suscipit eget odio at commodo. Praesent lacinia ipsum non nunc volutpat, et molestie urna vulputate. Maecenas rhoncus maximus dolor, ut consectetur libero vehicula vitae.
 
