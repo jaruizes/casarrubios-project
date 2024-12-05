@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.jaruiz.casarrubios.candidates.services</groupId>
-    <artifactId>applications-service</artifactId>
+    <artifactId>applications-manager-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>applications-service</name>
     <description>applications-service</description>
