@@ -51,6 +51,29 @@ CREATE TABLE RECRUITERS.APPLICATIONS
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE RECRUITERS.POSITIONS
+(
+    id          SERIAL PRIMARY KEY,
+    title       VARCHAR(255) NOT NULL,
+    description TEXT         NOT NULL,
+    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabla para los requisitos de cada posición
+CREATE TABLE RECRUITERS.REQUIREMENTS
+(
+    id          SERIAL PRIMARY KEY,
+    position_id INT  NOT NULL REFERENCES RECRUITERS.positions (id) ON DELETE CASCADE,
+    description TEXT NOT NULL
+);
+
+-- Tabla para las condiciones de cada posición
+CREATE TABLE RECRUITERS.CONDITIONS
+(
+    id          SERIAL PRIMARY KEY,
+    position_id INT  NOT NULL REFERENCES RECRUITERS.positions (id) ON DELETE CASCADE,
+    description TEXT NOT NULL
+);
 
 
 INSERT INTO CANDIDATES.positions (id, title, description, created_at)
