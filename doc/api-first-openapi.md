@@ -39,7 +39,7 @@ You can import this file in the [Swagger Editor](https://editor.swagger.io/) to 
 
 
 
-## Generating code
+## Generating code (Spring Boot)
 
 Once we've defined the contract, we can generate code from the YAML file. Why? Because by this way, we are assuring that what we are agreeing in the contract is what we are going to build. Then, if we have a CI/CD pipelines, when the contract changes (the YAML file), those changes will be applied automatically in the code (and probably, it breaks the code)
 
@@ -208,6 +208,137 @@ public class PositionsRestController implements PositionsApi {
 ```
 
 
+
+## Generating code (Quarkus)
+
+Some services within this repository are built using Quarkus. The plugin "openapi-generator-maven-plugin" doesn't work well with Quarkus so we have to use other tool: [Quarkus Openapi Generator](https://github.com/quarkiverse/quarkus-openapi-generator/tree/main). This tool generates code as Quarkus expect to define an endpoint, that's annotated with annotations defined by Jakarta RESTful Web Services (Jakarta.ws.rs.*)
+
+
+
+The first step is to add this dependency in pom.xml
+
+```xml
+<!-- OpenAPI -->
+<dependency>
+    <groupId>io.quarkiverse.openapi.generator</groupId>
+    <artifactId>quarkus-openapi-generator-server</artifactId>
+    <version>2.7.0</version>
+</dependency>
+```
+
+
+
+Then, we can create a folder "/resources/openapi" and put our specifications there but, if we want to use other path, we have to set a property in "applications.properties"
+
+```properties
+quarkus.openapi.generator.input-base-dir=<folder containing openapi specs>
+```
+
+
+
+It's necessary to set another property to specify the file containing the API spec:
+
+```properties
+quarkus.openapi.generator.spec=positions-manager-service-openapi.yaml
+```
+
+
+
+Finally, we have to specify the package for the code generated. It's also set by a property:
+
+```
+quarkus.openapi.generator.base-package=com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest
+```
+
+
+
+If we executed
+
+```
+mvn clean compile
+```
+
+
+
+The code associated with the Openapi definition will be generated in the folder "target/generated-sources/jaxrs". For instance:
+
+```java
+/**
+ * A JAX-RS interface. An implementation of this interface must be provided.
+ */
+@Path("/positions")
+public interface PositionsResource {
+  /**
+   * <p>
+   * Returns all positions
+   * </p>
+   * 
+   */
+  @GET
+  @Produces("application/json")
+  List<PositionDTO> getAllPositions();
+
+  /**
+   * <p>
+   * This method creates a new position with the given body information
+   * </p>
+   * 
+   */
+  @POST
+  @Produces("application/json")
+  @Consumes("application/json")
+  PositionDetailDTO createPosition(@NotNull PositionDetailDTO data);
+```
+
+
+
+The last step is to used the code generated:
+
+```java
+public class PosManagerRestService implements PositionsResource {
+
+    private final PositionManagerService positionService;
+
+    public PosManagerRestService(PositionManagerService positionService) {
+        this.positionService = positionService;
+    }
+
+    @Override public List<PositionDTO> getAllPositions() {
+        return List.of();
+    }
+
+    @Override public PositionDetailDTO createPosition(PositionDetailDTO data) {
+        return null;
+    }
+
+    @Override public PositionDetailDTO getPositionDetail(long positionId) {
+        return null;
+    }
+
+    @Override public PositionDetailDTO updatePosition(long positionId, PositionDetailDTO data) {
+        return null;
+    }
+}
+```
+
+
+
+
+
+
+
+## Tips
+
+- OpenAPI versions < 3.1.0, don't support 'const' in OneOf, AllOf, AnyOf. If you need to use 'const' in your schema, you can use 'enum' instead.
+- SwaggerEditor (v4) deployed to https://editor.swagger.io does not support OAS 3.1. If you're looking for 3.1 support, then please utilize SwaggerEditor (v5) 
+which is deployed to https://editor-next.swagger.io/
+
+
+## References
+
+- [OpenAPI](https://swagger.io/specification/)
+- [Zalando API Guidelines](https://opensource.zalando.com/restful-api-guidelines/#100)
+- [Quarkus Openapi Generator](https://github.com/quarkiverse/quarkus-openapi-generator/tree/main)
 
 
 
