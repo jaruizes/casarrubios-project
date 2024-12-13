@@ -119,7 +119,11 @@ We can see two different contexts in order to clearly separate concerns:
 
 # Physical Architectures (With What?)
 
-In this section I'll expose several alternatives to implement each logical component. This design is a version 0.1:
+In this section I'll expose several alternatives to implement each logical component.
+
+
+
+## Alternative 1
 
 
 
