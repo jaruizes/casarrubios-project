@@ -140,5 +140,6 @@ This section is dedicated to explain different concepts, patterns, technology,..
 - [Testcontainers](doc/testcontainers.md)
 - [API Contract First - OpenAPI](doc/api-first-openapi.md)
 - [Mutation Testing](doc/mutation-tests.md)
-- [Hibernate - Eager/Lazy loading](doc/hibernate-lazy-eager.md) 
+- [Hibernate - Eager/Lazy loading](doc/hibernate-lazy-eager.md)
+- [Spring Boot - Exceptions Handler](doc/spring-exceptions-handler.md)
 
