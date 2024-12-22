@@ -52,6 +52,22 @@
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Flyway specific dependencies -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-flyway</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- OpenAPI -->
         <dependency>
@@ -115,41 +131,6 @@
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
-<!--            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>${openapi-generator.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-api-code</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/api-spec/positions-manager-service-openapi.yaml</inputSpec>
-                            <output>${project.build.directory}/generated-sources/openapi/</output>
-                            <generateApiDocumentation>false</generateApiDocumentation>
-                            <generateModelDocumentation>false</generateModelDocumentation>
-                            <generatorName>kk</generatorName>
-                            <generateApiTests>false</generateApiTests>
-                            <generateModelTests>false</generateModelTests>
-                            <skipOperationExample>true</skipOperationExample>
-                            <generateSupportingFiles>false</generateSupportingFiles>
-&lt;!&ndash;                            <library>quarkus</library>&ndash;&gt;
-                            <configOptions>
-                                <useJakartaEe>true</useJakartaEe>
-                                <booleanGetterPrefix>is</booleanGetterPrefix>
-                                <interfaceOnly>true</interfaceOnly>
-                                <skipDefaultInterface>true</skipDefaultInterface>
-                                <readOnly>true</readOnly>
-                                <useTags>true</useTags>
-                                <apiPackage>com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest</apiPackage>
-                                <modelPackage>com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest.dto</modelPackage>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
         </plugins>
     </build>
 

@@ -3,8 +3,8 @@ package com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persisten
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "REQUIREMENTS")
-public class RequirementEntity {
+@Table(name = "TASKS")
+public class TaskEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,9 +12,9 @@ public class RequirementEntity {
 
     @ManyToOne
     @JoinColumn(name="position_id")
+
     private PositionEntity position;
 
-    private String key;
     private String description;
 
     public long getId() {
@@ -23,14 +23,6 @@ public class RequirementEntity {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getDescription() {

@@ -2,17 +2,18 @@ package com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest;
 
 import java.util.List;
 
-import com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest.beans.ConditionDTO;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest.beans.PositionDTO;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest.beans.PositionDetailDTO;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest.beans.RequirementDTO;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.PositionManagerService;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionInvalidException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Condition;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Position;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Requirement;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Benefit;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Position;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Requirement;
+import jakarta.enterprise.context.ApplicationScoped;
 
+@ApplicationScoped
 public class PosManagerRestService implements PositionsResource {
 
     private final PositionManagerService positionService;
@@ -28,28 +29,31 @@ public class PosManagerRestService implements PositionsResource {
     }
 
     @Override public PositionDetailDTO createPosition(PositionDetailDTO data) {
-        try {
+        return null;
+        /*try {
             final Position positionCreated = positionService.createPosition(PosManagerRestService.mapToPosition(data));
             return PosManagerRestService.mapToPositionDetailDTO(positionCreated);
         } catch (PositionInvalidException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     @Override public PositionDetailDTO getPositionDetail(long positionId) {
-        try {
+        return null;
+        /*try {
             return mapToPositionDetailDTO(positionService.getPositionDetail(positionId));
         } catch (PositionNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     @Override public PositionDetailDTO updatePosition(long positionId, PositionDetailDTO data) {
-        try {
+        return null;
+        /*try {
             return mapToPositionDetailDTO(positionService.updatePosition(mapToPosition(data)));
         } catch (PositionInvalidException | PositionNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 
     private PositionDTO mapToPositionDTO(Position position) {
@@ -61,7 +65,7 @@ public class PosManagerRestService implements PositionsResource {
         return positionDTO;
     }
 
-    private static PositionDetailDTO mapToPositionDetailDTO(Position position) {
+    /*private static PositionDetailDTO mapToPositionDetailDTO(Position position) {
         final PositionDetailDTO positionDetailDTO = new PositionDetailDTO();
         positionDetailDTO.setId(position.getId());
         positionDetailDTO.setTitle(position.getTitle());
@@ -89,9 +93,9 @@ public class PosManagerRestService implements PositionsResource {
         return requirementDTO;
     }
 
-    private static ConditionDTO mapToConditionDTO(Condition condition) {
+    private static ConditionDTO mapToConditionDTO(Benefit benefit) {
         final ConditionDTO conditionDTO = new ConditionDTO();
-        conditionDTO.setDescription(condition.getDescription());
+        conditionDTO.setDescription(benefit.getDescription());
 
         return conditionDTO;
     }
@@ -101,23 +105,22 @@ public class PosManagerRestService implements PositionsResource {
             .map(PosManagerRestService::mapToRequirement)
             .toList();
 
-        final List<Condition> conditions = positionDetailDTO.getConditions().stream()
-            .map(PosManagerRestService::mapToCondition)
-            .toList();
+        final List<Benefit> benefits = positionDetailDTO.getConditions().stream()
+                                                        .map(PosManagerRestService::mapToCondition)
+                                                        .toList();
 
         return new Position(
             positionDetailDTO.getId(),
             positionDetailDTO.getTitle(),
             positionDetailDTO.getDescription(),
-            requirements,
-            conditions);
+            requirements, benefits);
     }
 
     private static Requirement mapToRequirement(RequirementDTO requirementDTO) {
         return new Requirement(requirementDTO.getDescription());
     }
 
-    private static Condition mapToCondition(ConditionDTO conditionDTO) {
-        return new Condition(conditionDTO.getDescription());
-    }
+    private static Benefit mapToCondition(ConditionDTO conditionDTO) {
+        return new Benefit(conditionDTO.getDescription());
+    }*/
 }

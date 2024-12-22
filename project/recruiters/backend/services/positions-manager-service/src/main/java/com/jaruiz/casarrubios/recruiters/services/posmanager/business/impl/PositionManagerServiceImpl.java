@@ -5,7 +5,8 @@ import java.util.List;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.PositionManagerService;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionInvalidException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Position;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Position;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.PositionData;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.ports.PersistencePort;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
@@ -20,25 +21,22 @@ public class PositionManagerServiceImpl implements PositionManagerService {
         this.persistencePort = persistencePort;
     }
 
-    @Override public Position createPosition(Position position) throws PositionInvalidException {
-        logger.info("Creating position with Id: " + position.getId());
-        validatePosition(position);
+    @Override public Position createPosition(PositionData data) throws PositionInvalidException {
+        checkIfPositionIsValid(data);
+        logger.info("Creating new position [title: " + data.getTitle() + "]");
 
-        long positionSavedId = this.persistencePort.savePosition(position);
-        logger.info("Position with Id: " + positionSavedId + " created");
+        final Position positionToSave = new Position(data);
+        final Position positionSaved = this.persistencePort.savePosition(positionToSave);
+        logger.info("Position with Id: " + positionSaved.getId() + " created");
 
-        return buildNewPositionObject(position, positionSavedId);
+        return positionSaved;
     }
 
     @Override public Position updatePosition(Position position) throws PositionInvalidException, PositionNotFoundException {
         logger.info("Updating position with Id: " + position.getId());
-        validatePosition(position);
 
-        Position positionFound = this.persistencePort.findPositionById(position.getId());
-        if (positionFound == null) {
-            logger.error("Position with Id: " + position.getId() + " not found");
-            throw new PositionNotFoundException(position.getId());
-        }
+        checkIfPositionIsValid(position.getData());
+        checkIfPositionExists(position.getId());
 
         this.persistencePort.savePosition(position);
 
@@ -46,9 +44,12 @@ public class PositionManagerServiceImpl implements PositionManagerService {
         return position;
     }
 
-    @Override public void deletePosition(long id) {
+    @Override public void deletePosition(long id) throws PositionNotFoundException {
         logger.info("Deleting position with Id: " + id);
+
+        checkIfPositionExists(id);
         this.persistencePort.deletePosition(id);
+
         logger.info("Position with Id: " + id + " deleted");
     }
 
@@ -69,20 +70,17 @@ public class PositionManagerServiceImpl implements PositionManagerService {
         return this.persistencePort.findAllPositions();
     }
 
-    private static void validatePosition(Position position) throws PositionInvalidException {
-        if (!position.isValid()) {
-            logger.error("Position is not valid");
+    private static void checkIfPositionIsValid(PositionData data) throws PositionInvalidException {
+        if (!data.isValid()) {
+            logger.error("Position data is not valid");
             throw new PositionInvalidException();
         }
     }
 
-    private Position buildNewPositionObject(Position position, long id) {
-        return new Position(
-            id,
-            position.getTitle(),
-            position.getDescription(),
-            position.getRequirements(),
-            position.getConditions()
-        );
+    private void checkIfPositionExists(long id) throws PositionNotFoundException {
+        if (this.persistencePort.findPositionById(id) == null) {
+            logger.error("Position with Id: " + id + " not found");
+            throw new PositionNotFoundException(id);
+        }
     }
 }

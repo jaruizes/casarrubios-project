@@ -4,15 +4,17 @@ import java.util.List;
 
 import com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.PositionsRepository;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities.PositionEntity;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Position;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Position;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.ports.PersistencePort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import org.jboss.logging.Logger;
 import static com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.mappers.EntityMapper.buildPosition;
 import static com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.mappers.EntityMapper.buildPositionEntity;
 
 @ApplicationScoped
 public class PersistenceService implements PersistencePort {
+    private static final Logger logger = Logger.getLogger(PersistenceService.class);
 
     private final PositionsRepository positionsRepository;
 
@@ -22,15 +24,15 @@ public class PersistenceService implements PersistencePort {
 
     @Override
     @Transactional
-    public long savePosition(Position position) {
+    public Position savePosition(Position position) {
+        PositionEntity newPositionEntity = buildPositionEntity(position);
         if (position.getId() == null) {
-            PositionEntity positionEntity = buildPositionEntity(position);
-            this.positionsRepository.persist(positionEntity);
-            return positionEntity.getId();
+            savePositionEntity(newPositionEntity);
+        } else {
+            updatePositionEntity(newPositionEntity);
         }
 
-        this.positionsRepository.getEntityManager().merge(buildPositionEntity(position));
-        return 0;
+        return buildPosition(newPositionEntity, true);
     }
 
     @Override
@@ -38,6 +40,7 @@ public class PersistenceService implements PersistencePort {
         Position positionFound = null;
         final PositionEntity positionEntity = this.positionsRepository.findById(id);
         if (positionEntity != null) {
+            logger.debug("[PERSISTENCE] Position with Id: " + id + " found in database");
             positionFound = buildPosition(positionEntity, true);
         }
 
@@ -54,5 +57,19 @@ public class PersistenceService implements PersistencePort {
     @Override
     public void deletePosition(long id) {
         this.positionsRepository.deleteById(id);
+    }
+
+    private PositionEntity savePositionEntity(PositionEntity positionEntity) {
+        this.positionsRepository.persist(positionEntity);
+
+        logger.debug("[PERSISTENCE] Position with Id: " + positionEntity.getId() + " saved in database");
+        return positionEntity;
+    }
+
+    private PositionEntity updatePositionEntity(PositionEntity positionEntity) {
+        this.positionsRepository.getEntityManager().merge(positionEntity);
+
+        logger.debug("[PERSISTENCE] Position with Id: " + positionEntity.getId() + " updated in database");
+        return positionEntity;
     }
 }

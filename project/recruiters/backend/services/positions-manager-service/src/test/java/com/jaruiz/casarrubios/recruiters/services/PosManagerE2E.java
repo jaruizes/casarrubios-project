@@ -3,6 +3,6 @@ package com.jaruiz.casarrubios.recruiters.services;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-class ExampleResourceIT extends ExampleResourceTest {
-    // Execute the same tests but in packaged mode.
+class PosManagerE2E {
+    
 }

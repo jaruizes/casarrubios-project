@@ -2,7 +2,10 @@ package com.jaruiz.casarrubios.recruiters.services.posmanager.business.exception
 
 import java.io.Serial;
 
+import org.jboss.logging.Logger;
+
 public class PositionInvalidException extends Exception {
+    private static final Logger logger = Logger.getLogger(PositionInvalidException.class);
 
     @Serial private static final long serialVersionUID = 1L;
     private final String code;
@@ -10,6 +13,8 @@ public class PositionInvalidException extends Exception {
     public PositionInvalidException() {
         super("Position is invalid");
         this.code = "INVALID_POSITION";
+
+        logger.error("Position is invalid");
     }
 
     public String getCode() {

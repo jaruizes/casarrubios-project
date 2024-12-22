@@ -1,10 +1,10 @@
-package com.jaruiz.casarrubios.recruiters.services.posmanager.business.models;
+package com.jaruiz.casarrubios.recruiters.services.posmanager.business.model;
 
-public class Condition {
+public class Benefit {
 
     private final String description;
 
-    public Condition(String description) {
+    public Benefit(String description) {
         this.description = description;
     }
 

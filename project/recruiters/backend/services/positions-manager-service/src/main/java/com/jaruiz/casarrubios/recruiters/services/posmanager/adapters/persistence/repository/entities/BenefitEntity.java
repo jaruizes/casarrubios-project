@@ -3,8 +3,8 @@ package com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persisten
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "CONDITIONS")
-public class ConditionEntity {
+@Table(name = "BENEFITS")
+public class BenefitEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

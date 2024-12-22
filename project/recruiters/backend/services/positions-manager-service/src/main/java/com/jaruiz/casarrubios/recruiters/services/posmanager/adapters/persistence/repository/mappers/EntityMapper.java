@@ -1,15 +1,13 @@
 package com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.mappers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities.ConditionEntity;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities.BenefitEntity;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities.PositionEntity;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities.RequirementEntity;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Condition;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Position;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.models.Requirement;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities.TaskEntity;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.*;
 
 public class EntityMapper {
     public static PositionEntity buildPositionEntity(Position position) {
@@ -17,28 +15,29 @@ public class EntityMapper {
         positionEntity.setId(position.getId());
         positionEntity.setTitle(position.getTitle());
         positionEntity.setDescription(position.getDescription());
+        positionEntity.setStatus(position.getStatus().ordinal());
+        positionEntity.setCreatedAt(position.getCreatedAt());
+        positionEntity.setPublishedAt(position.getPublishedAt());
 
         positionEntity.setRequirements(buildRequirementEntities(position.getRequirements(), positionEntity));
-        positionEntity.setConditions(buildConditionEntities(position.getConditions(), positionEntity));
+        positionEntity.setBenefits(buildConditionEntities(position.getBenefits(), positionEntity));
+        positionEntity.setTasks(buildTaskEntities(position.getTasks()));
 
         return positionEntity;
     }
 
     public static Position buildPosition(PositionEntity positionEntity, boolean includeVO) {
-        List<Requirement> requirements = new ArrayList<>();
-        List<Condition> conditions = new ArrayList<>();
-
+        final PositionData data = new PositionData(positionEntity.getTitle(), positionEntity.getDescription());
         if (includeVO) {
-            requirements = buildRequirements(positionEntity.getRequirements());
-            conditions = buildConditions(positionEntity.getConditions());
+            data.addRequirements(buildRequirements(positionEntity.getRequirements()));
+            data.addBenefits(buildBenefits(positionEntity.getBenefits()));
+            data.addTasks(buildTasks(positionEntity.getTasks()));
         }
 
-        return new Position(
-            positionEntity.getId(),
-            positionEntity.getTitle(),
-            positionEntity.getDescription(),
-            requirements,
-            conditions);
+        final Position position = new Position(positionEntity.getId(), data, positionEntity.getCreatedAt(), positionEntity.getPublishedAt());
+        position.setStatus(PositionStatus.values()[positionEntity.getStatus()]);
+
+        return position;
     }
 
     private static List<RequirementEntity> buildRequirementEntities(List<Requirement> requirements, PositionEntity positionEntity) {
@@ -47,26 +46,39 @@ public class EntityMapper {
                            .collect(Collectors.toList());
     }
 
-    private static List<ConditionEntity> buildConditionEntities(List<Condition> conditions, PositionEntity positionEntity) {
-        return conditions.stream()
-                         .map(condition -> buildConditionEntity(condition, positionEntity))
-                         .collect(Collectors.toList());
+    private static List<BenefitEntity> buildConditionEntities(List<Benefit> benefits, PositionEntity positionEntity) {
+        return benefits.stream()
+                       .map(benefit -> buildConditionEntity(benefit, positionEntity))
+                       .collect(Collectors.toList());
+    }
+
+    private static List<TaskEntity> buildTaskEntities(List<Task> tasks) {
+        return tasks.stream()
+                    .map(EntityMapper::buildTask)
+                    .collect(Collectors.toList());
     }
 
     private static RequirementEntity buildRequirementEntity(Requirement requirement, PositionEntity positionEntity) {
         final RequirementEntity requirementEntity = new RequirementEntity();
         requirementEntity.setDescription(requirement.getDescription());
         requirementEntity.setPosition(positionEntity);
+        requirementEntity.setKey(requirement.getKey());
 
         return requirementEntity;
     }
 
-    private static ConditionEntity buildConditionEntity(Condition condition, PositionEntity positionEntity) {
-        final ConditionEntity conditionEntity = new ConditionEntity();
-        conditionEntity.setDescription(condition.getDescription());
-        conditionEntity.setPosition(positionEntity);
+    private static BenefitEntity buildConditionEntity(Benefit benefit, PositionEntity positionEntity) {
+        final BenefitEntity benefitEntity = new BenefitEntity();
+        benefitEntity.setDescription(benefit.getDescription());
+        benefitEntity.setPosition(positionEntity);
 
-        return conditionEntity;
+        return benefitEntity;
+    }
+
+    private static TaskEntity buildTask(Task task) {
+        final TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setDescription(task.getDescription());
+        return taskEntity;
     }
 
     private static List<Requirement> buildRequirements(List<RequirementEntity> requirementEntities) {
@@ -75,17 +87,27 @@ public class EntityMapper {
                                   .collect(Collectors.toList());
     }
 
-    private static List<Condition> buildConditions(List<ConditionEntity> conditionEntities) {
+    private static List<Benefit> buildBenefits(List<BenefitEntity> conditionEntities) {
         return conditionEntities.stream()
-                                .map(EntityMapper::buildCondition)
+                                .map(EntityMapper::buildBenefit)
                                 .collect(Collectors.toList());
     }
 
-    private static Requirement buildRequirement(RequirementEntity requirementEntity) {
-        return new Requirement(requirementEntity.getDescription());
+    private static List<Task> buildTasks(List<TaskEntity> taskEntities) {
+        return taskEntities.stream()
+                           .map(EntityMapper::buildTask)
+                           .collect(Collectors.toList());
     }
 
-    private static Condition buildCondition(ConditionEntity conditionEntity) {
-        return new Condition(conditionEntity.getDescription());
+    private static Requirement buildRequirement(RequirementEntity requirementEntity) {
+        return new Requirement(requirementEntity.getKey(), requirementEntity.getDescription());
+    }
+
+    private static Benefit buildBenefit(BenefitEntity benefitEntity) {
+        return new Benefit(benefitEntity.getDescription());
+    }
+
+    private static Task buildTask(TaskEntity taskEntity) {
+        return new Task(taskEntity.getDescription());
     }
 }
