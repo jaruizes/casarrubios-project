@@ -100,7 +100,7 @@ public class EntityMapper {
     }
 
     private static Requirement buildRequirement(RequirementEntity requirementEntity) {
-        return new Requirement(requirementEntity.getKey(), requirementEntity.getDescription());
+        return new Requirement(requirementEntity.getKey(), requirementEntity.getValue(), requirementEntity.getDescription(), requirementEntity.getMandatory());
     }
 
     private static Benefit buildBenefit(BenefitEntity benefitEntity) {

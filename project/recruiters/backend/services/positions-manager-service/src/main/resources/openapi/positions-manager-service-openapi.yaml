@@ -39,7 +39,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PositionDetailDTO'
+              $ref: '#/components/schemas/NewPositionDataDTO'
       responses:
         201:
           description: Created
@@ -75,16 +75,30 @@ paths:
             type: integer
             format: int64
       responses:
-        '200':
+        200:
           description: successful operation
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PositionDetailDTO'
-        '400':
-          description: Invalid ID supplied
-        '404':
+        400:
+          description: Bad format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationErrorDTO'
+        404:
           description: Position not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationErrorDTO'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationErrorDTO'
     put:
       summary: Update a position
       description: Returns a single position
@@ -140,6 +154,31 @@ components:
         description:
           type: string
           example: This position is for a software engineer
+        status:
+          type: integer
+          format: int32
+          example: 1
+    NewPositionDataDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Software Engineer
+        description:
+          type: string
+          example: This position is for a software engineer
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequirementDTO'
+        benefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/BenefitDTO'
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskDTO'
     PositionDetailDTO:
       type: object
       properties:
@@ -157,6 +196,14 @@ components:
           type: integer
           format: int32
           example: 1
+        createdAt:
+          type: string
+          format: date-time
+          example: 2024-12-23T15:30:00Z
+        publishedAt:
+          type: string
+          format: date-time
+          example: 2024-12-23T15:30:00Z
         requirements:
           type: array
           items:

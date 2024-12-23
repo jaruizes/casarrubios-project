@@ -209,7 +209,7 @@ public class PositionsRestController implements PositionsApi {
 
 
 
-## Generating code (Quarkus)
+## Generating code (Quarkus) -- Review with OpenAPI Generator (Pos Manager) -- Both
 
 Some services within this repository are built using Quarkus. The plugin "openapi-generator-maven-plugin" doesn't work well with Quarkus so we have to use other tool: [Quarkus Openapi Generator](https://github.com/quarkiverse/quarkus-openapi-generator/tree/main). This tool generates code as Quarkus expect to define an endpoint, that's annotated with annotations defined by Jakarta RESTful Web Services (Jakarta.ws.rs.*)
 

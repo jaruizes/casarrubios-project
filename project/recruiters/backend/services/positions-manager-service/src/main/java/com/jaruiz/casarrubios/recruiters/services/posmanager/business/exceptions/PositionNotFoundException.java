@@ -4,7 +4,7 @@ import java.io.Serial;
 
 import org.jboss.logging.Logger;
 
-public class PositionNotFoundException extends Exception {
+public class PositionNotFoundException extends RuntimeException {
     private static final Logger logger = Logger.getLogger(PositionNotFoundException.class);
 
     @Serial private static final long serialVersionUID = 1L;

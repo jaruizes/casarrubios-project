@@ -16,6 +16,8 @@ public class RequirementEntity {
 
     private String key;
     private String description;
+    private String value;
+    private Boolean mandatory;
 
     public long getId() {
         return id;
@@ -51,5 +53,21 @@ public class RequirementEntity {
 
     public void setPosition(PositionEntity position) {
         this.position = position;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Boolean getMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(Boolean mandatory) {
+        this.mandatory = mandatory;
     }
 }
