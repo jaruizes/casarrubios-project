@@ -4,7 +4,7 @@ public class Requirement {
     private final String key;
     private final String value;
     private final String description;
-    private Boolean isMandatory;
+    private final Boolean isMandatory;
 
     public Requirement(String key, String value, String description, Boolean isMandatory) {
         this.key = key;
@@ -14,7 +14,11 @@ public class Requirement {
     }
 
     public boolean isValid() {
-        return ((key != null && !key.isEmpty()) && (description != null && !description.isEmpty()));
+        return ((key != null && !key.isEmpty()) &&
+            (description != null && !description.isEmpty()) &&
+            (value != null && !value.isEmpty()) &&
+            (isMandatory != null)
+            );
     }
 
     public String getDescription() {

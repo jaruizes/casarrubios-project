@@ -41,3 +41,9 @@ INSERT INTO RECRUITERS.tasks (id, position_id, description) VALUES (1, 1, 'Java'
 INSERT INTO RECRUITERS.tasks (id, position_id, description) VALUES (2, 2, 'Python');
 INSERT INTO RECRUITERS.benefits (id, position_id, description) VALUES (1, 1, '23 days of vacation');
 INSERT INTO RECRUITERS.benefits (id, position_id, description) VALUES (2, 2, '23 days of vacation');
+
+
+ALTER SEQUENCE RECRUITERS.positions_id_seq RESTART WITH 3;
+ALTER SEQUENCE RECRUITERS.requirements_id_seq RESTART WITH 3;
+ALTER SEQUENCE RECRUITERS.tasks_id_seq RESTART WITH 3;
+ALTER SEQUENCE RECRUITERS.benefits_id_seq RESTART WITH 3;

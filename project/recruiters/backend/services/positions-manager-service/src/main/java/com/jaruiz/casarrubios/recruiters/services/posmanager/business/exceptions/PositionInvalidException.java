@@ -4,7 +4,7 @@ import java.io.Serial;
 
 import org.jboss.logging.Logger;
 
-public class PositionInvalidException extends Exception {
+public class PositionInvalidException extends RuntimeException {
     private static final Logger logger = Logger.getLogger(PositionInvalidException.class);
 
     @Serial private static final long serialVersionUID = 1L;

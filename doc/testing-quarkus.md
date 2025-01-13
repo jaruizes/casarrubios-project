@@ -1,0 +1,3 @@
+- Talk about configuration (and not reuse containers)
+- Flywire example
+- Talk about the importance of integration tests

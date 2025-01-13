@@ -8,10 +8,7 @@ import com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest.dto.*;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.PositionManagerService;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionInvalidException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Benefit;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Position;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Requirement;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Task;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
@@ -51,13 +48,13 @@ public class PosManagerRestService implements PositionsApi {
 
 
     @Override public PositionDetailDTO createPosition(NewPositionDataDTO data) {
-        return null;
-        /*try {
-            final Position positionCreated = positionService.createPosition(PosManagerRestService.mapToPosition(data));
-            return PosManagerRestService.mapToPositionDetailDTO(positionCreated);
-        } catch (PositionInvalidException e) {
-            throw new RuntimeException(e);
-        }*/
+        logger.info("Creating new position");
+
+        final PositionData positionToBeCreated = PosManagerRestService.mapToPositionData(data);
+        final Position positionCreated = positionService.createPosition(positionToBeCreated);
+
+        logger.info("Position created with Id: " + positionCreated.getId());
+        return PosManagerRestService.mapToPositionDetailDTO(positionCreated);
     }
 
     private PositionDTO mapToPositionDTO(Position position) {
@@ -124,29 +121,36 @@ public class PosManagerRestService implements PositionsApi {
         return taskDTO;
     }
 
-    /*
-
-    private static Position mapToPosition(PositionDetailDTO positionDetailDTO) {
-        final List<Requirement> requirements = positionDetailDTO.getRequirements().stream()
+    private static PositionData mapToPositionData(NewPositionDataDTO newPositionDataDTO) {
+        final List<Requirement> requirements = newPositionDataDTO.getRequirements().stream()
             .map(PosManagerRestService::mapToRequirement)
             .toList();
 
-        final List<Benefit> benefits = positionDetailDTO.getConditions().stream()
+        final List<Benefit> benefits = newPositionDataDTO.getBenefits().stream()
                                                         .map(PosManagerRestService::mapToCondition)
                                                         .toList();
 
-        return new Position(
-            positionDetailDTO.getId(),
-            positionDetailDTO.getTitle(),
-            positionDetailDTO.getDescription(),
-            requirements, benefits);
+        final List<Task> tasks = newPositionDataDTO.getTasks().stream()
+            .map(PosManagerRestService::mapToTask)
+            .toList();
+
+        final PositionData positionData = new PositionData(newPositionDataDTO.getTitle(), newPositionDataDTO.getDescription());
+        positionData.addBenefits(benefits);
+        positionData.addRequirements(requirements);
+        positionData.addTasks(tasks);
+
+        return positionData;
     }
 
     private static Requirement mapToRequirement(RequirementDTO requirementDTO) {
-        return new Requirement(requirementDTO.getDescription());
+        return new Requirement(requirementDTO.getKey(), requirementDTO.getValue(), requirementDTO.getDescription(), requirementDTO.getIsMandatory());
     }
 
-    private static Benefit mapToCondition(ConditionDTO conditionDTO) {
-        return new Benefit(conditionDTO.getDescription());
-    }*/
+    private static Benefit mapToCondition(BenefitDTO benefitDTO) {
+        return new Benefit(benefitDTO.getDescription());
+    }
+
+    private static Task mapToTask(TaskDTO taskDTO) {
+        return new Task(taskDTO.getDescription());
+    }
 }

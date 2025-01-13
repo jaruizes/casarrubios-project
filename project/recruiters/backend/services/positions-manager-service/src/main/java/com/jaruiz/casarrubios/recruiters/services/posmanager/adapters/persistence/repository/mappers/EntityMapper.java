@@ -21,7 +21,7 @@ public class EntityMapper {
 
         positionEntity.setRequirements(buildRequirementEntities(position.getRequirements(), positionEntity));
         positionEntity.setBenefits(buildConditionEntities(position.getBenefits(), positionEntity));
-        positionEntity.setTasks(buildTaskEntities(position.getTasks()));
+        positionEntity.setTasks(buildTaskEntities(position.getTasks(), positionEntity));
 
         return positionEntity;
     }
@@ -48,13 +48,13 @@ public class EntityMapper {
 
     private static List<BenefitEntity> buildConditionEntities(List<Benefit> benefits, PositionEntity positionEntity) {
         return benefits.stream()
-                       .map(benefit -> buildConditionEntity(benefit, positionEntity))
+                       .map(benefit -> buildBenefitEntity(benefit, positionEntity))
                        .collect(Collectors.toList());
     }
 
-    private static List<TaskEntity> buildTaskEntities(List<Task> tasks) {
+    private static List<TaskEntity> buildTaskEntities(List<Task> tasks, PositionEntity positionEntity) {
         return tasks.stream()
-                    .map(EntityMapper::buildTask)
+                    .map(task -> buildTask(task, positionEntity))
                     .collect(Collectors.toList());
     }
 
@@ -63,11 +63,13 @@ public class EntityMapper {
         requirementEntity.setDescription(requirement.getDescription());
         requirementEntity.setPosition(positionEntity);
         requirementEntity.setKey(requirement.getKey());
+        requirementEntity.setValue(requirement.getValue());
+        requirementEntity.setMandatory(requirement.isMandatory());
 
         return requirementEntity;
     }
 
-    private static BenefitEntity buildConditionEntity(Benefit benefit, PositionEntity positionEntity) {
+    private static BenefitEntity buildBenefitEntity(Benefit benefit, PositionEntity positionEntity) {
         final BenefitEntity benefitEntity = new BenefitEntity();
         benefitEntity.setDescription(benefit.getDescription());
         benefitEntity.setPosition(positionEntity);
@@ -75,9 +77,10 @@ public class EntityMapper {
         return benefitEntity;
     }
 
-    private static TaskEntity buildTask(Task task) {
+    private static TaskEntity buildTask(Task task, PositionEntity positionEntity) {
         final TaskEntity taskEntity = new TaskEntity();
         taskEntity.setDescription(task.getDescription());
+        taskEntity.setPosition(positionEntity);
         return taskEntity;
     }
 
