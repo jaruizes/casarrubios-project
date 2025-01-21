@@ -1,0 +1,87 @@
+@each $color, $value in $theme-colors {
+    .btn-#{$color} {
+        box-shadow: 0 1px 2px 0 rgba($value, 0.35);
+
+        &:hover {
+            box-shadow: none;
+        }
+    }
+}
+
+@each $level, $color in $grays {
+    .text-gray-#{$level} {
+        color: $color;
+    }
+}
+
+
+.btn-outline-light {
+    color: $gray-700;
+    background-image: none;
+    background-color: transparent;
+    border-color: $gray-300;
+}
+
+.btn-check:checked + .btn,
+.btn.active,
+.btn.show,
+.btn:first-child:active,
+:not(.btn-check) + .btn:active {
+    border-color: transparent;
+}
+
+.modal-header {
+    .btn-close {
+        font-size: 20px;
+    }
+}
+
+html[data-bs-theme="dark"] {
+    .btn-light {
+        box-shadow: none;
+        --#{$prefix}btn-color:             #{$dark-mode-dark};
+        --#{$prefix}btn-bg:                #{$light-mode-dark};
+        --#{$prefix}btn-border-color:    #2b2d3b;
+        --#{$prefix}btn-hover-color:       #{$dark-mode-dark};
+        --#{$prefix}btn-hover-bg:        #343635;
+        --#{$prefix}btn-hover-border-color: #313341;
+        --#{$prefix}btn-focus-shadow-rgb: 75, 77, 88;
+        --#{$prefix}btn-active-color: #{$dark-mode-dark};
+        --#{$prefix}btn-active-bg: #343635;
+        --#{$prefix}btn-active-border-color: #313341;
+        --#{$prefix}btn-active-shadow: none;
+        --#{$prefix}btn-disabled-color: #{$dark-mode-dark};
+        --#{$prefix}btn-disabled-bg: #2b2d3b;
+        --#{$prefix}btn-disabled-border-color: #2b2d3b;
+    }
+
+    .btn-dark {
+        --#{$prefix}btn-color:       #{$light-mode-dark};
+        --#{$prefix}btn-bg:         #{$dark-mode-dark};
+        --#{$prefix}btn-border-color: #f4f6f9;
+        --#{$prefix}btn-hover-color: #{$light-mode-dark};
+        --#{$prefix}btn-hover-bg: #e8eaed;
+        --#{$prefix}btn-hover-border-color: #dcdde0;
+        --#{$prefix}btn-focus-shadow-rgb: 207, 209, 212;
+        --#{$prefix}btn-active-color: #{$light-mode-dark};
+        --#{$prefix}btn-active-bg: #dcdde0;
+        --#{$prefix}btn-active-border-color: #cfd1d4;
+        --#{$prefix}btn-active-shadow: none;
+        --#{$prefix}btn-disabled-color: #{$light-mode-dark};
+        --#{$prefix}btn-disabled-bg: #f4f6f9;
+        --#{$prefix}btn-disabled-border-color: #f4f6f9;
+    }
+
+    .btn-outline-light {
+        color: $gray-400;
+        background-image: none;
+        background-color: transparent;
+        border-color: $gray-800;
+        &:active{
+            color: $gray-200;
+            background-image: none;
+            background-color: transparent;
+            border-color: $gray-700;
+        }
+    }
+}

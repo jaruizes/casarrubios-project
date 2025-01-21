@@ -1,0 +1,70 @@
+// 
+// progress.scss
+// 
+
+.progress{
+    background-color: var(--#{$prefix}border-color);
+  }
+  
+  /* Progressbar Vertical */
+  
+  .progress-vertical {
+    min-height: 250px;
+    height: 250px;
+    width: 8px;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 0;
+    margin-right: 20px;
+    box-shadow: none;
+    .progress-bar {
+        width: 100%;
+      }
+  }
+  
+  
+  .progress-vertical-bottom {
+    min-height: 250px;
+    height: 250px;
+    position: relative;
+    width: 8px;
+    display: inline-block;
+    margin-bottom: 0;
+    margin-right: 20px;
+    box-shadow: none;
+    .progress-bar {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+      }
+  }
+  
+  
+  .progress-vertical,
+  .progress-vertical-bottom{
+    &.progress-sm {
+        width: 5px !important;
+        .progress-bar {
+            font-size: 8px;
+            line-height: 5px;
+          }
+      }
+      &.progress-md {
+        width: 15px !important;
+        .progress-bar {
+            font-size: 10.8px;
+            line-height: 14.4px;
+          }
+      }
+      &.progress-lg {
+        width: 20px !important;
+        .progress-bar {
+            font-size: 12px;
+            line-height: 20px;
+          }
+      }
+  }
+  
+  .progress-icon-spin{
+    font-size: 36px;
+  }

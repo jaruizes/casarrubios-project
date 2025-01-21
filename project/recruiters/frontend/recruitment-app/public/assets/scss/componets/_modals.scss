@@ -1,0 +1,17 @@
+
+// Modal
+.modal-content {
+    border: none;
+}
+
+.modal-header {
+    background-color: $gray-900;
+    .modal-title {
+        color: $white;
+        font-size: 15px;
+    }
+    
+    .btn-close {
+        font-size: 20px;
+    }
+}

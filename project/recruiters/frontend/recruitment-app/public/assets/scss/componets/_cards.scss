@@ -1,0 +1,23 @@
+// Cards
+
+
+.card {
+  box-shadow: $card-box-shadow;
+  border: none;
+  margin-bottom: $grid-gutter-width;
+
+  .card-header {
+    border-bottom: none;
+    padding-top: var(--#{$prefix}card-spacer-x);
+
+    .card-title {
+      margin-bottom: 0;
+      font-size: 16px;
+      color: var(--#{$prefix}heading-color);
+    }
+  }
+}
+
+.card-h-100 {
+  height: calc(100% - $grid-gutter-width);
+}

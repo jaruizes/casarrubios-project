@@ -1,0 +1,12 @@
+
+// Breadcrumb
+
+.breadcrumb-item + {
+    .breadcrumb-item {
+        &:before {
+            content: "\f105";
+            font-family: "Line Awesome Free";
+            font-weight: 900;
+        }
+    }
+}

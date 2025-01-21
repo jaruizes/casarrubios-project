@@ -1,0 +1,146 @@
+//
+// Chat
+// 
+.chat-box-left {
+  float: left;
+  width: 340px;
+  height: 710px;
+  background-color: $card-bg;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  .chat-body-left{
+    height: 556px;
+  }
+}
+
+.chat-box-right{
+  width: auto;
+  background-color: var(--#{$prefix}body-bg);
+  display: block;
+  border-radius: 8px;
+  position: relative;
+  height: 710px;
+  margin-left: 361px;
+  margin-bottom: 20px;
+
+  .chat-body{
+    padding: 16px;    
+    height: 540px;
+    .chat-detail{
+      max-height: 610px;
+      .chat-box{
+        .user-chat{
+          p{
+           background-color: $card-bg;
+           box-shadow: $box-shadow-sm;
+           border-radius: 16px 16px 16px 0;
+           padding: 14px;
+           margin-bottom: 4px;
+           width: 75%;
+           max-width: max-content;
+          }
+        }
+        &.reverse{
+          display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+          .user-chat{
+            display: contents;
+            width: 100%;
+            p{
+              background-color: $primary;
+              color: $white;
+              border-radius: 16px 16px 0 16px;
+              text-align: end;
+            }
+          }
+        }
+        .chat-time{
+          font-size: 10px;
+        }
+      }      
+    }
+  }
+  .chat-footer {
+    background-color: $card-bg;
+    border-radius: 8px;
+    padding: 16px;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    .chat-features{
+      a{
+        color: $gray-400;
+        font-size: 22px;
+        margin-left: 12px;
+        &:hover{
+          color: $primary;
+        }
+      }
+    }
+    input{
+      &.form-control{
+        border: none;
+      }
+    }
+  }
+}  
+
+
+@media (min-width: 1024px) and (max-width: 1680px) {
+  .chat-box-left{
+    width: 310px;
+    float: left;
+  }
+  .chat-box-right {
+    width: auto;
+    margin-left: 330px;
+  }
+}
+ 
+@media (min-width: 767px) and (max-width: 1023.98px) {
+  .chat-box-left{
+    width: 100%;
+    float: none;
+  }
+  .chat-box-right {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .chat-box-left{
+    float: none;
+    width: 100%;
+  }
+  .chat-box-right {
+    margin: 0;
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 660px) {
+  .chat-box-left{
+    float: none;
+    width: 100%;
+  }
+  .chat-box-right {
+    margin: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 568px) {
+  .chat-box-left{
+    float: none;
+    width: 100%;
+  }
+  .chat-box-right {
+    margin: 0;
+    width: 100%;
+  }
+}

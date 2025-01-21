@@ -1,0 +1,143 @@
+//
+// Calendar
+// 
+
+.fc-event {
+  border-radius: 2px;
+  border: none;
+  cursor: move;
+  font-size: 13px;
+  margin: 5px;
+  padding: 7px 5px;
+  text-align: center;
+  background-color: rgba($primary, 0.18);
+  color: $primary;
+}
+
+.fc {
+  .fc-header-toolbar{
+    &.fc-toolbar {
+      .fc-toolbar-chunk{
+        h2{
+          font-size: 16px;
+          text-transform: uppercase;
+          color: $primary;
+        }
+      }
+    }
+  }
+  .fc-toolbar{
+    &.fc-header-toolbar{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: $card-spacer-y;
+    }
+  }
+
+  .fc-col-header-cell-cushion{
+    padding: 10px 0;
+    color: var(--#{$prefix}body-color);
+  }
+  .fc-button{
+    font-size: $font-size-base;
+  }
+  .fc-button-primary{
+    background: transparent;
+    border: 1px solid var(--#{$prefix}border-color);
+    color: $gray-600;
+    text-transform: capitalize;
+    text-shadow: none;
+    box-shadow: none;
+    &:hover{
+      background: $primary;
+      color: $white;
+      border-color: var(--#{$prefix}border-color);
+    }
+    &.active,
+    &:focus,
+    &:active{
+      text-shadow: none;
+      box-shadow: none;
+    }
+    &:disabled {
+      background: rgba($primary, 0.1);
+      color: $primary;
+      border-color: var(--#{$prefix}border-color);
+      opacity: 1;
+    }
+    &:not(:disabled):active, 
+    &:not(:disabled).fc-button-active{
+      background: $primary;
+      color: $white;
+      border-color: var(--#{$prefix}border-color);
+      &:focus{
+        box-shadow: none;
+      }
+    }
+  }
+  .fc-daygrid-day-number{
+    color: var(--#{$prefix}body-color);
+    font-weight: 500;
+  }
+
+  .fc-daygrid-day {
+    &.fc-day-today {
+      background-color: transparent;
+      padding: 4px;
+      border-radius: 24px;
+      .fc-daygrid-day-frame {
+        background-color: rgba($primary, 0.18);
+        border-radius: 8px;
+        .fc-daygrid-day-number {
+          font-size: 16px;
+          font-weight: 800;
+        }
+      }
+    }
+  }
+}
+
+.fc-license-message{
+  display: none;
+}
+
+.fc-theme-standard {
+  .fc-scrollgrid,
+  td, 
+  th{
+    border: 1px solid var(--#{$prefix}border-color);
+  }
+}
+
+.fc-day-other{
+  background-image: linear-gradient(-45deg, $card-bg 25%, transparent 25%, transparent 50%, $card-bg 50%, rgba($gray-700, 0.2) 75%, transparent 75%, transparent);
+  background-size: 10px 10px;
+}
+
+
+.fc-h-event {
+  .fc-event-main{
+    color: $primary;
+    font-weight: 500;
+  }
+}
+
+.fc-daygrid-dot-event {
+  .fc-event-title{
+    font-weight: 500;
+  }
+}
+.fc-direction-ltr,
+.fc-direction-rtl{
+  .fc-daygrid-event{
+    &.fc-event-start,
+    &.fc-event-end{
+      background-color: var(--#{$prefix}card-bg);
+      box-shadow: $box-shadow-sm;
+      color: $primary;
+      border-radius: 4px;
+    }
+  } 
+} 
+

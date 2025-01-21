@@ -1,0 +1,10 @@
+//
+// Print
+// 
+
+@media print {
+  .page-wrapper .page-content{
+    width: 100%;
+    margin-top: 0;
+  }
+}

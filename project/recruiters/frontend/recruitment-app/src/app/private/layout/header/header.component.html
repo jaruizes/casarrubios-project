@@ -1,0 +1,219 @@
+<div class="topbar">
+  <div class="container-xxl">
+    <nav
+      class="topbar-custom d-flex justify-content-between"
+      id="topbar-custom"
+    >
+      <ul
+        class="topbar-item list-unstyled d-inline-flex align-items-center mb-0"
+      >
+        <li>
+          <button
+            class="nav-link mobile-menu-btn nav-icon"
+            id="togglemenu"
+          >
+            <i class="iconoir-menu-scale"></i>
+          </button>
+        </li>
+        <li class="mx-3 welcome-text">
+          <h3 class="mb-0 fw-bold text-truncate">Recruiting App</h3>
+        </li>
+      </ul>
+      <ul
+        class="topbar-item list-unstyled d-inline-flex align-items-center mb-0"
+      >
+        <li class="hide-phone app-search">
+          <form role="search" action="#" method="get">
+            <input
+              type="search"
+              name="search"
+              class="form-control top-search mb-0"
+              placeholder="Search here..."
+            />
+            <button type="button"><i class="iconoir-search"></i></button>
+          </form>
+        </li>
+        <li class="dropdown" ngbDropdown>
+          <a
+            class="nav-link dropdown-toggle arrow-none nav-icon"
+            ngbDropdownToggle
+            data-bs-toggle="dropdown"
+            href="javascript:void(0);"
+            role="button"
+            aria-haspopup="false"
+            aria-expanded="false"
+          >
+            <img
+              src="assets/images/flags/us_flag.jpg"
+              alt=""
+              class="thumb-sm rounded-circle"
+            />
+          </a>
+          <div class="dropdown-menu" ngbDropdownMenu>
+            <a class="dropdown-item" href="javascript:void(0);"
+            ><img
+              src="assets/images/flags/us_flag.jpg"
+              alt=""
+              height="15"
+              class="me-2"
+            />English</a
+            >
+            <a class="dropdown-item" href="javascript:void(0);"
+            ><img
+              src="assets/images/flags/spain_flag.jpg"
+              alt=""
+              height="15"
+              class="me-2"
+            />Spanish</a
+            >
+            <a class="dropdown-item" href="javascript:void(0);"
+            ><img
+              src="assets/images/flags/germany_flag.jpg"
+              alt=""
+              height="15"
+              class="me-2"
+            />German</a
+            >
+            <a class="dropdown-item" href="javascript:void(0);"
+            ><img
+              src="assets/images/flags/french_flag.jpg"
+              alt=""
+              height="15"
+              class="me-2"
+            />French</a
+            >
+          </div>
+        </li>
+        <!--end topbar-language-->
+
+        <li class="topbar-item">
+          <a
+            class="nav-link nav-icon"
+            href="javascript:void(0);"
+            id="light-dark-mode"
+          >
+            <i class="icofont-sun dark-mode"></i>
+            <i class="icofont-moon light-mode"></i>
+          </a>
+        </li>
+
+        <li class="dropdown topbar-item" ngbDropdown>
+          <a
+            class="nav-link dropdown-toggle arrow-none nav-icon"
+            ngbDropdownToggle
+            data-bs-toggle="dropdown"
+            href="javascript:void(0);"
+            role="button"
+            aria-haspopup="false"
+            aria-expanded="false"
+          >
+            <i class="icofont-bell-alt"></i>
+            <span class="alert-badge"></span>
+          </a>
+          <div
+            class="dropdown-menu stop dropdown-menu-end dropdown-lg py-0"
+            ngbDropdownMenu
+          >
+            <h5
+              class="dropdown-item-text m-0 py-3 d-flex justify-content-between align-items-center"
+            >
+              Notifications
+              <a
+                href="javascript:void(0);"
+                class="badge text-body-tertiary badge-pill"
+              >
+                <i class="iconoir-plus-circle fs-4"></i>
+              </a>
+            </h5>
+            <ul
+              ngbNav
+              #nav="ngbNav"
+              class="nav nav-tabs nav-tabs-custom nav-success nav-justified mb-1"
+              role="tablist"
+            >
+
+            </ul>
+
+            <!-- All-->
+            <a
+              routerLink="/pages/notifications"
+              class="dropdown-item text-center text-dark fs-13 py-2"
+            >
+              View All <i class="fi-arrow-right"></i>
+            </a>
+          </div>
+        </li>
+
+        <li class="dropdown topbar-item" ngbDropdown placement="bottom-end">
+          <a
+            class="nav-link dropdown-toggle arrow-none nav-icon"
+            ngbDropdownToggle
+            data-bs-toggle="dropdown"
+            href="javascript:void(0);"
+            role="button"
+            aria-haspopup="false"
+            aria-expanded="false"
+          >
+            <img
+              src="assets/images/users/avatar-1.jpg"
+              alt=""
+              class="thumb-lg rounded-circle"
+            />
+          </a>
+          <div class="dropdown-menu dropdown-menu-end py-0" ngbDropdownMenu>
+            <div
+              class="d-flex align-items-center dropdown-item py-2 bg-secondary-subtle"
+            >
+              <div class="flex-shrink-0">
+                <img
+                  src="assets/images/users/avatar-1.jpg"
+                  alt=""
+                  class="thumb-md rounded-circle"
+                />
+              </div>
+              <div class="flex-grow-1 ms-2 text-truncate align-self-center">
+                <h6 class="my-0 fw-medium text-dark fs-13">William Martin</h6>
+                <small class="text-muted mb-0">Front End Developer</small>
+              </div>
+              <!--end media-body-->
+            </div>
+            <div class="dropdown-divider mt-0"></div>
+            <small class="text-muted px-2 pb-1 d-block">Account</small>
+            <a class="dropdown-item" routerLink="/pages/profile"
+            ><i class="las la-user fs-18 me-1 align-text-bottom"></i>
+              Profile</a
+            >
+            <a class="dropdown-item" routerLink="/apps/ecommerce/orders"
+            ><i class="las la-wallet fs-18 me-1 align-text-bottom"></i>
+              Earning</a
+            >
+            <small class="text-muted px-2 py-1 d-block">Settings</small>
+            <a class="dropdown-item" routerLink="/pages/profile"
+            ><i class="las la-cog fs-18 me-1 align-text-bottom"></i>Account
+              Settings</a
+            >
+            <a
+              class="dropdown-item"
+              routerLink="/auth/lock-screen"
+              target="_blank"
+            ><i class="las la-lock fs-18 me-1 align-text-bottom"></i> Lock</a
+            >
+            <a class="dropdown-item" routerLink="/pages/faqs"
+            ><i
+              class="las la-question-circle fs-18 me-1 align-text-bottom"
+            ></i>
+              Help Center</a
+            >
+            <div class="dropdown-divider mb-0"></div>
+            <a class="dropdown-item text-danger" routerLink="/auth/log-in"
+            ><i class="las la-power-off fs-18 me-1 align-text-bottom"></i>
+              Logout</a
+            >
+          </div>
+        </li>
+      </ul>
+      <!--end topbar-nav-->
+    </nav>
+    <!-- end navbar-->
+  </div>
+</div>

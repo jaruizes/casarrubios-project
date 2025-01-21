@@ -1,0 +1,73 @@
+<div class="card">
+  <div class="card-header mb-2">
+    <div class="row align-items-center">
+      <div class="col">
+        <h2 class="card-title">Positions</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body pt-0 ">
+    <div class="row align-items-center mb-2">
+      <div class="col-8">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          [(ngModel)]="searchTerm"/>
+      </div>
+      <div class="col-4">
+        <div class="btn-group float-end ms-2">
+          <button type="button" class="btn rounded-pill btn-secondary" (click)="newPosition()">
+            New Position
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row align-items-center mb-2">
+      <div class="tab-pane" id="documents" role="tabpanel">
+        <div class="table-responsive browser_users">
+          <table class="table mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="border-top-0">Title</th>
+                <th class="border-top-0 text-end">Description</th>
+                <th class="border-top-0 text-end">Creation Date</th>
+                <th class="border-top-0 text-end">Status</th>
+                <th class="border-top-0 text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of filteredResults">
+                <td class="text-end">{{ item.title }}</td>
+                <td class="text-end">{{ item.description }}</td>
+                <td class="text-end">{{ item.creationDate }}</td>
+                <td class="text-end">{{ item.status }}</td>
+                <td class="text-end">
+                  <a href="javascript:void(0);"
+                  ><i
+                    class="las la-download text-secondary fs-18 me-0.5"
+                  ></i
+                  ></a>
+                  <a href="javascript:void(0);"
+                  ><i class="las la-pen text-secondary fs-18 me-0.5"></i
+                  ></a>
+                  <a href="javascript:void(0);"
+                  ><i
+                    class="las la-trash-alt text-secondary fs-18"
+                  ></i
+                  ></a>
+                </td>
+              </tr>
+              <tr *ngIf="filteredResults.length === 0">
+                <td colspan="4" class="text-center">No results found</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,32 @@
+//
+// Tree
+// 
+
+ul.listree-submenu-items {
+  border-left: 1px dashed var(--#{$prefix}border-color);
+  li{
+    a{
+      margin-bottom: 12px;
+      display: block;
+    }
+  }
+}
+
+.folder-icon div.listree-submenu-heading.collapsed:before {
+  content: "\f07b";
+  font-family: "Font Awesome 5 Free";
+}
+
+.folder-icon div.listree-submenu-heading.expanded:before {
+  content: "\f07c";
+  font-family: "Font Awesome 5 Free";
+}
+[dir="rtl"] {
+  ul.listree-submenu-items {
+    border-right: none;
+  }
+}
+
+.listree-submenu-heading{
+  padding-bottom: 12px;
+}
