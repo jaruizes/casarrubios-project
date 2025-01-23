@@ -131,7 +131,7 @@ In this section I'll expose several alternatives to implement each logical compo
 
 
 
-
+(WIP) I'll add more alternatives in the future 
 
 
 
@@ -146,4 +146,11 @@ This section is dedicated to explain different concepts, patterns, technology,..
 - [Mutation Testing](doc/mutation-tests.md)
 - [Hibernate - Eager/Lazy loading](doc/hibernate-lazy-eager.md)
 - [Spring Boot - Exceptions Handler](doc/spring-exceptions-handler.md)
+- [Changes in "Modern Angular" (WIP)](doc/angular-changes.md)
+- [Typespec (TODO)](doc/typespec.md)
+- [Testing in Quarkus (TODO)](doc/testing-quarkus.md)
+- K3D/K3S (TODO)
+- [CDC using Debezium (TODO)](https://github.com/jaruizes/debezium)
+- Spring AI (TODO)
+- Quarkus and Langchain (TODO)
 

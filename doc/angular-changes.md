@@ -1,4 +1,4 @@
-# Angular changes
+# Changes in "Modern Angular" (WIP)
 
 I've developed several applications using Angular since its early versions. I started working with Angular using version 1.2 and I suffered the revolution of Angular v2. Over time, I continued using Angular, progressing to version 14.
 
