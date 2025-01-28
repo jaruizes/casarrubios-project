@@ -1,87 +1,60 @@
-import {Component, PipeTransform} from '@angular/core';
-import {NgbHighlight} from "@ng-bootstrap/ng-bootstrap";
+import {Component, OnInit, PipeTransform} from '@angular/core';
+import {NgbHighlight, NgbPagination} from "@ng-bootstrap/ng-bootstrap";
 import {AsyncPipe, CommonModule, DecimalPipe, NgIf} from "@angular/common";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
-
-
-interface Country {
-  name: string;
-  flag: string;
-  area: number;
-  population: number;
-}
-
-const COUNTRIES: Country[] = [
-  {
-    name: 'Russia',
-    flag: 'f/f3/Flag_of_Russia.svg',
-    area: 17075200,
-    population: 146989754,
-  },
-  {
-    name: 'Canada',
-    flag: 'c/cf/Flag_of_Canada.svg',
-    area: 9976140,
-    population: 36624199,
-  },
-  {
-    name: 'United States',
-    flag: 'a/a4/Flag_of_the_United_States.svg',
-    area: 9629091,
-    population: 324459463,
-  },
-  {
-    name: 'China',
-    flag: 'f/fa/Flag_of_the_People%27s_Republic_of_China.svg',
-    area: 9596960,
-    population: 1409517397,
-  },
-];
-
-function search(text: string, pipe: PipeTransform): Country[] {
-  return COUNTRIES.filter((country) => {
-    const term = text.toLowerCase();
-    return (
-      country.name.toLowerCase().includes(term) ||
-      pipe.transform(country.area).includes(term) ||
-      pipe.transform(country.population).includes(term)
-    );
-  });
-}
+import {PositionsService} from "../../services/positions.service";
+import {Position} from "../../model/position";
+import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
   providers: [DecimalPipe],
-  imports: [DecimalPipe, AsyncPipe, FormsModule, ReactiveFormsModule, NgbHighlight, NgIf, CommonModule],
+  imports: [DecimalPipe, AsyncPipe, FormsModule, ReactiveFormsModule, NgbHighlight, NgIf, CommonModule, NgbPagination, PositionStatusPipePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   searchTerm: string = '';
   results = [
-    { title: 'Task 1', description: 'Description for Task 1', creationDate: '2025-01-01', status: 'Completed' },
-    { title: 'Task 2', description: 'Description for Task 2', creationDate: '2025-01-02', status: 'Pending' },
-    { title: 'Task 3', description: 'Description for Task 3', creationDate: '2025-01-03', status: 'In Progress' }
+    { id: 1, title: 'Software Architect', creationDate: '2025-01-01', status: 'Published', tags: [{name: 'java'}, {name: 'angular'}], applications: 3 },
+    { id: 2, title: 'Senior Developer', creationDate: '2025-01-02', status: 'Draft', tags: [{name: 'java'}, {name: 'angular'}], applications: 15 },
+    { id: 3, title: 'Functional Analyst', creationDate: '2025-01-03', status: 'Published', tags: [{name: 'java'}, {name: 'angular'}], applications: 2 }
   ];
+  total: number = 10;
+  pageSize: number = 10;
+  page: number = 1;
 
+
+  positions: Position[] = [];
   private router: Router;
+  private positionService: PositionsService;
 
-  constructor(router: Router) {
+  constructor(router: Router, positionService: PositionsService) {
     this.router = router;
+    this.positionService = positionService;
+  }
+
+  ngOnInit(): void {
+    this.positionService.getAllPositions().subscribe((positions) => {
+      this.positions = positions;
+    });
   }
 
   get filteredResults() {
-    return this.results.filter(item =>
-      item.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(this.searchTerm.toLowerCase())
+    return this.positions.filter(item =>
+      item.title.toLowerCase().includes(this.searchTerm.toLowerCase())
     );
   }
 
   newPosition() {
     this.router.navigate(['private/new-position', { }]);
+  }
+
+  goToPositionDetail(id: number) {
+    this.router.navigate(['private/position-detail', { id: id }]);
   }
 }

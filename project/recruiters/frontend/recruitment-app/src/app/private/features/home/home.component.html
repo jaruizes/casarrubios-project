@@ -28,23 +28,33 @@
     <div class="row align-items-center mb-2">
       <div class="tab-pane" id="documents" role="tabpanel">
         <div class="table-responsive browser_users">
-          <table class="table mb-0">
+          <table class="table table-hover mb-0">
             <thead class="table-light">
               <tr>
+                <th class="border-top-0" style="width: 5%">Id</th>
                 <th class="border-top-0">Title</th>
-                <th class="border-top-0 text-end">Description</th>
-                <th class="border-top-0 text-end">Creation Date</th>
-                <th class="border-top-0 text-end">Status</th>
-                <th class="border-top-0 text-end">Action</th>
+                <th class="border-top-0 ">Creation Date</th>
+                <th class="border-top-0 text-center">Status</th>
+                <th class="border-top-0 text-center">Tags</th>
+                <th class="border-top-0" style="width: 10%">Applications</th>
+                <th class="border-top-0 ">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let item of filteredResults">
-                <td class="text-end">{{ item.title }}</td>
-                <td class="text-end">{{ item.description }}</td>
-                <td class="text-end">{{ item.creationDate }}</td>
-                <td class="text-end">{{ item.status }}</td>
-                <td class="text-end">
+              <tr *ngFor="let item of filteredResults" style="cursor: pointer" (click)="goToPositionDetail(item.id)">
+                <td class="">{{ item.id }}</td>
+                <td class="">{{ item.title }}</td>
+                <td class="">{{ item.creationDate }}</td>
+                <td class="text-center">
+                  <span class="badge rounded text-primary bg-transparent border border-primary ms-1 p-1">{{ item.status | positionStatusPipe }}</span>
+                </td>
+                <td class="text-center">
+                  @for (tag of item.tags; track tag.name) {
+                    <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
+                  }
+                </td>
+                <td class="text-center">{{ item.applications }}</td>
+                <td class="">
                   <a href="javascript:void(0);"
                   ><i
                     class="las la-download text-secondary fs-18 me-0.5"
@@ -65,6 +75,25 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="d-flex justify-content-between p-2">
+          <ngb-pagination
+            [collectionSize]="total"
+            [(page)]="page"
+            [pageSize]="pageSize"
+          >
+          </ngb-pagination>
+
+          <select
+            class="form-select"
+            style="width: auto"
+            name="pageSize"
+            [(ngModel)]="pageSize"
+          >
+            <option [ngValue]="2">2 items per page</option>
+            <option [ngValue]="4">4 items per page</option>
+            <option [ngValue]="6">6 items per page</option>
+          </select>
         </div>
       </div>
     </div>
