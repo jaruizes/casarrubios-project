@@ -13,8 +13,8 @@ export class MockInterceptor implements HttpInterceptor {
       tags: [{ name: 'Angular' }, { name: 'TypeScript' }],
       status: 1,
       requirements: [
-        { key: 'Experience', value: '2 years', description: 'Frontend experience' },
-        { key: 'Skill', value: 'Angular', description: 'Proficiency in Angular framework' },
+        { key: 'Experience', value: '2 years', description: 'Frontend experience', isMandatory: true },
+        { key: 'Skill', value: 'Angular', description: 'Proficiency in Angular framework', isMandatory: false },
       ],
       tasks: [{ description: 'Develop reusable components' }],
       benefits: [{ description: 'Flexible hours' }, { description: 'Remote work' }],
@@ -28,8 +28,8 @@ export class MockInterceptor implements HttpInterceptor {
       tags: [{ name: 'Node.js' }, { name: 'Express' }],
       status: 2,
       requirements: [
-        { key: 'Experience', value: '3 years', description: 'Backend experience' },
-        { key: 'Skill', value: 'Node.js', description: 'Proficiency in Node.js' },
+        { key: 'Experience', value: '3 years', description: 'Backend experience', isMandatory: true },
+        { key: 'Skill', value: 'Node.js', description: 'Proficiency in Node.js', isMandatory: true },
       ],
       tasks: [{ description: 'Design RESTful APIs' }],
       benefits: [{ description: 'Health insurance' }, { description: 'Stock options' }],
@@ -43,8 +43,8 @@ export class MockInterceptor implements HttpInterceptor {
       tags: [{ name: 'Python' }, { name: 'Machine Learning' }],
       status: 1,
       requirements: [
-        { key: 'Experience', value: '2 years', description: 'Data analysis experience' },
-        { key: 'Skill', value: 'Python', description: 'Proficiency in Python' },
+        { key: 'Experience', value: '2 years', description: 'Data analysis experience', isMandatory: true },
+        { key: 'Skill', value: 'Python', description: 'Proficiency in Python', isMandatory: true },
       ],
       tasks: [{ description: 'Build predictive models' }],
       benefits: [{ description: 'Flexible hours' }, { description: 'Training budget' }],
@@ -58,8 +58,8 @@ export class MockInterceptor implements HttpInterceptor {
       tags: [{ name: 'AWS' }, { name: 'Terraform' }],
       status: 1,
       requirements: [
-        { key: 'Experience', value: '3 years', description: 'DevOps experience' },
-        { key: 'Skill', value: 'Terraform', description: 'Experience with Terraform and AWS' },
+        { key: 'Experience', value: '3 years', description: 'DevOps experience', isMandatory: true },
+        { key: 'Skill', value: 'Terraform', description: 'Experience with Terraform and AWS', isMandatory: true },
       ],
       tasks: [{ description: 'Automate CI/CD pipelines' }],
       benefits: [{ description: 'Stock options' }, { description: 'Remote work' }],
@@ -73,8 +73,8 @@ export class MockInterceptor implements HttpInterceptor {
       tags: [{ name: 'Leadership' }, { name: 'Product Management' }],
       status: 2,
       requirements: [
-        { key: 'Experience', value: '5 years', description: 'Product management experience' },
-        { key: 'Skill', value: 'Leadership', description: 'Strong leadership skills' },
+        { key: 'Experience', value: '5 years', description: 'Product management experience', isMandatory: true },
+        { key: 'Skill', value: 'Leadership', description: 'Strong leadership skills', isMandatory: true },
       ],
       tasks: [{ description: 'Define product roadmap' }],
       benefits: [{ description: 'Company car' }, { description: 'Health insurance' }],
@@ -85,6 +85,15 @@ export class MockInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.url.includes('https://api.example.com/positions')) {
+      if (req.method === 'GET' && req.url.match(/\/\d+$/)) {
+        const id = parseInt(req.url.split('/').pop() || '0', 10);
+        const position = this.mockData.find((pos) => pos.id === id);
+        if (position) {
+          return of(new HttpResponse({ status: 200, body: position }));
+        }
+        return of(new HttpResponse({ status: 404 }));
+      }
+
       if (req.method === 'GET') {
         if (req.url.includes('?status=')) {
           const status = parseInt(req.url.split('status=')[1], 10);
@@ -110,14 +119,7 @@ export class MockInterceptor implements HttpInterceptor {
         return of(new HttpResponse({ status: 404 }));
       }
 
-      if (req.method === 'GET' && req.url.match(/\/\d+$/)) {
-        const id = parseInt(req.url.split('/').pop() || '0', 10);
-        const position = this.mockData.find((pos) => pos.id === id);
-        if (position) {
-          return of(new HttpResponse({ status: 200, body: position }));
-        }
-        return of(new HttpResponse({ status: 404 }));
-      }
+
     }
     return next.handle(req);
   }

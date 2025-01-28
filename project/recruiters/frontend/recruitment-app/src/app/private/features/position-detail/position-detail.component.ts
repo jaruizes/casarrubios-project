@@ -1,80 +1,105 @@
 import {Component, OnInit} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
+import {PositionsService} from "../../services/positions.service";
+import {Benefit, Position, Requirement, Task} from "../../model/position";
+import {FormsModule} from "@angular/forms";
+import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
 
 @Component({
   selector: 'app-position-detail',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf, FormsModule, PositionStatusPipePipe
   ],
   templateUrl: './position-detail.component.html',
   styleUrl: './position-detail.component.scss'
 })
 export class PositionDetailComponent implements OnInit {
   positionId!: number;
+  position: Position;
+  isEditing: boolean;
 
-  constructor(private route: ActivatedRoute) {}
+  private positionService: PositionsService;
 
-  ngOnInit(): void {
-    // Obtener el parámetro `id` desde la ruta
-    this.positionId = Number(this.route.snapshot.paramMap.get('id'));
+  constructor(private route: ActivatedRoute, positionService: PositionsService) {
+    this.positionService = positionService;
+    this.isEditing = false;
+    this.position = {
+      id: -1,
+      title: '',
+      description: '',
+      status: 0,
+      tags: [],
+      applications: 0,
+      creationDate: '',
+      requirements: [
+        { key: '', value: '', description: '', isMandatory: false }
+      ],
+      tasks: [
+        { description: '' }
+      ],
+      benefits: [
+        { description: '' }
+      ]
+    };
   }
 
-  reqs = [
-    {
-      key: '',
-      value: '',
-      description: '',
-      mandatory: false
+  ngOnInit(): void {
+    this.positionId = Number(this.route.snapshot.paramMap.get('id'));
+    if (this.positionId > 0) {
+      this.positionService.getPositionById(this.positionId).subscribe((position) => {
+        this.position = position;
+        this.isEditing = true;
+      });
     }
-  ];
-
-  tasks = [
-    {
-      description: ''
-    }
-  ];
-
-  benefits = [
-    {
-      description: ''
-    }
-  ];
+  }
 
   addRequirement() {
-    const obj = {
+    const newRequirement: Requirement = {
       key: '',
       value: '',
       description: '',
-      mandatory: false
+      isMandatory: false
     }
-    this.reqs.push(obj)
+    this.position.requirements.push(newRequirement)
   }
 
   deleteRequirement(x: number){
-   this.reqs.splice(x, 1 );
+    this.position.requirements.splice(x, 1 );
   }
 
   addTask() {
-    const obj = {
+    const newTask: Task = {
       description: ''
     }
-    this.tasks.push(obj)
+    this.position.tasks.push(newTask)
   }
 
   deleteTask(x: number){
-    this.tasks.splice(x, 1 );
+    this.position.tasks.splice(x, 1 );
   }
 
   addBenefit() {
-    const obj = {
+    const newBenefit: Benefit = {
       description: ''
     }
-    this.benefits.push(obj)
+    this.position.benefits.push(newBenefit)
   }
 
   deleteBenefit(x: number){
-    this.benefits.splice(x, 1 );
+    this.position.benefits.splice(x, 1 );
+  }
+
+  saveChanges() {
+    if (this.isEditing) {
+      this.positionService.updatePosition(this.positionId, this.position).subscribe((position) => {
+        this.position = position;
+      });
+    } else {
+      this.positionService.createPosition(this.position).subscribe((position) => {
+        this.position = position;
+      });
+    }
   }
 }

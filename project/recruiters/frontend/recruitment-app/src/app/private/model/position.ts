@@ -1,18 +1,19 @@
-interface Tag {
+export interface Tag {
   name: string;
 }
 
-interface Requirement {
+export interface Requirement {
   key: string;
   value: string;
   description: string;
+  isMandatory: boolean;
 }
 
-interface Task {
+export interface Task {
   description: string;
 }
 
-interface Benefit {
+export interface Benefit {
   description: string;
 }
 
