@@ -6,7 +6,7 @@ import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status
 import {Position} from "../../model/position";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
-import {Candidate} from "../../model/candidate";
+import {Candidate, PositionApplied} from "../../model/candidate";
 import {CandidatesService} from "../../services/candidates.service";
 
 @Component({
@@ -30,7 +30,7 @@ export class CandidatesComponent implements OnInit {
   pageSize: number = 10;
   page: number = 1;
   candidates: Candidate[] = [];
-  positionId!: number;
+  position: Position;
 
   private router: Router;
   private candidatesService: CandidatesService;
@@ -38,11 +38,14 @@ export class CandidatesComponent implements OnInit {
   constructor(private route: ActivatedRoute, router: Router, candidatesService: CandidatesService) {
     this.router = router;
     this.candidatesService = candidatesService;
+    this.position = {} as Position;
   }
 
   ngOnInit(): void {
-    this.positionId = Number(this.route.snapshot.paramMap.get('id'));
-    this.candidatesService.getCandidatesByPosition(this.positionId).subscribe((candidates) => {
+    console.log(this.router.getCurrentNavigation()?.extras.state);
+
+    this.position = history.state.position;
+    this.candidatesService.getCandidatesByPosition(this.position.id).subscribe((candidates) => {
       this.candidates = candidates;
     });
   }
@@ -54,4 +57,18 @@ export class CandidatesComponent implements OnInit {
       item.tags.filter(tag => tag.name.toLowerCase().includes(searchTerm)).length > 0
     );
   }
+
+  getMatchingPercentage(positionsApplied: PositionApplied[]): number {
+    return positionsApplied.filter((position) => position.id === this.position.id)[0].matchingPercentage;
+  }
+
+  downloadCV(applicationId: number, cv: string) {
+    const link = document.createElement('a');
+    link.href = cv;
+    link.download = applicationId + '.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
 }

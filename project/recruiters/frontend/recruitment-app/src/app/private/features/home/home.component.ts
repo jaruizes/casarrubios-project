@@ -65,8 +65,9 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['private/position-view', { id: id }]);
   }
 
-  goToCandidates(id: number) {
-    this.router.navigate(['private/candidates-list', { id: id }]);
+  goToCandidates(position: Position) {
+    console.log(position);
+    this.router.navigateByUrl('private/candidates-list', { state: { position } });
   }
 
   confirmDeletePosition(id: number) {

@@ -1,8 +1,34 @@
 <div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+        <div class="d-flex align-items-center flex-row flex-wrap">
+          <div class="">
+            <h5 class="fw-semibold fs-22 mb-1">{{ position.title }}</h5>
+            <p class="mb-0 text-muted fw-medium">Internal Id: {{position.id}}</p>
+            <p class="mb-0 text-muted fw-medium">Applications received: {{position.applications}}</p>
+            <p class="mb-0 text-muted fw-medium">Created at: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
+        <div class="text-end flex-row flex-wrap">
+          <div class="pb-2">
+            @for (tag of position.tags; track tag.name) {
+              <span class="badge bg-primary me-0.5 fs-14">{{ tag.name }}</span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
   <div class="card-header mb-2">
     <div class="row align-items-center">
       <div class="col">
-        <h2 class="card-title">Candidates</h2>
+        <h2 class="fw-semibold  fs-20">Candidates list</h2>
       </div>
     </div>
   </div>
@@ -28,6 +54,7 @@
               <th class="border-top-0">Name</th>
               <th class="border-top-0 ">Application Date</th>
               <th class="border-top-0 text-center">Tags</th>
+              <th class="border-top-0 text-center">Matching (%)</th>
               <th class="border-top-0 ">Action</th>
             </tr>
             </thead>
@@ -41,9 +68,10 @@
                   <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
                 }
               </td>
+              <td class="text-center">{{ getMatchingPercentage(candidate.positionsApplied)}}</td>
               <td class="">
-                <button class="btn p-0 me-1" (click)="$event.stopPropagation()">
-                  <i class="far fa-eye text-secondary fs-20"></i>
+                <button class="btn p-0 me-1" (click)="downloadCV(candidate.id, candidate.cv); $event.stopPropagation()">
+                  <i class="las la-download text-secondary fs-20"></i>
                 </button>
               </td>
             </tr>
