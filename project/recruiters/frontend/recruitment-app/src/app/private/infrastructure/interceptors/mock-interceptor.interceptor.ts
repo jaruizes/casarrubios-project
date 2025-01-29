@@ -19,7 +19,7 @@ export class MockInterceptor implements HttpInterceptor {
       tasks: [{ description: 'Develop reusable components' }],
       benefits: [{ description: 'Flexible hours' }, { description: 'Remote work' }],
       applications: 10,
-      creationDate: '01-01-2023',
+      creationDate: '2025-01-22T10:23:08.350Z',
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ export class MockInterceptor implements HttpInterceptor {
       tasks: [{ description: 'Design RESTful APIs' }],
       benefits: [{ description: 'Health insurance' }, { description: 'Stock options' }],
       applications: 5,
-      creationDate: '15-02-2023',
+      creationDate: '2025-01-24T10:23:08.350Z',
     },
     {
       id: 3,
@@ -49,7 +49,7 @@ export class MockInterceptor implements HttpInterceptor {
       tasks: [{ description: 'Build predictive models' }],
       benefits: [{ description: 'Flexible hours' }, { description: 'Training budget' }],
       applications: 12,
-      creationDate: '10-03-2023',
+      creationDate: '2025-01-26T10:23:08.350Z',
     },
     {
       id: 4,
@@ -64,7 +64,7 @@ export class MockInterceptor implements HttpInterceptor {
       tasks: [{ description: 'Automate CI/CD pipelines' }],
       benefits: [{ description: 'Stock options' }, { description: 'Remote work' }],
       applications: 8,
-      creationDate: '20-04-2023',
+      creationDate: '2025-01-27T10:23:08.350Z',
     },
     {
       id: 5,
@@ -79,7 +79,7 @@ export class MockInterceptor implements HttpInterceptor {
       tasks: [{ description: 'Define product roadmap' }],
       benefits: [{ description: 'Company car' }, { description: 'Health insurance' }],
       applications: 15,
-      creationDate: '05-05-2023',
+      creationDate: '2025-01-29T10:23:08.350Z',
     }
   ];
 
@@ -105,6 +105,9 @@ export class MockInterceptor implements HttpInterceptor {
 
       if (req.method === 'POST') {
         const newPosition = { ...req.body, id: this.mockData.length + 1 };
+        newPosition.applications = 0;
+        newPosition.creationDate = new Date().toISOString();
+
         this.mockData.push(newPosition);
         return of(new HttpResponse({ status: 201, body: newPosition }));
       }

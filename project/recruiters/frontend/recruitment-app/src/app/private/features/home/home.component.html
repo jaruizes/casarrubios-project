@@ -44,7 +44,7 @@
               <tr *ngFor="let item of filteredResults" style="cursor: pointer" (click)="goToPositionDetail(item.id)">
                 <td class="">{{ item.id }}</td>
                 <td class="">{{ item.title }}</td>
-                <td class="">{{ item.creationDate }}</td>
+                <td class="">{{ item.creationDate | date: 'dd-MM-yyyy'}}</td>
                 <td class="text-center">
                   <span class="badge rounded text-primary bg-transparent border border-primary ms-1 p-1">{{ item.status | positionStatusPipe }}</span>
                 </td>
@@ -55,19 +55,13 @@
                 </td>
                 <td class="text-center">{{ item.applications }}</td>
                 <td class="">
-                  <a href="javascript:void(0);"
-                  ><i
-                    class="las la-download text-secondary fs-18 me-0.5"
-                  ></i
-                  ></a>
-                  <a href="javascript:void(0);"
-                  ><i class="las la-pen text-secondary fs-18 me-0.5"></i
-                  ></a>
-                  <a href="javascript:void(0);"
-                  ><i
-                    class="las la-trash-alt text-secondary fs-18"
-                  ></i
-                  ></a>
+                  <button class="btn p-0 me-1" (click)="goToPositionView(item.id)">
+                    <i class="far fa-eye text-secondary fs-20"></i>
+                  </button>
+
+                  <button class="btn p-0" (click)="deletePosition(item.id)">
+                    <i class="las la-trash-alt fs-20 text-danger"></i>
+                  </button>
                 </td>
               </tr>
               <tr *ngIf="filteredResults.length === 0">

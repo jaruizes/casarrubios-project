@@ -19,11 +19,6 @@ import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status
 })
 export class HomeComponent implements OnInit {
   searchTerm: string = '';
-  results = [
-    { id: 1, title: 'Software Architect', creationDate: '2025-01-01', status: 'Published', tags: [{name: 'java'}, {name: 'angular'}], applications: 3 },
-    { id: 2, title: 'Senior Developer', creationDate: '2025-01-02', status: 'Draft', tags: [{name: 'java'}, {name: 'angular'}], applications: 15 },
-    { id: 3, title: 'Functional Analyst', creationDate: '2025-01-03', status: 'Published', tags: [{name: 'java'}, {name: 'angular'}], applications: 2 }
-  ];
   total: number = 10;
   pageSize: number = 10;
   page: number = 1;
@@ -45,8 +40,10 @@ export class HomeComponent implements OnInit {
   }
 
   get filteredResults() {
+    let searchTerm = this.searchTerm.toLowerCase();
     return this.positions.filter(item =>
-      item.title.toLowerCase().includes(this.searchTerm.toLowerCase())
+      item.title.toLowerCase().includes(searchTerm) ||
+      item.tags.filter(tag => tag.name.toLowerCase().includes(searchTerm)).length > 0
     );
   }
 
@@ -56,5 +53,13 @@ export class HomeComponent implements OnInit {
 
   goToPositionDetail(id: number) {
     this.router.navigate(['private/position-detail', { id: id }]);
+  }
+
+  goToPositionView(id: number) {
+    this.router.navigate(['private/position-view', { id: id }]);
+  }
+
+  deletePosition(id: number) {
+    this.positions.splice(this.positions.findIndex(p => p.id === id), 1);
   }
 }

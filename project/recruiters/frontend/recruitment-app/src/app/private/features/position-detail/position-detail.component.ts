@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {DatePipe, NgForOf} from "@angular/common";
 import {ActivatedRoute} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
 import {Benefit, Position, Requirement, Task} from "../../model/position";
@@ -10,7 +10,7 @@ import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status
   selector: 'app-position-detail',
   standalone: true,
   imports: [
-    NgForOf, FormsModule, PositionStatusPipePipe
+    NgForOf, FormsModule, PositionStatusPipePipe, DatePipe
   ],
   templateUrl: './position-detail.component.html',
   styleUrl: './position-detail.component.scss'
@@ -19,6 +19,8 @@ export class PositionDetailComponent implements OnInit {
   positionId!: number;
   position: Position;
   isEditing: boolean;
+  tags: string[] = [];
+  tagInputValue: string = '';
 
   private positionService: PositionsService;
 
@@ -29,7 +31,7 @@ export class PositionDetailComponent implements OnInit {
       id: -1,
       title: '',
       description: '',
-      status: 0,
+      status: 1,
       tags: [],
       applications: 0,
       creationDate: '',
@@ -51,8 +53,25 @@ export class PositionDetailComponent implements OnInit {
       this.positionService.getPositionById(this.positionId).subscribe((position) => {
         this.position = position;
         this.isEditing = true;
+
+        console.log(position);
       });
     }
+  }
+
+  addTag(event: KeyboardEvent) {
+    const key = event.key;
+    if ((key === 'Enter' || key === ' ') && this.tagInputValue.trim()) {
+      this.position.tags.push({
+        name: this.tagInputValue.trim()
+      });
+      this.tagInputValue = '';
+      event.preventDefault(); // Evita que se agregue un espacio en el input
+    }
+  }
+
+  removeTag(index: number) {
+    this.position.tags.splice(index, 1);
   }
 
   addRequirement() {
