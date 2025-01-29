@@ -1,0 +1,80 @@
+<div class="card">
+  <div class="card-header mb-2">
+    <div class="row align-items-center">
+      <div class="col">
+        <h2 class="card-title">Candidates</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body pt-0 ">
+    <div class="row align-items-center mb-2">
+      <div class="col-8">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          [(ngModel)]="searchTerm"/>
+      </div>
+    </div>
+
+    <div class="row align-items-center mb-2">
+      <div class="tab-pane" id="candidates" role="tabpanel">
+        <div class="table-responsive browser_users">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+              <th class="border-top-0" style="width: 5%">Id</th>
+              <th class="border-top-0">Name</th>
+              <th class="border-top-0 ">Application Date</th>
+              <th class="border-top-0 text-center">Tags</th>
+              <th class="border-top-0 ">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let candidate of filteredResults" style="cursor: pointer">
+              <td class="">{{ candidate.id }}</td>
+              <td class="">{{ candidate.name }}</td>
+              <td class="">{{ candidate.applicationDate | date: 'dd-MM-yyyy'}}</td>
+              <td class="text-center">
+                @for (tag of candidate.tags; track tag.name) {
+                  <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
+                }
+              </td>
+              <td class="">
+                <button class="btn p-0 me-1" (click)="$event.stopPropagation()">
+                  <i class="far fa-eye text-secondary fs-20"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="filteredResults.length === 0">
+              <td colspan="4" class="text-center">No results found</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between p-2">
+          <ngb-pagination
+            [collectionSize]="total"
+            [(page)]="page"
+            [pageSize]="pageSize"
+          >
+          </ngb-pagination>
+
+          <select
+            class="form-select"
+            style="width: auto"
+            name="pageSize"
+            [(ngModel)]="pageSize"
+          >
+            <option [ngValue]="2">2 items per page</option>
+            <option [ngValue]="4">4 items per page</option>
+            <option [ngValue]="6">6 items per page</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

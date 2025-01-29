@@ -3,7 +3,8 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from "@angular/common/http";
-import {MockInterceptor} from "./private/infrastructure/interceptors/mock-interceptor.interceptor";
+import {MockPositionsInterceptor} from "./private/infrastructure/interceptors/mock-positions.interceptor";
+import {MockCandidatesInterceptor} from "./private/infrastructure/interceptors/mock-candidates.interceptor";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -12,6 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptorsFromDi()
     ),
-    { provide: HTTP_INTERCEPTORS, useClass: MockInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MockPositionsInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MockCandidatesInterceptor, multi: true },
   ],
 };

@@ -65,6 +65,10 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['private/position-view', { id: id }]);
   }
 
+  goToCandidates(id: number) {
+    this.router.navigate(['private/candidates-list', { id: id }]);
+  }
+
   confirmDeletePosition(id: number) {
     this.positionToDelete = this.positions.filter((position: Position)=> position.id === id)[0];
     this.deletePositionModalRef = this.modalService.open(this.deletePositionModal, { centered: true,  });

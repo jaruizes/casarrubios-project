@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import {Position} from "../../model/position";
 
 @Injectable()
-export class MockInterceptor implements HttpInterceptor {
+export class MockPositionsInterceptor implements HttpInterceptor {
   private mockData: Position[] = [
     {
       id: 1,
