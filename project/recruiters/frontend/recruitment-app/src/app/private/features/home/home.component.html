@@ -55,11 +55,10 @@
                 </td>
                 <td class="text-center">{{ item.applications }}</td>
                 <td class="">
-                  <button class="btn p-0 me-1" (click)="goToPositionView(item.id)">
+                  <button class="btn p-0 me-1" (click)="goToPositionView(item.id); $event.stopPropagation()">
                     <i class="far fa-eye text-secondary fs-20"></i>
                   </button>
-
-                  <button class="btn p-0" (click)="deletePosition(item.id)">
+                  <button class="btn p-0" (click)="confirmDeletePosition(item.id); $event.stopPropagation()">
                     <i class="las la-trash-alt fs-20 text-danger"></i>
                   </button>
                 </td>
@@ -70,6 +69,35 @@
             </tbody>
           </table>
         </div>
+        <ng-template
+          #deletePositionModal let-modal class="modal fade" id="deletePositionModal" tabindex="-1" role="dialog" aria-labelledby="deletePositionModalTitle" aria-hidden="true">
+          @if (positionToDelete) {
+
+            <div class="modal-header bg-danger">
+              <h6 class="modal-title m-0" id="exampleModalCenterTitle">Delete Position</h6>
+              <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+            </div>
+            <!--end modal-header-->
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-lg-3 text-center align-self-center">
+                  <img src="assets/images/extra/card/btc.png" alt="" class="img-fluid"/>
+                </div>
+                <!--end col-->
+                <div class="col-lg-9 align-self-center">
+                  <h5>{{ positionToDelete.title }}</h5>
+                  <span class="badge bg-light text-dark">{{ positionToDelete.creationDate | date }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary btn-sm" (click)="modal.dismiss()">Cancel</button>
+              <button type="button" class="btn btn-danger btn-sm" (click)="deletePosition(positionToDelete.id)">Confirm</button>
+            </div>
+          }
+        </ng-template>
+
+
         <div class="d-flex justify-content-between p-2">
           <ngb-pagination
             [collectionSize]="total"

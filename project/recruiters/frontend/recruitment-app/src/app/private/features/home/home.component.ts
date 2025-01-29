@@ -1,5 +1,5 @@
-import {Component, OnInit, PipeTransform} from '@angular/core';
-import {NgbHighlight, NgbPagination} from "@ng-bootstrap/ng-bootstrap";
+import {Component, OnInit, PipeTransform, TemplateRef, ViewChild} from '@angular/core';
+import {NgbHighlight, NgbModal, NgbModalOptions, NgbModalRef, NgbPagination} from "@ng-bootstrap/ng-bootstrap";
 import {AsyncPipe, CommonModule, DecimalPipe, NgIf} from "@angular/common";
 import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
@@ -22,15 +22,21 @@ export class HomeComponent implements OnInit {
   total: number = 10;
   pageSize: number = 10;
   page: number = 1;
-
-
   positions: Position[] = [];
+  positionToDelete?: Position;
+
+  @ViewChild('deletePositionModal')
+  deletePositionModal!: TemplateRef<HTMLElement>;
+
   private router: Router;
   private positionService: PositionsService;
+  private modalService: NgbModal;
+  private deletePositionModalRef!: NgbModalRef;
 
-  constructor(router: Router, positionService: PositionsService) {
+  constructor(router: Router, positionService: PositionsService, modalService: NgbModal) {
     this.router = router;
     this.positionService = positionService;
+    this.modalService = modalService;
   }
 
   ngOnInit(): void {
@@ -59,7 +65,13 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['private/position-view', { id: id }]);
   }
 
+  confirmDeletePosition(id: number) {
+    this.positionToDelete = this.positions.filter((position: Position)=> position.id === id)[0];
+    this.deletePositionModalRef = this.modalService.open(this.deletePositionModal, { centered: true,  });
+  }
+
   deletePosition(id: number) {
-    this.positions.splice(this.positions.findIndex(p => p.id === id), 1);
+    console.log('Deleting position with id: ', id);
+    this.deletePositionModalRef.close();
   }
 }
