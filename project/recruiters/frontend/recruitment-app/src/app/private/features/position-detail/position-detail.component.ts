@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {DatePipe, NgForOf} from "@angular/common";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
 import {Benefit, Position, Requirement, Task} from "../../model/position";
 import {FormsModule} from "@angular/forms";
@@ -23,9 +23,11 @@ export class PositionDetailComponent implements OnInit {
   tagInputValue: string = '';
 
   private positionService: PositionsService;
+  private router: Router;
 
-  constructor(private route: ActivatedRoute, positionService: PositionsService) {
+  constructor(private route: ActivatedRoute, router: Router, positionService: PositionsService) {
     this.positionService = positionService;
+    this.router = router;
     this.isEditing = false;
     this.position = {
       id: -1,
@@ -120,5 +122,10 @@ export class PositionDetailComponent implements OnInit {
         this.position = position;
       });
     }
+    this.back();
+  }
+
+  back() {
+    this.router.navigate(['private/home']);
   }
 }
