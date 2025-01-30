@@ -1,0 +1,62 @@
+//
+// Pricing
+// 
+
+
+
+
+.pricing-content {
+  li {
+      margin-bottom: 14px;
+      font-weight: 500;
+      color: $gray-700;
+      &:before {
+          content: "\f00c";
+          font-family: "Font Awesome 5 Free";
+          font-weight: 600;
+          font-size: 9px;
+          text-align: center;
+          background-color: rgba($primary, 0.1);
+          color: $primary;
+          width: 20px;
+          height: 20px;
+          line-height: 20px;
+          display: inline-block;
+          border-radius: 50%;
+          margin-right: 8px;
+      }
+  }
+}
+
+.animate-blink {
+  -webkit-animation: a-animate-blink 1s step-start 0s infinite;
+  -moz-animation: a-animate-blink 1s step-start 0s infinite;
+  -ms-animation: a-animate-blink 1s step-start 0s infinite;
+  -o-animation: a-animate-blink 1s step-start 0s infinite;
+  animation: a-animate-blink 1s step-start 0s infinite;
+  animation-fill-mode: initial;
+}
+
+@-webkit-keyframes a-animate-blink {
+  50% {
+      opacity: 0;
+  }
+}
+
+@-moz-keyframes a-animate-blink {
+  50% {
+      opacity: 0;
+  }
+}
+
+@-o-keyframes a-animate-blink {
+  50% {
+      opacity: 0;
+  }
+}
+
+@keyframes a-animate-blink {
+  50% {
+      opacity: 0;
+  }
+}

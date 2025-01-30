@@ -1,0 +1,20 @@
+//
+// Rating
+// 
+
+
+.starability-basic,
+.starability-growRotate,
+.starability-grow,
+.starability-fade,
+.starability-slot,
+.starability-checkmark {
+    > input:checked,
+    > input:focus {
+        + label {
+            outline: none;
+            text-decoration: none;
+        }
+    }
+    min-height: auto;
+}

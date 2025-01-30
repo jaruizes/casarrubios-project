@@ -57,6 +57,10 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['private/position-detail', { }]);
   }
 
+  newApplication() {
+    this.router.navigate(['private/new-application', { }]);
+  }
+
   goToPositionDetail(id: number) {
     this.router.navigate(['private/position-detail', { id: id }]);
   }
@@ -65,9 +69,8 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['private/position-view', { id: id }]);
   }
 
-  goToCandidates(position: Position) {
-    console.log(position);
-    this.router.navigateByUrl('private/candidates-list', { state: { position } });
+  goToApplications(position: Position) {
+    this.router.navigateByUrl('private/applications-list', { state: { position } });
   }
 
   confirmDeletePosition(id: number) {

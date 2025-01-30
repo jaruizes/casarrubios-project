@@ -1,0 +1,261 @@
+
+// Utilities
+
+
+//  Font size
+
+
+.fs-9 {
+    font-size: 9px;
+}
+.fs-10 {
+    font-size: 10px;
+}
+.fs-11 {
+    font-size: 11px;
+}
+.fs-12 {
+    font-size: 12px;
+}
+.fs-13 {
+    font-size: 13px;
+}
+.fs-14 {
+    font-size: 14px;
+}
+.fs-15 {
+    font-size: 15px;
+}
+.fs-16 {
+    font-size: 16px;
+}
+.fs-18 {
+    font-size: 18px !important;
+}
+.fs-20 {
+    font-size: 20px;
+}
+.fs-22 {
+    font-size: 22px !important;
+}
+.fs-24 {
+    font-size: 24px;
+}
+.fs-26 {
+    font-size: 26px;
+}
+.fs-28 {
+    font-size: 28px;
+}
+.fs-30 {
+    font-size: 30px;
+}
+
+//  Height
+.h-80 {
+    height: 300px;
+}
+
+
+.ms-45{
+    margin-left: 45px;
+}
+// Border
+
+
+
+.border-dashed {
+    border: 1px dashed;
+}
+
+.border-theme-color {
+    border-color: var(--#{$prefix}border-color);
+}
+
+.border-dashed-bottom {
+    border-bottom: 1px dashed var(--#{$prefix}border-color);
+}
+.border-dashed-top {
+    border-top: 1px dashed var(--#{$prefix}border-color);
+}
+
+.border-body-color {
+    border-color: $body-bg;
+}
+.border-card-bg {
+    border-color: $card-bg !important;
+}
+.border-secondary{
+    border-color: var(--#{$prefix}border-secondary) !important;
+}
+// Background color
+
+
+.bg-blue-subtle {
+    background-color: var(--#{$prefix}blue-bg-subtle);
+}
+.bg-pink-subtle {
+    background-color: var(--#{$prefix}pink-bg-subtle);
+}
+.bg-purple-subtle {
+    background-color: var(--#{$prefix}purple-bg-subtle);
+}
+
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+// Thumb Size
+
+.thumb-xs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20px !important;
+    width: 20px !important;
+    font-size: 10px;
+    font-weight: 700;
+}
+.thumb-sm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 24px !important;
+    width: 24px !important;
+    font-size: 12px;
+    font-weight: 700;
+}
+.thumb-md {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 36px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.thumb-lg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    width: 48px;
+    font-size: 18px;
+    font-weight: 700;
+}
+.thumb-xl {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    width: 60px;
+    font-size: 24px;
+    font-weight: 700;
+}
+.thumb-xxl {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    width: 80px;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+
+// Card color & Text
+
+.card-bg {
+    background-color: $card-bg;
+}
+
+.text-card-bg {
+    color: $card-bg;
+}
+
+// Flex
+
+.flex-basis-0 {
+    flex-basis: 0;
+}
+
+// Horizontal row (hr)
+
+hr.hr-dashed {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px dashed var(--#{$prefix}border-color);
+    height: 0;
+    overflow: visible;
+    opacity: 1;
+}
+
+
+
+// icons
+
+[class*=" iconoir-"]::before,
+[class^="iconoir-"]::before {
+    stroke-width: 8px;
+}
+
+.icon-demo-content {
+    text-align: center;
+
+    i {
+        display: block;
+        font-size: 30px;
+        margin: 0 auto 5px;
+        color: $gray-500;
+    }
+
+    svg {
+        display: block;
+        font-size: 30px;
+        margin: 0 auto 5px;
+        color: $gray-600;
+    }
+
+    .col-sm-6 {
+        margin-bottom: 40px;
+
+        &:hover {
+            i {
+                color: $primary;
+            }
+        }
+        &:hover {
+            path:nth-of-type(1) {
+                fill: $primary;
+            }
+            path:nth-of-type(2) {
+                fill: $text-muted;
+            }
+        }
+    }
+}
+
+
+
+
+// 
+
+.me-0\.5 {
+  margin-right: 3px;
+}
+
+.ms-0\.5 {
+  margin-left: 3px;
+}
+
+.lg-outer .lg-item:not(.lg-start-end-progress) {
+  background: #2f364ca1;
+}
+
+.toast-close {
+  .toast-body {
+    display: flex;
+  }
+}

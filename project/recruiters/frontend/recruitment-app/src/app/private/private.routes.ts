@@ -4,6 +4,7 @@ import {PrivateComponent} from "./private.component";
 import {PositionDetailComponent} from "./features/position-detail/position-detail.component";
 import {PositionViewComponent} from "./features/position-view/position-view.component";
 import {ApplicationsComponent} from "./features/applications/applications.component";
+import {NewApplicationComponent} from "./features/new-application/new-application.component";
 
 export const PRIVATE_ROUTES: Routes = [
   { path: '', component: PrivateComponent,
@@ -12,7 +13,8 @@ export const PRIVATE_ROUTES: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'position-detail', component: PositionDetailComponent },
       { path: 'position-view', component: PositionViewComponent },
-      { path: 'candidates-list', component: ApplicationsComponent }
+      { path: 'applications-list', component: ApplicationsComponent },
+      { path: 'new-application', component: NewApplicationComponent }
     ]},
   { path: '**', redirectTo: "home" },
 ];

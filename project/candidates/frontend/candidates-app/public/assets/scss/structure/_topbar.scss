@@ -1,0 +1,247 @@
+.topbar {
+    height: var(--#{$prefix}topbar-height);
+    width: calc(100% - var(--#{$prefix}startbar-width));
+    margin-left: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    opacity: 1;
+  background-color: $gray-300;
+    transition: 0.3s;
+    .topbar-custom {
+        //background-color: transparent;
+        transition: 0.3s;
+        &.nav-sticky {
+            background-color: var(--#{$prefix}body-bg);
+            box-shadow: $topbar-box-shadow;
+            border-radius: 0 0$card-border-radius $card-border-radius;
+            transition: 0.3s;
+            .nav-link {
+                &.mobile-menu-btn {
+                    margin-left: 16px;
+                    transition: 0.3s;
+                }
+            }
+            &:last-child ul {
+                li:last-child {
+                    .nav-icon {
+                        margin-right: 16px;
+                        transition: 0.3s;
+                    }
+                }
+            }
+        }
+        &:last-child ul {
+            li:last-child {
+                .nav-icon {
+                    margin-right: 0;
+                    transition: 0.3s;
+                }
+            }
+        }
+        .topbar-item {
+            height: var(--#{$prefix}topbar-height);
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+        }
+        .nav-link {
+            margin: 0 8px;
+            &.mobile-menu-btn {
+                margin-left: 0;
+                transition: 0.3s;
+            }
+            &.nav-icon {
+                width: 48px;
+                height: 48px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 50%;
+                background-color: var(--#{$prefix}topbar-bg);
+                box-shadow: $card-box-shadow;
+                i {
+                    font-size: 20px;
+                    padding-bottom: 2px;
+                    color: var(--#{$prefix}topbar-nav-icon-color);
+                }
+            }
+        }
+    }
+    .app-search {
+        position: relative;
+        margin: 0;
+        form {
+            position: relative;
+            z-index: 1;
+            .form-control,
+            .form-control:focus {
+                border: 1px solid transparent;
+                font-size: 13px;
+                height: 48px;
+                // color: $header-search-color;
+                background: var(--bs-topbar-bg);
+                box-shadow: $card-box-shadow;
+                width: 300px;
+                border-radius: 30px;
+                padding-left: 48px;
+                margin: 0 8px;
+            }
+            button {
+                position: absolute;
+                width: 30px;
+                height: 30px;
+                left: 16px;
+                top: 50%;
+                font-size: 22px;
+                transform: translateY(-50%);
+                border: none;
+                text-align: center;
+                background-color: transparent;
+                color: var(--#{$prefix}topbar-nav-icon-color);
+                i {
+                    display: flex;
+                }
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+
+        ::placeholder {
+            color: var(--#{$prefix}topbar-nav-icon-color);
+            font-weight: 400;
+        }
+
+        input.form-control:-moz-placeholder {
+            color: var(--#{$prefix}topbar-nav-icon-color);
+        }
+
+        input.form-control::-moz-placeholder {
+            color: var(--#{$prefix}topbar-nav-icon-color);
+        }
+
+        input.form-control:-ms-input-placeholder {
+            color: var(--#{$prefix}topbar-nav-icon-color);
+        }
+    }
+}
+.topbar .topbar-custom.nav-sticky .topbar-item,
+.topbar:has(.nav-sticky){
+    height: calc(var(--#{$prefix}topbar-height) - 20px);
+    transition: 0.3s;
+}
+html[data-bs-theme="dark"]{
+    .topbar {
+        .topbar-custom {
+            .nav-link{
+                &.nav-icon{
+                    .light-mode{
+                        display: none;
+                    }
+                    .dark-mode{
+                        display: inline-block;
+                    }
+                }
+            }
+        }
+    }
+}
+
+html[data-bs-theme="light"]{
+    .topbar {
+        .topbar-custom {
+            .nav-link{
+                &.nav-icon{
+                    .light-mode{
+                        display: inline-block;
+                    }
+                    .dark-mode{
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 1023.98px) {
+    body[data-sidebar-size="collapsed"] .topbar {
+        width: calc(100% - var(--#{$prefix}startbar-collapsed-width));
+    }
+    .welcome-text {
+        display: inline-block;
+    }
+}
+@media (max-width: 1024px) {
+    body[data-sidebar-size="collapsed"],
+    body[data-sidebar-size="default"] {
+        .topbar {
+            width: 100%;
+        }
+    }
+    .welcome-text {
+        display: none;
+    }
+}
+@media (max-width: 767.98px) {
+    .hide-phone {
+        display: none !important;
+    }
+    .topbar {
+        .topbar-custom {
+            .nav-link {
+                margin: 0 4px;
+            }
+            &.nav-sticky {
+                .nav-link {
+                    &.mobile-menu-btn {
+                        margin-left: 4px;
+                    }
+                }
+                &:last-child {
+                    ul {
+                        li:last-child {
+                            .nav-icon {
+                                margin-right: 4px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 380px) {
+    .topbar {
+        .topbar-custom {
+            margin: 0;
+        }
+    }
+}
+
+.dropdown-icon-item {
+    display: block;
+    border-radius: 3px;
+    line-height: 36px;
+    text-align: center;
+    padding: 16px 0 8px;
+    border: 1px solid transparent;
+    color: var(--#{$prefix}body-color);
+    img {
+        height: 36px;
+    }
+    span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+    }
+    &:hover {
+        background-color: $startbar-bg;
+    }
+}

@@ -1,0 +1,80 @@
+<div class="container">
+  @if (position) {
+    <div class="card">
+      <div class="card-body">
+        <div class="container p-4">
+          <div class="row">
+            <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+              <h1 class="fw-semibold mb-1">{{ position.title }}</h1>
+              <p class="text-muted">
+                📅 Publicado el: {{ position.creationDate | date:'dd-MM-yyyy' }}
+              </p>
+              <div class="mb-3">
+                <span *ngFor="let tag of position.tags" class="badge bg-success me-2">{{ tag.name }}</span>
+              </div>
+            </div>
+
+            <div class="col-lg-4 align-self-top mb-3 mb-lg-0">
+              <div class="text-end flex-row flex-wrap">
+                <div class="pb-2">
+                  <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
+                    Back
+                  </button>
+                  <button type="button" class="btn rounded-pill btn-danger" (click)="back()">
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="row">
+            <div class="col align-self-center mt-3 mb-3 mb-lg-0">
+              <h4 class="fw-semibold mb-1">¿Qué buscamos?</h4>
+              <p class="lead">{{ position.description }}</p>
+            </div>
+          </div>
+
+          <div class="row">
+
+          </div>
+
+          <div class="row mt-3 ">
+            <div class="col align-self-center mb-3 mb-lg-0">
+              <h4 class="fw-semibold mb-1">¿Qué esperamos de ti?</h4>
+              <ul class="pt-2">
+                <li *ngFor="let req of position.requirements" class="lead">
+                  <strong>{{ req.key }}:</strong> {{ req.value }} - {{ req.description }}
+                  <span *ngIf="req.isMandatory" class="text-danger">(Obligatorio)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row mt-3 ">
+            <div class="col align-self-center mb-3 mb-lg-0">
+              <h4 class="fw-semibold mb-1">¿Qué responsabilidades tendrás?</h4>
+              <ul class="pt-2">
+                <li *ngFor="let task of position.tasks" class="lead">{{ task.description }}</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row mt-3 ">
+            <div class="col align-self-center mb-3 mb-lg-0">
+              <h4 class="fw-semibold  mb-1">¿Qué tenemos de especial?</h4>
+              <ul class="pt-2">
+                <li *ngFor="let benefit of position.benefits" class="lead">{{ benefit.description }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  }
+
+</div>

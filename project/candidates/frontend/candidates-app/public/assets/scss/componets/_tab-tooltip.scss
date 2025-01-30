@@ -1,0 +1,75 @@
+//
+// Tab & Tooltip
+// 
+
+// Tooltip & Popover
+
+.custom-tooltip {
+    --bs-tooltip-bg: var(--#{$prefix}purple);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.custom-popover {
+    --bs-popover-max-width: 200px;
+    --bs-popover-border-color: var(--#{$prefix}purple);
+    --bs-popover-header-bg: var(--#{$prefix}purple);
+    --bs-popover-header-color: var(--bs-white);
+    --bs-popover-body-padding-x: 1rem;
+    --bs-popover-body-padding-y: 0.5rem;
+}
+
+//   Custom Tabs
+
+.nav-tabs-custom {
+    .nav {
+        &.nav-tabs {
+            border-bottom: none;
+            display: inline-flex;
+            .nav-item {
+                border: 2px solid rgba($gray-500, 0.2);
+                border-radius: 4px;
+                margin-right: 5px;
+            }
+            .nav-link {
+                border-radius: 3px;
+                padding: 10px 14px;
+                &.active {
+                    background-color: rgba($primary, 0.08);
+                    border-color: $primary;
+                    color: $primary;
+                    i {
+                        color: $primary;
+                    }
+                }
+                i {
+                    font-size: 24px;
+                    vertical-align: middle;
+                    color: $secondary;
+                }
+            }
+        }
+    }
+}
+
+
+@each $color, $value in $theme-colors {
+    .tooltip-#{$color} {
+        --#{$prefix}tooltip-bg: var(--#{$prefix}#{$color});
+    }
+}
+
+.nav-tabs {
+    &.nav-tabs-custom {
+        border-bottom: 1px solid var(--#{$prefix}border-color);
+    }
+    .nav-item.show .nav-link,
+    .nav-link.active {
+        border-color: transparent;
+        border-bottom: 1px solid $primary !important;
+    }
+    .nav-link {
+        &:hover {
+            border-color: transparent;
+        }
+    }
+}

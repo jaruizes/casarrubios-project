@@ -21,6 +21,9 @@
           <button type="button" class="btn rounded-pill btn-secondary" (click)="newPosition()">
             New Position
           </button>
+          <button type="button" class="btn rounded-pill btn-secondary" (click)="newApplication()">
+            New Application
+          </button>
         </div>
       </div>
     </div>
@@ -58,7 +61,7 @@
                   <button class="btn p-0 me-1" (click)="goToPositionView(item.id); $event.stopPropagation()">
                     <i class="far fa-eye text-secondary fs-20"></i>
                   </button>
-                  <button class="btn p-0" (click)="goToCandidates(item); $event.stopPropagation()">
+                  <button class="btn p-0" (click)="goToApplications(item); $event.stopPropagation()">
                     <i class="far fa-address-book fs-20"></i>
                   </button>
                   <button class="btn p-0" (click)="confirmDeletePosition(item.id); $event.stopPropagation()">

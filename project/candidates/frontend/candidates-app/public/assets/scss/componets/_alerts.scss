@@ -1,0 +1,15 @@
+
+// Alert
+.alert-dismissible {
+    .btn-close {
+        font-size: 22px;
+        padding: $alert-padding-y $alert-padding-x;
+    }
+}
+
+.border-theme-white {
+    border: 1px solid var(--#{$prefix}theme-white-color);
+}
+.border-theme-white-2 {
+    border: 2px solid var(--#{$prefix}theme-white-color);
+}

@@ -1,0 +1,73 @@
+
+:root {
+    --#{$prefix}topbar-height:                     #{$topbar-height};
+    --#{$prefix}topbar-bg:                         #{$topbar-bg};
+    --#{$prefix}topbar-b-border-color:             #{$topbar-b-border-color};
+    --#{$prefix}topbar-nav-icon-bg:                #{$topbar-nav-icon-bg};
+    --#{$prefix}topbar-nav-icon-color:             #{$topbar-nav-icon-color};
+
+    --#{$prefix}startbar-width:                    #{$startbar-width};
+    --#{$prefix}startbar-collapsed-width:          #{$startbar-collapsed-width};
+    --#{$prefix}startbar-bg:                       #{$startbar-bg};
+    --#{$prefix}startbar-e-border-color:           #{$startbar-e-border-color};
+    --#{$prefix}menu-icon-color:                   #{$menu-icon-color};
+    --#{$prefix}menu-link-color:                   #{$menu-link-color};
+    --#{$prefix}nav-link-disc-color:               #{$nav-link-disc-color};
+    --#{$prefix}menu-label-color:                  #{$menu-label-color};
+
+    --#{$prefix}label-color:                       #{$label-color};
+    --#{$prefix}text-muted:                        #{$text-muted};
+    --#{$prefix}box-shadow-sm:                     #{$box-shadow-sm};
+
+
+    --#{$prefix}theme-white-color:                 #{$theme-white-color};
+    --#{$prefix}border-secondary:                  #{$border-secondary};
+
+}
+
+html[data-bs-theme="dark"] {
+    --#{$prefix}light:                               #{$light-mode-dark};
+    --#{$prefix}light-rgb:                           #{to-rgb($light-mode-dark)};
+
+    --#{$prefix}dark:                                #{$dark-mode-dark};
+    --#{$prefix}dark-rgb:                            #{to-rgb($dark-mode-dark)};
+
+    --#{$prefix}label-color:                         #{$label-color-dark};
+
+    --#{$prefix}theme-white-color:                 #{$theme-white-color-dark};
+    --#{$prefix}body-color:                        #{$body-color-dark};
+    --#{$prefix}text-muted:                        #{$body-secondary-color-dark};
+    --#{$prefix}box-shadow-sm:                     #{$box-shadow-sm-dark};
+
+    // Topbar
+    --#{$prefix}topbar-bg:                         #{$topbar-bg-dark};
+    --#{$prefix}topbar-b-border-color:             #{$topbar-b-border-color-dark};
+    --#{$prefix}topbar-nav-icon-bg:                #{$topbar-nav-icon-bg-dark};
+    --#{$prefix}topbar-nav-icon-color:             #{$topbar-nav-icon-color-dark};
+
+    --#{$prefix}secondary:                         #{$text-secondary-dark};
+    --#{$prefix}secondary-rgb:                     #{to-rgb($text-secondary-dark)};
+    --#{$prefix}border-secondary:                  #{$border-secondary-dark};
+    // --#{$prefix}border-color:                      #{$border-color-dark};
+
+    // Sidebar Dark mode
+
+    --#{$prefix}startbar-bg:                       #{$startbar-bg-dark};
+    --#{$prefix}startbar-e-border-color:           #{$startbar-e-border-color-dark};
+    --#{$prefix}menu-icon-color:                   #{$menu-icon-color-dark};
+    --#{$prefix}menu-link-color:                   #{$menu-link-color-dark};
+    --#{$prefix}nav-link-disc-color:               #{$nav-link-disc-color-dark};
+    --#{$prefix}menu-label-color:                  #{$menu-label-color-dark};
+
+}
+
+html[data-startbar="dark"] {
+    --#{$prefix}startbar-bg:                       #{$startbar-bg-dark};
+    --#{$prefix}startbar-e-border-color:           #{$startbar-e-border-color-dark};
+    --#{$prefix}menu-icon-color:                   #{$menu-icon-color-dark};
+    --#{$prefix}menu-link-color:                   #{$menu-link-color-dark};
+    --#{$prefix}nav-link-disc-color:               #{$nav-link-disc-color-dark};
+    --#{$prefix}menu-label-color:                  #{$menu-label-color-dark};
+    --#{$prefix}dark:                              #{$dark-mode-dark};
+    --#{$prefix}box-shadow-sm:                     #{$box-shadow-sm-dark};
+}

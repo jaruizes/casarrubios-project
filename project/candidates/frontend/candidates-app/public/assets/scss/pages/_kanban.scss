@@ -1,0 +1,38 @@
+//
+// Kanban Board
+// 
+
+.kanban-board {
+    margin-bottom: 0.75rem;
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    .kanban-col {
+        margin-inline-end: 1.5rem;
+        position: relative;
+        width: 100%;
+        min-width: 20rem;
+        &:last-child {
+            margin-inline-end: 0;
+        }
+        .add-btn {
+            display: none;
+            position: relative;
+        }
+        &:hover {
+            .add-btn {
+                display: inline-block;
+            }
+        }
+
+        .card {
+            cursor: grab;
+        }
+    }
+}
+
+.card.gu-mirror {
+    cursor: grabbing;
+}

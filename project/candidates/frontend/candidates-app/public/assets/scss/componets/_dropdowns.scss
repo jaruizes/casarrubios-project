@@ -1,0 +1,13 @@
+
+// Dropdowns
+.dropstart .dropdown-toggle::before,
+.dropend .dropdown-toggle::after,
+.dropup .dropdown-toggle::after,
+.dropdown-toggle::after {
+    display: none;
+}
+
+
+.dropdown-lg {
+    width: 320px;
+}

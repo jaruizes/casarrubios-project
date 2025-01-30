@@ -1,0 +1,82 @@
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+          <div class="d-flex align-items-center flex-row flex-wrap">
+            <div class="">
+              <h5 class="fw-semibold fs-22 mb-1">Apply for a Position</h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
+          <div class="text-end flex-row flex-wrap">
+            <div class="pb-2">
+              <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="cancel()">
+                Back
+              </button>
+              <button type="button" class="btn rounded-pill btn-primary">
+                Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="fw-semibold">Apply for a Position</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
+
+        <!-- Name -->
+        <div class="row mb-3 align-items-center">
+          <label for="name" class="col-sm-2 col-form-label text-lg-end">Name</label>
+          <div class="col-sm-9">
+            <input type="text" id="name" class="form-control" formControlName="name" placeholder="Enter your full name">
+            <div *ngIf="applicationForm.get('name')?.invalid && applicationForm.get('name')?.touched" class="text-danger">
+              Name is required (min 3 characters).
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="row mb-3 align-items-center">
+          <label for="phone" class="col-sm-2 col-form-label text-lg-end">Phone</label>
+          <div class="col-sm-9">
+            <input type="text" id="phone" class="form-control" formControlName="phone" placeholder="Enter your phone number">
+            <div *ngIf="applicationForm.get('phone')?.invalid && applicationForm.get('phone')?.touched" class="text-danger">
+              Enter a valid phone number.
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="row mb-3 align-items-center">
+          <label for="email" class="col-sm-2 col-form-label text-lg-end">Email</label>
+          <div class="col-sm-9">
+            <input type="email" id="email" class="form-control" formControlName="email" placeholder="Enter your email">
+            <div *ngIf="applicationForm.get('email')?.invalid && applicationForm.get('email')?.touched" class="text-danger">
+              Enter a valid email.
+            </div>
+          </div>
+        </div>
+
+        <!-- CV Upload -->
+        <div class="row mb-3 align-items-center">
+          <label for="cv" class="col-sm-2 col-form-label text-lg-end">Upload CV</label>
+          <div class="col-sm-9">
+            <input type="file" id="cv" class="form-control" (change)="onFileSelected($event)">
+            <div *ngIf="applicationForm.get('cv')?.invalid && applicationForm.get('cv')?.touched" class="text-danger">
+              Please upload a PDF file.
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

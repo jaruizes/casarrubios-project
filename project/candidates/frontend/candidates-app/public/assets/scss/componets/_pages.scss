@@ -1,0 +1,140 @@
+
+
+// Page wrapper
+
+.page-wrapper {
+    .page-content {
+        // width: calc(100% - var(--#{$prefix}startbar-width));
+        width: 100%;
+        margin-left: var(--#{$prefix}startbar-width);
+        position: relative;
+        min-height: calc(100vh - var(--#{$prefix}topbar-height));
+        padding: 0 8px 68px 8px;
+        margin-top: var(--#{$prefix}topbar-height);
+        .page-title-box {
+            padding: 16px 0;
+            .page-title {
+                font-size: 18px;
+                margin: 0;
+                font-weight: 600;
+            }
+            .breadcrumb {
+                .breadcrumb-item {
+                    a {
+                        color: $gray-700;
+                        font-weight: 400;
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 680px) {
+    .page-wrapper {
+        display: flex;
+    }
+}
+
+
+
+.shape {
+    position: absolute;
+    pointer-events: none;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    > svg {
+        transform: scale(2);
+        width: 100%;
+        height: auto;
+        transform-origin: top center;
+    }
+}
+
+
+// Authentication Text
+.ex-page-content h1 {
+    font-size: 98px;
+    font-weight: 700;
+    text-shadow:
+        rgba(137, 151, 189, 0.2) 1px 1px,
+        rgba(137, 151, 189, 0.2) 2px 2px,
+        rgba(137, 151, 189, 0.2) 3px 3px;
+}
+
+
+// Avatar
+.img-group {
+    .user-avatar {
+        &:hover {
+            z-index: 2;
+        }
+    }
+}
+
+
+// Project
+.task-accordion {
+    &.accordion-item:not(:first-of-type) {
+        border-top: 1px dashed var(--#{$prefix}border-color);
+    }
+}
+.color-bg {
+    background-image: url("../../images/extra/color-bg-2.jpg");
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+// Social Media
+.social {
+    border: 1px solid $gray-500;
+    transition: 0.3s;
+    i {
+        color: $gray-500;
+    }
+    &.twitter {
+        &:hover {
+            border-color: #1da1f2;
+            background-color: #1da1f2;
+            i {
+                color: $white;
+            }
+        }
+    }
+    &.instagram {
+        &:hover {
+            border-color: #f09433;
+            background: #f09433;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            i {
+                color: $white;
+            }
+        }
+    }
+    &.facebook {
+        &:hover {
+            border-color: #1877f2;
+            background-color: #1877f2;
+            i {
+                color: $white;
+            }
+        }
+    }
+}
+
+// List Style (use faqs)
+.list-arrow {
+    position: relative;
+    &::before {
+        content: "\f178";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        color: $primary;
+        position: absolute;
+        left: -22px;
+    }
+}
+
