@@ -7,14 +7,14 @@ import {
 } from '@angular/common/http';
 import {Injectable} from "@angular/core";
 import {Observable, of} from "rxjs";
-import {Candidate} from "../../model/candidate";
+import {Application} from "../../model/application";
 
 @Injectable()
-export class MockCandidatesInterceptor implements HttpInterceptor {
-  private mockData: Candidate[] = [
+export class MockApplicationsInterceptor implements HttpInterceptor {
+  private mockData: Application[] = [
     {
       id: 1,
-      name: 'Juan Palomo',
+      candidate: 'Juan Palomo',
       tags: [{ name: 'Angular' }, { name: 'TypeScript' }],
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
       applicationDate: '2025-01-22T10:23:08.350Z',
@@ -26,7 +26,7 @@ export class MockCandidatesInterceptor implements HttpInterceptor {
     },
     {
       id: 2,
-      name: 'María García',
+      candidate: 'María García',
       tags: [{ name: 'Node.js' }, { name: 'Express' }],
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
       applicationDate: '2025-01-24T10:23:08.350Z',
@@ -38,7 +38,7 @@ export class MockCandidatesInterceptor implements HttpInterceptor {
     },
     {
       id: 3,
-      name: 'Pedro Pérez',
+      candidate: 'Pedro Pérez',
       tags: [{ name: 'Python' }, { name: 'Machine Learning' }],
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
       applicationDate: '2025-01-26T10:23:08.350Z',
@@ -50,7 +50,7 @@ export class MockCandidatesInterceptor implements HttpInterceptor {
     },
     {
       id: 4,
-      name: 'Ana López',
+      candidate: 'Ana López',
       tags: [{ name: 'AWS' }, { name: 'Terraform' }],
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
       applicationDate: '2025-01-28T10:23:08.350Z',
@@ -62,7 +62,7 @@ export class MockCandidatesInterceptor implements HttpInterceptor {
     },
     {
       id: 5,
-      name: 'Carlos Sánchez',
+      candidate: 'Carlos Sánchez',
       tags: [{ name: 'Docker' }, { name: 'Kubernetes' }],
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
       applicationDate: '2025-01-30T10:23:08.350Z',
@@ -74,7 +74,7 @@ export class MockCandidatesInterceptor implements HttpInterceptor {
     },
     {
       id: 6,
-      name: 'Sara Martínez',
+      candidate: 'Sara Martínez',
       tags: [{ name: 'React' }, { name: 'Redux' }],
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
       applicationDate: '2025-02-01T10:23:08.350Z',

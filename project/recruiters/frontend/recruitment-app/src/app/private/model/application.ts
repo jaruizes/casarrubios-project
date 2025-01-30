@@ -5,9 +5,9 @@ export interface PositionApplied {
   matchingPercentage: number;
 }
 
-export interface Candidate {
+export interface Application {
   id: number;
-  name: string;
+  candidate: string;
   applicationDate: string;
   tags: Tag[];
   cv: string;

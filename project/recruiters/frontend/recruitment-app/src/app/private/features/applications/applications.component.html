@@ -28,7 +28,7 @@
   <div class="card-header mb-2">
     <div class="row align-items-center">
       <div class="col">
-        <h2 class="fw-semibold  fs-20">Candidates list</h2>
+        <h2 class="fw-semibold  fs-20">Applications list</h2>
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@
             <thead class="table-light">
             <tr>
               <th class="border-top-0" style="width: 5%">Id</th>
-              <th class="border-top-0">Name</th>
+              <th class="border-top-0">Candidate</th>
               <th class="border-top-0 ">Application Date</th>
               <th class="border-top-0 text-center">Tags</th>
               <th class="border-top-0 text-center">Matching (%)</th>
@@ -59,18 +59,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let candidate of filteredResults" style="cursor: pointer">
-              <td class="">{{ candidate.id }}</td>
-              <td class="">{{ candidate.name }}</td>
-              <td class="">{{ candidate.applicationDate | date: 'dd-MM-yyyy'}}</td>
+            <tr *ngFor="let application of filteredResults" style="cursor: pointer">
+              <td class="">{{ application.id }}</td>
+              <td class="">{{ application.candidate }}</td>
+              <td class="">{{ application.applicationDate | date: 'dd-MM-yyyy'}}</td>
               <td class="text-center">
-                @for (tag of candidate.tags; track tag.name) {
+                @for (tag of application.tags; track tag.name) {
                   <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
                 }
               </td>
-              <td class="text-center">{{ getMatchingPercentage(candidate.positionsApplied)}}</td>
+              <td class="text-center">{{ getMatchingPercentage(application.positionsApplied)}}</td>
               <td class="">
-                <button class="btn p-0 me-1" (click)="downloadCV(candidate.id, candidate.cv); $event.stopPropagation()">
+                <button class="btn p-0 me-1" (click)="downloadCV(application.id, application.cv); $event.stopPropagation()">
                   <i class="las la-download text-secondary fs-20"></i>
                 </button>
               </td>

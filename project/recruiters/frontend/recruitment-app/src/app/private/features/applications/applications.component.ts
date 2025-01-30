@@ -6,11 +6,11 @@ import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status
 import {Position} from "../../model/position";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
-import {Candidate, PositionApplied} from "../../model/candidate";
-import {CandidatesService} from "../../services/candidates.service";
+import {Application, PositionApplied} from "../../model/application";
+import {ApplicationsService} from "../../services/applications.service";
 
 @Component({
-  selector: 'app-candidates',
+  selector: 'app-applications',
   standalone: true,
     imports: [
         DatePipe,
@@ -20,24 +20,24 @@ import {CandidatesService} from "../../services/candidates.service";
         NgbPagination,
         PositionStatusPipePipe
     ],
-  templateUrl: './candidates.component.html',
-  styleUrl: './candidates.component.scss'
+  templateUrl: './applications.component.html',
+  styleUrl: './applications.component.scss'
 })
-export class CandidatesComponent implements OnInit {
+export class ApplicationsComponent implements OnInit {
 
   searchTerm: string = '';
   total: number = 10;
   pageSize: number = 10;
   page: number = 1;
-  candidates: Candidate[] = [];
+  applications: Application[] = [];
   position: Position;
 
   private router: Router;
-  private candidatesService: CandidatesService;
+  private applicationsService: ApplicationsService;
 
-  constructor(private route: ActivatedRoute, router: Router, candidatesService: CandidatesService) {
+  constructor(private route: ActivatedRoute, router: Router, candidatesService: ApplicationsService) {
     this.router = router;
-    this.candidatesService = candidatesService;
+    this.applicationsService = candidatesService;
     this.position = {} as Position;
   }
 
@@ -45,15 +45,15 @@ export class CandidatesComponent implements OnInit {
     console.log(this.router.getCurrentNavigation()?.extras.state);
 
     this.position = history.state.position;
-    this.candidatesService.getCandidatesByPosition(this.position.id).subscribe((candidates) => {
-      this.candidates = candidates;
+    this.applicationsService.getCandidatesByPosition(this.position.id).subscribe((candidates) => {
+      this.applications = candidates;
     });
   }
 
   get filteredResults() {
     let searchTerm = this.searchTerm.toLowerCase();
-    return this.candidates.filter(item =>
-      item.name.toLowerCase().includes(searchTerm) ||
+    return this.applications.filter(item =>
+      item.candidate.toLowerCase().includes(searchTerm) ||
       item.tags.filter(tag => tag.name.toLowerCase().includes(searchTerm)).length > 0
     );
   }
