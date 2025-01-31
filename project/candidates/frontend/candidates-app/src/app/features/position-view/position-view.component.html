@@ -20,30 +20,22 @@
                   <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
                     Back
                   </button>
-                  <button type="button" class="btn rounded-pill btn-danger" (click)="back()">
+                  <button type="button" class="btn rounded-pill btn-danger" (click)="openApplyForm()">
                     Apply
                   </button>
                 </div>
               </div>
             </div>
-
           </div>
-
-
           <div class="row">
             <div class="col align-self-center mt-3 mb-3 mb-lg-0">
-              <h4 class="fw-semibold mb-1">¿Qué buscamos?</h4>
+              <h4 class="fw-semibold mb-1">What are we looking for?</h4>
               <p class="lead">{{ position.description }}</p>
             </div>
           </div>
-
-          <div class="row">
-
-          </div>
-
           <div class="row mt-3 ">
             <div class="col align-self-center mb-3 mb-lg-0">
-              <h4 class="fw-semibold mb-1">¿Qué esperamos de ti?</h4>
+              <h4 class="fw-semibold mb-1">What do we expect from you?</h4>
               <ul class="pt-2">
                 <li *ngFor="let req of position.requirements" class="lead">
                   <strong>{{ req.key }}:</strong> {{ req.value }} - {{ req.description }}
@@ -55,7 +47,7 @@
 
           <div class="row mt-3 ">
             <div class="col align-self-center mb-3 mb-lg-0">
-              <h4 class="fw-semibold mb-1">¿Qué responsabilidades tendrás?</h4>
+              <h4 class="fw-semibold mb-1">What responsibilities will you have?</h4>
               <ul class="pt-2">
                 <li *ngFor="let task of position.tasks" class="lead">{{ task.description }}</li>
               </ul>
@@ -64,7 +56,7 @@
 
           <div class="row mt-3 ">
             <div class="col align-self-center mb-3 mb-lg-0">
-              <h4 class="fw-semibold  mb-1">¿Qué tenemos de especial?</h4>
+              <h4 class="fw-semibold  mb-1">What do we have that's special?</h4>
               <ul class="pt-2">
                 <li *ngFor="let benefit of position.benefits" class="lead">{{ benefit.description }}</li>
               </ul>
@@ -74,6 +66,29 @@
 
       </div>
     </div>
+
+    <ng-template
+      #applyToPositionModal let-modal
+      class="modal fade"
+      d="applyToPositionModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="applyToPositionModalTitle"
+      aria-hidden="true">
+      <div class="modal-body">
+        <div class="row align-items-center">
+          <div class="col">
+            <app-new-application #newApplicationComponent [position]="position" (applicationFinished)="closeModal()"></app-new-application>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="closeModal()">Cancel</button>
+          <button type="button" class="btn rounded-pill btn-danger" (click)="applyToPosition()">Apply</button>
+        </div>
+      </div>
+
+    </ng-template>
 
   }
 

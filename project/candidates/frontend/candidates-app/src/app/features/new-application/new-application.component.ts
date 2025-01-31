@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
 import {DatePipe, NgIf} from "@angular/common";
+import {Position} from "../../model/position";
 
 @Component({
   selector: 'app-new-application',
@@ -15,6 +16,9 @@ import {DatePipe, NgIf} from "@angular/common";
   styleUrls: ['./new-application.component.scss']
 })
 export class NewApplicationComponent {
+  @Input() position!: Position;
+  @Output() applicationFinished = new EventEmitter<void>();
+
   applicationForm: FormGroup;
   uploadedFile: File | null = null;
 
@@ -41,11 +45,7 @@ export class NewApplicationComponent {
     if (this.applicationForm.valid) {
       console.log('Application submitted:', this.applicationForm.value);
       alert('Application submitted successfully!');
-      this.router.navigate(['/']); // Redirige a la página principal (ajustar según sea necesario)
+      this.applicationFinished.emit();
     }
-  }
-
-  cancel() {
-    this.router.navigate(['../']); // Navega hacia atrás
   }
 }

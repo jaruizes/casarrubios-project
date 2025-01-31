@@ -22,20 +22,13 @@ export class HomeComponent implements OnInit {
   pageSize: number = 10;
   page: number = 1;
   positions: Position[] = [];
-  positionToDelete?: Position;
-
-  @ViewChild('deletePositionModal')
-  deletePositionModal!: TemplateRef<HTMLElement>;
 
   private router: Router;
   private positionService: PositionsService;
-  private modalService: NgbModal;
-  private deletePositionModalRef!: NgbModalRef;
 
-  constructor(router: Router, positionService: PositionsService, modalService: NgbModal) {
+  constructor(router: Router, positionService: PositionsService) {
     this.router = router;
     this.positionService = positionService;
-    this.modalService = modalService;
   }
 
   ngOnInit(): void {
@@ -52,33 +45,11 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  newPosition() {
-    this.router.navigate(['private/position-detail', { }]);
-  }
-
-  newApplication() {
-    this.router.navigate(['private/new-application', { }]);
-  }
-
   goToPositionDetail(id: number) {
     this.router.navigate(['position-detail', { id: id }]);
   }
 
   goToPositionView(id: number) {
     this.router.navigate(['private/position-view', { id: id }]);
-  }
-
-  goToApplications(position: Position) {
-    this.router.navigateByUrl('private/applications-list', { state: { position } });
-  }
-
-  confirmDeletePosition(id: number) {
-    this.positionToDelete = this.positions.filter((position: Position)=> position.id === id)[0];
-    this.deletePositionModalRef = this.modalService.open(this.deletePositionModal, { centered: true,  });
-  }
-
-  deletePosition(id: number) {
-    console.log('Deleting position with id: ', id);
-    this.deletePositionModalRef.close();
   }
 }

@@ -24,13 +24,12 @@
           <table class="table table-hover mb-0">
             <thead class="table-light">
               <tr>
-                <th class="border-top-0" style="width: 5%">Id</th>
-                <th class="border-top-0">Title</th>
-                <th class="border-top-0">Description</th>
-                <th class="border-top-0 ">Creation Date</th>
-                <th class="border-top-0 text-center">Tags</th>
-                <th class="border-top-0" style="width: 10%">Applications</th>
-                <th class="border-top-0 ">Action</th>
+                <th class="border-top-0 col-1">Id</th>
+                <th class="border-top-0 col-2">Title</th>
+                <th class="border-top-0 col-4">Description</th>
+                <th class="border-top-0 col-2 text-center">Creation Date</th>
+                <th class="border-top-0 col-2 text-center">Tags</th>
+                <th class="border-top-0 col-2 text-center">Applications</th>
               </tr>
             </thead>
             <tbody>
@@ -38,18 +37,13 @@
                 <td class="">{{ item.id }}</td>
                 <td class="">{{ item.title }}</td>
                 <td class="text-truncate">{{ item.description }}</td>
-                <td class="">{{ item.creationDate | date: 'dd-MM-yyyy'}}</td>
+                <td class="text-center">{{ item.creationDate | date: 'dd-MM-yyyy'}}</td>
                 <td class="text-center">
                   @for (tag of item.tags; track tag.name) {
                     <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
                   }
                 </td>
                 <td class="text-center">{{ item.applications }}</td>
-                <td class="">
-                  <button class="btn rounded-pill btn-danger fs-9" (click)="goToPositionView(item.id); $event.stopPropagation()">
-                    Apply
-                  </button>
-                </td>
               </tr>
               <tr *ngIf="filteredResults.length === 0">
                 <td colspan="4" class="text-center">No results found</td>
@@ -57,35 +51,6 @@
             </tbody>
           </table>
         </div>
-        <ng-template
-          #deletePositionModal let-modal class="modal fade" id="deletePositionModal" tabindex="-1" role="dialog" aria-labelledby="deletePositionModalTitle" aria-hidden="true">
-          @if (positionToDelete) {
-
-            <div class="modal-header bg-danger">
-              <h6 class="modal-title m-0" id="exampleModalCenterTitle">Delete Position</h6>
-              <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
-            </div>
-            <!--end modal-header-->
-            <div class="modal-body">
-              <div class="row">
-                <div class="col-lg-3 text-center align-self-center">
-                  <img src="assets/images/extra/card/btc.png" alt="" class="img-fluid"/>
-                </div>
-                <!--end col-->
-                <div class="col-lg-9 align-self-center">
-                  <h5>{{ positionToDelete.title }}</h5>
-                  <span class="badge bg-light text-dark">{{ positionToDelete.creationDate | date }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary btn-sm" (click)="modal.dismiss()">Cancel</button>
-              <button type="button" class="btn btn-danger btn-sm" (click)="deletePosition(positionToDelete.id)">Confirm</button>
-            </div>
-          }
-        </ng-template>
-
-
         <div class="d-flex justify-content-between p-2">
           <ngb-pagination
             [collectionSize]="total"

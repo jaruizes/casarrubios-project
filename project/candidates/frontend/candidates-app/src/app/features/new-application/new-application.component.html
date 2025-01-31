@@ -1,34 +1,7 @@
-<div class="container mt-4">
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
-          <div class="d-flex align-items-center flex-row flex-wrap">
-            <div class="">
-              <h5 class="fw-semibold fs-22 mb-1">Apply for a Position</h5>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
-          <div class="text-end flex-row flex-wrap">
-            <div class="pb-2">
-              <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="cancel()">
-                Back
-              </button>
-              <button type="button" class="btn rounded-pill btn-primary">
-                Apply
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
+<div class="container">
   <div class="card">
     <div class="card-header">
-      <h3 class="fw-semibold">Apply for a Position</h3>
+      <h3 class="fw-semibold">Fill the form to apply</h3>
     </div>
     <div class="card-body">
       <form [formGroup]="applicationForm" (ngSubmit)="submitApplication()">
@@ -68,14 +41,15 @@
 
         <!-- CV Upload -->
         <div class="row mb-3 align-items-center">
-          <label for="cv" class="col-sm-2 col-form-label text-lg-end">Upload CV</label>
+          <label for="cv" class="col-sm-2 col-form-label text-lg-end text-nowrap">Upload CV</label>
           <div class="col-sm-9">
-            <input type="file" id="cv" class="form-control" (change)="onFileSelected($event)">
+            <input type="file" id="cv" class="form-control pl-1" (change)="onFileSelected($event)">
             <div *ngIf="applicationForm.get('cv')?.invalid && applicationForm.get('cv')?.touched" class="text-danger">
               Please upload a PDF file.
             </div>
           </div>
         </div>
+
       </form>
     </div>
   </div>
