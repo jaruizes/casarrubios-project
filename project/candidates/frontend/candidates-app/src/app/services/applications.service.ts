@@ -13,9 +13,7 @@ export class ApplicationsService {
 
   constructor(private http: HttpClient) {}
 
-  getCandidatesByPosition(position: number): Observable<Application[]> {
-    let params = new HttpParams();
-    params = params.set('position', position.toString());
-    return this.http.get<Application[]>(`${this.baseUrl}`, { params });
+  applyToPosition(application: Application): Observable<Application> {
+    return this.http.post<Application>(`${this.baseUrl}`, application);
   }
 }

@@ -1,15 +1,11 @@
-import {Tag} from "./position";
-
-export interface PositionApplied {
-  id: number;
-  matchingPercentage: number;
+export interface CandidateData {
+  name: string;
+  email: string;
+  phone: string;
+  cv: string;
 }
 
 export interface Application {
-  id: number;
-  candidate: string;
-  applicationDate: string;
-  tags: Tag[];
-  cv: string;
-  positionsApplied: PositionApplied[];
+  positionId: number;
+  candidate: CandidateData;
 }
