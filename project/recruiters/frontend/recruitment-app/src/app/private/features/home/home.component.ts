@@ -57,10 +57,6 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['private/position-detail', { }]);
   }
 
-  newApplication() {
-    this.router.navigate(['private/new-application', { }]);
-  }
-
   goToPositionDetail(id: number) {
     this.router.navigate(['private/position-detail', { id: id }]);
   }

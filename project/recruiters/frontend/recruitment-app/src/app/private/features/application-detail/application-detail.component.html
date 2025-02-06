@@ -1,0 +1,146 @@
+<div class="card border-primary border border-2 border-secondary">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+        <div class="d-flex align-items-center flex-row flex-wrap">
+          <div class="">
+            <h5 class="fw-semibold fs-22 mb-1">{{ application.position.title }} ({{ application.position.id }})</h5>
+            <p class="mb-0 text-muted fw-medium">Created: {{ application.position.createdAt | date: 'dd-MM-yyyy' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
+        <div class="text-end flex-row flex-wrap">
+          <div class="pb-2">
+            <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
+              <i class="fa fa-home"></i> Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row">
+          <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+            <div class="d-flex align-items-center flex-row flex-wrap">
+              <h4 class="fw-semibold fs-22 mb-1">{{ application.candidate.name + ' ' + application.candidate.lastName}}</h4>
+            </div>
+            <div>
+              <p class="mb-0 text-muted fw-medium">Application Date: {{ application.applicationDate | date: 'dd-MM-yyyy'  }}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
+            <div class="text-end flex-row flex-wrap">
+              <div class="pb-2">
+                <button type="button" class="btn rounded-pill btn-success me-0.5" (click)="downloadCV()">
+                  <i class="fa fa-file-pdf"></i> Download CV
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-3 align-self-center mb-3 mb-lg-0">
+            <div class="d-flex align-items-center flex-row flex-wrap">
+              <div class="">
+                <p class="mb-0 fw-medium">Email: {{ application.candidate.email }}</p>
+                <p class="mb-0 fw-medium">Telf: {{ application.candidate.phone }}</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-center flex-row flex-wrap mt-2">
+              @for (tag of application.candidate.tags; track tag) {
+                <span class="badge bg-primary me-0.5 fs-14">{{ tag.name }}</span>
+              }
+            </div>
+          </div>
+          <div class="col-lg-7 ms-auto align-self-center">
+            <div class="d-flex ">
+              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-1 text-center">
+                <p class="text-muted mb-0 fw-medium">Current Role</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ application.candidate.currentRole }}</h5>
+              </div>
+              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
+                <p class="text-muted mb-0 fw-medium">Experience (y)</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ application.candidate.totalExperience }}</h5>
+              </div>
+              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
+                <p class="text-muted mb-0 fw-medium">Success</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ application.matchingPercentage }}%</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h4 class="fw-semibold fs-18 mb-1">Summary</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col">
+            <blockquote class="blockquote ps-4 ">
+              <p class="fs-14">{{ application.candidate.summary }}</p>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h4 class="fw-semibold fs-18 mb-1">Analysis</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3 row">
+          <div class="col">
+            <blockquote class="blockquote ps-4 ">
+              <p class="fs-14">{{ application.candidate.summary }}</p>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h4 class="fw-semibold fs-18 mb-1">Possible questions</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3 row">
+          <div class="col">
+            <ul class="list-unstyled">
+              @for (question of application.questions; track question) {
+                <li class="blockquote ps-4 ">
+                  <p class="text-dark mb-0 p-2 bg-light rounded ms-n2 bg-light-alt fs-15">{{ question }}</p>
+                </li>
+              }
+
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+</div>

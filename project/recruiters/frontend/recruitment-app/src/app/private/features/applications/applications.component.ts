@@ -45,7 +45,7 @@ export class ApplicationsComponent implements OnInit {
     console.log(this.router.getCurrentNavigation()?.extras.state);
 
     this.position = history.state.position;
-    this.applicationsService.getCandidatesByPosition(this.position.id).subscribe((candidates) => {
+    this.applicationsService.getApplicationsByPosition(this.position.id).subscribe((candidates) => {
       this.applications = candidates;
     });
   }
@@ -69,6 +69,10 @@ export class ApplicationsComponent implements OnInit {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  goToApplicationDetail(id: number) {
+    this.router.navigate(['private/application-detail', { id: id }]);
   }
 
 }

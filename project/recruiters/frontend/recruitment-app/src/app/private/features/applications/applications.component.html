@@ -59,7 +59,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let application of filteredResults" style="cursor: pointer">
+            <tr *ngFor="let application of filteredResults" style="cursor: pointer" (click)="goToApplicationDetail(application.id)">
               <td class="">{{ application.id }}</td>
               <td class="">{{ application.candidate }}</td>
               <td class="">{{ application.applicationDate | date: 'dd-MM-yyyy'}}</td>

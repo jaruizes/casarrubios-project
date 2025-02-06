@@ -22,11 +22,9 @@ export class PositionDetailComponent implements OnInit {
   tags: string[] = [];
   tagInputValue: string = '';
 
-  private positionService: PositionsService;
   private router: Router;
 
-  constructor(private route: ActivatedRoute, router: Router, positionService: PositionsService) {
-    this.positionService = positionService;
+  constructor(private route: ActivatedRoute, router: Router, private positionService: PositionsService) {
     this.router = router;
     this.isEditing = false;
     this.position = {

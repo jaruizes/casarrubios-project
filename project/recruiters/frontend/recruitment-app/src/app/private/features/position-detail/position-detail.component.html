@@ -1,239 +1,237 @@
-<div class="container">
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
-          <div class="d-flex align-items-center flex-row flex-wrap">
-            @if (isEditing) {
-              <div class="">
-                <h5 class="fw-semibold fs-22 mb-1">{{ position.title }}</h5>
-                 <p class="mb-0 text-muted fw-medium">Internal Id: {{position.id}}</p>
-                 <p class="mb-0 text-muted fw-medium">Applications received: {{position.applications}}</p>
-                 <p class="mb-0 text-muted fw-medium">Created at: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
-              </div>
-            } @else {
-              <div class="">
-                <h5 class="fw-semibold fs-22 mb-1">Create New Position</h5>
-              </div>
-            }
-          </div>
-        </div>
-        <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
-          <div class="text-end flex-row flex-wrap">
-            <div class="pb-2">
-              <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
-                Back
-              </button>
-              <button type="button" class="btn rounded-pill btn-primary" (click)="saveChanges()">
-                Save changes
-              </button>
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+        <div class="d-flex align-items-center flex-row flex-wrap">
+          @if (isEditing) {
+            <div class="">
+              <h5 class="fw-semibold fs-22 mb-1">{{ position.title }}</h5>
+               <p class="mb-0 text-muted fw-medium">Internal Id: {{position.id}}</p>
+               <p class="mb-0 text-muted fw-medium">Applications received: {{position.applications}}</p>
+               <p class="mb-0 text-muted fw-medium">Created at: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
             </div>
+          } @else {
+            <div class="">
+              <h5 class="fw-semibold fs-22 mb-1">Create New Position</h5>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
+        <div class="text-end flex-row flex-wrap">
+          <div class="pb-2">
+            <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
+              Back
+            </button>
+            <button type="button" class="btn rounded-pill btn-primary" (click)="saveChanges()">
+              Save changes
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="card">
-    <div class="card-header">
-      <div class="row align-items-center">
-        <div class="col">
-          <h4 class="card-title">Basic Info</h4>
-        </div>
+<div class="card">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h4 class="card-title">Basic Info</h4>
       </div>
     </div>
-    <div class="card-body pt-0">
-      <div class="mb-3 row">
-        <label for="title" class="col-sm-2 col-form-label text-lg-end">Title</label>
-        <div class="col-sm-10">
-          <input class="form-control" type="text"  id="title" [(ngModel)]="position.title"/>
-        </div>
+  </div>
+  <div class="card-body pt-0">
+    <div class="mb-3 row">
+      <label for="title" class="col-sm-2 col-form-label text-lg-end">Title</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text"  id="title" [(ngModel)]="position.title"/>
       </div>
-      <div class="mb-3 row">
-        <label for="description" class="col-sm-2 col-form-label text-lg-end">Description</label>
-        <div class="col-sm-10">
-          <textarea class="form-control" rows="5" id="description" [(ngModel)]="position.description"></textarea>
-        </div>
+    </div>
+    <div class="mb-3 row">
+      <label for="description" class="col-sm-2 col-form-label text-lg-end">Description</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" rows="5" id="description" [(ngModel)]="position.description"></textarea>
       </div>
-      <div class="mb-3 row">
-        <label for="status" class="col-sm-2 col-form-label text-lg-end">Status</label>
-        <div class="col-sm-10">
-          <select class="form-select" id="status" [(ngModel)]="position.status">
-            <option value="1">Open</option>
-            <option value="2">Closed</option>
-          </select>
-        </div>
+    </div>
+    <div class="mb-3 row">
+      <label for="status" class="col-sm-2 col-form-label text-lg-end">Status</label>
+      <div class="col-sm-10">
+        <select class="form-select" id="status" [(ngModel)]="position.status">
+          <option value="1">Open</option>
+          <option value="2">Closed</option>
+        </select>
       </div>
-      <div class="mb-3 row">
-        <label for="tags" class="col-sm-2 col-form-label text-lg-end">Status</label>
-        <div class="col-sm-10">
-          <div class="d-flex align-items-center">
-            <input id="tags" type="text" class="flex-grow-1 form-control"
-                   [(ngModel)]="tagInputValue"
-                   (keydown)="addTag($event)"
-                   placeholder="Enter a tag..." />
-          </div>
-          <div class="d-flex align-items-center mt-2">
-            @for (tag of position.tags; let i = $index; track i) {
-              <span class="badge bg-primary me-0.5">{{ tag.name }}
-                <span class="ms-1 cursor-pointer" (click)="removeTag(i)">×</span>
-              </span>
-            }
-          </div>
+    </div>
+    <div class="mb-3 row">
+      <label for="tags" class="col-sm-2 col-form-label text-lg-end">Status</label>
+      <div class="col-sm-10">
+        <div class="d-flex align-items-center">
+          <input id="tags" type="text" class="flex-grow-1 form-control"
+                 [(ngModel)]="tagInputValue"
+                 (keydown)="addTag($event)"
+                 placeholder="Enter a tag..." />
+        </div>
+        <div class="d-flex align-items-center mt-2">
+          @for (tag of position.tags; let i = $index; track i) {
+            <span class="badge bg-primary me-0.5">{{ tag.name }}
+              <span class="ms-1 cursor-pointer" (click)="removeTag(i)">×</span>
+            </span>
+          }
         </div>
       </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="row align-items-center">
-        <div class="col">
-          <h4 class="card-title">Requirements</h4>
-        </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h4 class="card-title">Requirements</h4>
       </div>
     </div>
-    <div class="card-body pt-0">
-      <div class="mb-3 row justify-content-center pr-2 pl-2">
-        <div class="col ">
-          <table class="table mb-0 gx-5">
-            <thead class="table-light">
-            <tr>
-              <th class="border-top-0" style="width: 15%;">Key</th>
-              <th class="border-top-0" style="width: 15%;">Value</th>
-              <th class="border-top-0" style="width: 50%;">Description</th>
-              <th class="border-top-0" style="width: 10%;"></th>
-              <th class="border-top-0" style="width: 10%;"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let req of position.requirements; let i = index">
-              <td class="align-top px-2">
+  </div>
+  <div class="card-body pt-0">
+    <div class="mb-3 row justify-content-center pr-2 pl-2">
+      <div class="col ">
+        <table class="table mb-0 gx-5">
+          <thead class="table-light">
+          <tr>
+            <th class="border-top-0" style="width: 15%;">Key</th>
+            <th class="border-top-0" style="width: 15%;">Value</th>
+            <th class="border-top-0" style="width: 50%;">Description</th>
+            <th class="border-top-0" style="width: 10%;"></th>
+            <th class="border-top-0" style="width: 10%;"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let req of position.requirements; let i = index">
+            <td class="align-top px-2">
+              <input
+                class="form-control text-start"
+                type="text"
+                id="req-title-{{i}}"
+                [(ngModel)]="position.requirements[i].key"
+              />
+            </td>
+            <td class="align-top px-2">
+              <input
+                class="form-control text-start"
+                type="text"
+                id="req-value-{{i}}"
+                [(ngModel)]="position.requirements[i].value"
+              />
+            </td>
+            <td class="align-top px-2">
+              <textarea
+                class="form-control text-start"
+                rows="3"
+                id="req-description-{{i}}"
+                [(ngModel)]="position.requirements[i].description"
+              ></textarea>
+            </td>
+            <td class="align-middle px-2 text-center form-switch form-switch-success">
+              <label class="form-check-label" for="customSwitchSuccess-{{i}}">Is mandatory?</label>
+              <div class="text-center form-switch form-switch-success">
                 <input
-                  class="form-control text-start"
-                  type="text"
-                  id="req-title-{{i}}"
-                  [(ngModel)]="position.requirements[i].key"
+                  class="form-check-input"
+                  type="checkbox"
+                  id="customSwitchSuccess-{{i}}"
+                  [checked]="position.requirements[i].isMandatory"
                 />
-              </td>
-              <td class="align-top px-2">
-                <input
-                  class="form-control text-start"
-                  type="text"
-                  id="req-value-{{i}}"
-                  [(ngModel)]="position.requirements[i].value"
-                />
-              </td>
-              <td class="align-top px-2">
-                <textarea
-                  class="form-control text-start"
-                  rows="3"
-                  id="req-description-{{i}}"
-                  [(ngModel)]="position.requirements[i].description"
-                ></textarea>
-              </td>
-              <td class="align-middle px-2 text-center form-switch form-switch-success">
-                <label class="form-check-label" for="customSwitchSuccess-{{i}}">Is mandatory?</label>
-                <div class="text-center form-switch form-switch-success">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="customSwitchSuccess-{{i}}"
-                    [checked]="position.requirements[i].isMandatory"
-                  />
-                </div>
+              </div>
 
-              </td>
-              <td class="align-middle px-2 text-center">
-                <button class="btn btn-danger btn-sm me-2" (click)="deleteRequirement(i)">
-                  <i class="fa fa-trash"></i>
-                </button>
-                <button class="btn btn-success btn-sm" (click)="addRequirement()">
-                  <i class="fa fa-plus"></i>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+            </td>
+            <td class="align-middle px-2 text-center">
+              <button class="btn btn-danger btn-sm me-2" (click)="deleteRequirement(i)">
+                <i class="fa fa-trash"></i>
+              </button>
+              <button class="btn btn-success btn-sm" (click)="addRequirement()">
+                <i class="fa fa-plus"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
-        </div>
       </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="row align-items-center">
-        <div class="col">
-          <h4 class="card-title">Tasks</h4>
-        </div>
-      </div>
-    </div>
-    <div class="card-body pt-0">
-      <div class="mb-3 row justify-content-center pr-2 pl-2">
-        <div class="col ">
-          <table class="table mb-0 gx-5">
-            <thead class="table-light">
-            <tr>
-              <th class="border-top-0">Description</th>
-              <th class="border-top-0" style="width: 10%;"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of position.tasks; let i = index">
-              <td class="align-top px-2">
-                <textarea class="form-control text-start" rows="3" id="tasks-description-{{i}}" [(ngModel)]="position.tasks[i].description"></textarea>
-              </td>
-              <td class="align-middle px-2 text-center">
-                <button class="btn btn-danger btn-sm me-2" (click)="deleteTask(i)">
-                  <i class="fa fa-trash"></i>
-                </button>
-                <button class="btn btn-success btn-sm" (click)="addTask()">
-                  <i class="fa fa-plus"></i>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-
-        </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h4 class="card-title">Tasks</h4>
       </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-header">
-      <div class="row align-items-center">
-        <div class="col">
-          <h4 class="card-title">Benefits</h4>
-        </div>
+  <div class="card-body pt-0">
+    <div class="mb-3 row justify-content-center pr-2 pl-2">
+      <div class="col ">
+        <table class="table mb-0 gx-5">
+          <thead class="table-light">
+          <tr>
+            <th class="border-top-0">Description</th>
+            <th class="border-top-0" style="width: 10%;"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of position.tasks; let i = index">
+            <td class="align-top px-2">
+              <textarea class="form-control text-start" rows="3" id="tasks-description-{{i}}" [(ngModel)]="position.tasks[i].description"></textarea>
+            </td>
+            <td class="align-middle px-2 text-center">
+              <button class="btn btn-danger btn-sm me-2" (click)="deleteTask(i)">
+                <i class="fa fa-trash"></i>
+              </button>
+              <button class="btn btn-success btn-sm" (click)="addTask()">
+                <i class="fa fa-plus"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
       </div>
     </div>
-    <div class="card-body pt-0">
-      <div class="mb-3 row justify-content-center pr-2 pl-2">
-        <div class="col ">
-          <table class="table mb-0 gx-5">
-            <thead class="table-light">
-            <tr>
-              <th class="border-top-0">Description</th>
-              <th class="border-top-0" style="width: 10%;"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of position.benefits; let i = index">
-              <td class="align-top px-2">
-                <textarea class="form-control text-start" rows="3" id="benefits-description-{{i}}" [(ngModel)]="position.benefits[i].description"></textarea>
-              </td>
-              <td class="align-middle px-2 text-center">
-                <button class="btn btn-danger btn-sm me-2" (click)="deleteBenefit(i)">
-                  <i class="fa fa-trash"></i>
-                </button>
-                <button class="btn btn-success btn-sm" (click)="addBenefit()">
-                  <i class="fa fa-plus"></i>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">
+    <div class="row align-items-center">
+      <div class="col">
+        <h4 class="card-title">Benefits</h4>
+      </div>
+    </div>
+  </div>
+  <div class="card-body pt-0">
+    <div class="mb-3 row justify-content-center pr-2 pl-2">
+      <div class="col ">
+        <table class="table mb-0 gx-5">
+          <thead class="table-light">
+          <tr>
+            <th class="border-top-0">Description</th>
+            <th class="border-top-0" style="width: 10%;"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of position.benefits; let i = index">
+            <td class="align-top px-2">
+              <textarea class="form-control text-start" rows="3" id="benefits-description-{{i}}" [(ngModel)]="position.benefits[i].description"></textarea>
+            </td>
+            <td class="align-middle px-2 text-center">
+              <button class="btn btn-danger btn-sm me-2" (click)="deleteBenefit(i)">
+                <i class="fa fa-trash"></i>
+              </button>
+              <button class="btn btn-success btn-sm" (click)="addBenefit()">
+                <i class="fa fa-plus"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
-        </div>
       </div>
     </div>
   </div>
