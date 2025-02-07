@@ -32,12 +32,9 @@ export class ApplicationsComponent implements OnInit {
   applications: Application[] = [];
   position: Position;
 
-  private router: Router;
-  private applicationsService: ApplicationsService;
-
-  constructor(private route: ActivatedRoute, router: Router, candidatesService: ApplicationsService) {
+  constructor(private router: Router, private applicationsService: ApplicationsService) {
     this.router = router;
-    this.applicationsService = candidatesService;
+    this.applicationsService = applicationsService;
     this.position = {} as Position;
   }
 
@@ -60,15 +57,6 @@ export class ApplicationsComponent implements OnInit {
 
   getMatchingPercentage(positionsApplied: PositionApplied[]): number {
     return positionsApplied.filter((position) => position.id === this.position.id)[0].matchingPercentage;
-  }
-
-  downloadCV(applicationId: number, cv: string) {
-    const link = document.createElement('a');
-    link.href = cv;
-    link.download = applicationId + '.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   }
 
   goToApplicationDetail(id: number) {

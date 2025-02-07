@@ -28,12 +28,9 @@ export class HomeComponent implements OnInit {
   @ViewChild('deletePositionModal')
   deletePositionModal!: TemplateRef<HTMLElement>;
 
-  private router: Router;
-  private positionService: PositionsService;
-  private modalService: NgbModal;
   private deletePositionModalRef!: NgbModalRef;
 
-  constructor(router: Router, positionService: PositionsService, modalService: NgbModal) {
+  constructor(private router: Router, private positionService: PositionsService, private modalService: NgbModal) {
     this.router = router;
     this.positionService = positionService;
     this.modalService = modalService;
