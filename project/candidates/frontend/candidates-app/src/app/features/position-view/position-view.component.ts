@@ -20,7 +20,7 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 })
 export class PositionViewComponent implements OnInit {
   positionId!: number;
-  position?: Position;
+  position!: Position;
   @ViewChild('applyToPositionModal')
   applyToPositionModal!: TemplateRef<HTMLElement>;
 
