@@ -1,64 +1,63 @@
-<div class="container">
-  @if (position) {
-    <div class="card">
-      <div class="card-body">
-        <div class="container p-4">
-          <div class="row">
+
+<div class="card border border-2 border-secondary ">
+  <div class="card-header bg-light-subtle">
+    <div class="row">
+      <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+        <div class="d-flex align-items-center flex-row flex-wrap">
+          <div class="">
             <h1 class="fw-semibold mb-1">{{ position.title }}</h1>
-            <p class="text-muted">
-              📅 Publicado el: {{ position.creationDate | date:'dd-MM-yyyy' }}
-            </p>
-            <div class="mb-3">
-              <span *ngFor="let tag of position.tags" class="badge bg-success me-2">{{ tag.name }}</span>
-            </div>
-          </div>
-
-
-          <div class="row">
-            <div class="col align-self-center mt-3 mb-3 mb-lg-0">
-              <h4 class="fw-semibold mb-1">¿Qué buscamos?</h4>
-              <p class="lead">{{ position.description }}</p>
-            </div>
-          </div>
-
-          <div class="row">
-
-          </div>
-
-          <div class="row mt-3 ">
-            <div class="col align-self-center mb-3 mb-lg-0">
-              <h4 class="fw-semibold mb-1">¿Qué esperamos de ti?</h4>
-              <ul class="pt-2">
-                <li *ngFor="let req of position.requirements" class="lead">
-                  <strong>{{ req.key }}:</strong> {{ req.value }} - {{ req.description }}
-                  <span *ngIf="req.isMandatory" class="text-danger">(Obligatorio)</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row mt-3 ">
-            <div class="col align-self-center mb-3 mb-lg-0">
-              <h4 class="fw-semibold mb-1">¿Qué responsabilidades tendrás?</h4>
-              <ul class="pt-2">
-                <li *ngFor="let task of position.tasks" class="lead">{{ task.description }}</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row mt-3 ">
-            <div class="col align-self-center mb-3 mb-lg-0">
-              <h4 class="fw-semibold  mb-1">¿Qué tenemos de especial?</h4>
-              <ul class="pt-2">
-                <li *ngFor="let benefit of position.benefits" class="lead">{{ benefit.description }}</li>
-              </ul>
-            </div>
+            <p class="mb-0 text-muted fw-medium">Created at: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
           </div>
         </div>
-
+      </div>
+      <div class="col-lg-4 align-top mb-3 mb-lg-0">
+        <div class="text-end flex-row flex-wrap">
+          <span *ngFor="let tag of position.tags" class="badge bg-success me-2 fs-16">{{ tag.name }}</span>
+        </div>
       </div>
     </div>
-
-  }
-
+  </div>
+  <div class="card-body">
+    <div class="card border-dashed">
+      <div class="card-header bg-blue-subtle">
+        <h4 class="fw-semibold mb-1">What are we looking for?</h4>
+      </div>
+      <div class="card-body">
+        <p class="lead">{{ position.description }}</p>
+      </div>
+    </div>
+    <div class="card border-dashed">
+      <div class="card-header bg-blue-subtle">
+        <h4 class="fw-semibold mb-1">What do we expect from you?</h4>
+      </div>
+      <div class="card-body">
+        <ul class="pt-2">
+          <li *ngFor="let req of position.requirements" class="lead">
+            <strong>{{ req.key }}:</strong> {{ req.value }} - {{ req.description }}
+            <span *ngIf="req.isMandatory" class="text-danger">(Obligatorio)</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="card border-dashed">
+      <div class="card-header bg-blue-subtle">
+        <h4 class="fw-semibold mb-1">What responsibilities will you have?</h4>
+      </div>
+      <div class="card-body">
+        <ul class="pt-2">
+          <li *ngFor="let task of position.tasks" class="lead">{{ task.description }}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card border-dashed">
+      <div class="card-header bg-blue-subtle">
+        <h4 class="fw-semibold mb-1">What do we have that's special?</h4>
+      </div>
+      <div class="card-body">
+        <ul class="pt-2">
+          <li *ngFor="let benefit of position.benefits" class="lead">{{ benefit.description }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>

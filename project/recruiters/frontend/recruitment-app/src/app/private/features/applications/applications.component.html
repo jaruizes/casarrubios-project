@@ -1,5 +1,5 @@
-<div class="card">
-  <div class="card-body">
+<div class="card border border-2 border-secondary">
+  <div class="card-header ">
     <div class="row">
       <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
         <div class="d-flex align-items-center flex-row flex-wrap">
@@ -22,87 +22,90 @@
       </div>
     </div>
   </div>
-</div>
+  <div class="card-body">
+    <div class="card border-dashed">
+      <div class="card-header mb-2 bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h2 class="fw-semibold  fs-20">Applications list</h2>
+          </div>
+        </div>
+      </div>
 
-<div class="card">
-  <div class="card-header mb-2">
-    <div class="row align-items-center">
-      <div class="col">
-        <h2 class="fw-semibold  fs-20">Applications list</h2>
+      <div class="card-body ">
+        <div class="row align-items-center mb-2">
+          <div class="col-8">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search..."
+              [(ngModel)]="searchTerm"/>
+          </div>
+        </div>
+
+        <div class="row align-items-center mb-2">
+          <div class="tab-pane" id="candidates" role="tabpanel">
+            <div class="table-responsive browser_users">
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
+                <tr>
+                  <th class="border-top-0" style="width: 5%">Id</th>
+                  <th class="border-top-0">Candidate</th>
+                  <th class="border-top-0 ">Application Date</th>
+                  <th class="border-top-0 text-center">Tags</th>
+                  <th class="border-top-0 text-center">Matching (%)</th>
+                  <th class="border-top-0 ">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let application of filteredResults" style="cursor: pointer" (click)="goToApplicationDetail(application.id)">
+                  <td class="">{{ application.id }}</td>
+                  <td class="">{{ application.candidate }}</td>
+                  <td class="">{{ application.applicationDate | date: 'dd-MM-yyyy'}}</td>
+                  <td class="text-center">
+                    @for (tag of application.tags; track tag.name) {
+                      <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
+                    }
+                  </td>
+                  <td class="text-center">{{ getMatchingPercentage(application.positionsApplied)}}</td>
+                  <td class="">
+                    <button class="btn p-0 me-1" (click)="downloadCV(application.id, application.cv); $event.stopPropagation()">
+                      <i class="las la-download text-secondary fs-20"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="filteredResults.length === 0">
+                  <td colspan="4" class="text-center">No results found</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-between p-2">
+              <ngb-pagination
+                [collectionSize]="total"
+                [(page)]="page"
+                [pageSize]="pageSize"
+              >
+              </ngb-pagination>
+
+              <select
+                class="form-select"
+                style="width: auto"
+                name="pageSize"
+                [(ngModel)]="pageSize"
+              >
+                <option [ngValue]="2">2 items per page</option>
+                <option [ngValue]="4">4 items per page</option>
+                <option [ngValue]="6">6 items per page</option>
+              </select>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="card-body pt-0 ">
-    <div class="row align-items-center mb-2">
-      <div class="col-8">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Search..."
-          [(ngModel)]="searchTerm"/>
-      </div>
-    </div>
-
-    <div class="row align-items-center mb-2">
-      <div class="tab-pane" id="candidates" role="tabpanel">
-        <div class="table-responsive browser_users">
-          <table class="table table-hover mb-0">
-            <thead class="table-light">
-            <tr>
-              <th class="border-top-0" style="width: 5%">Id</th>
-              <th class="border-top-0">Candidate</th>
-              <th class="border-top-0 ">Application Date</th>
-              <th class="border-top-0 text-center">Tags</th>
-              <th class="border-top-0 text-center">Matching (%)</th>
-              <th class="border-top-0 ">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let application of filteredResults" style="cursor: pointer" (click)="goToApplicationDetail(application.id)">
-              <td class="">{{ application.id }}</td>
-              <td class="">{{ application.candidate }}</td>
-              <td class="">{{ application.applicationDate | date: 'dd-MM-yyyy'}}</td>
-              <td class="text-center">
-                @for (tag of application.tags; track tag.name) {
-                  <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
-                }
-              </td>
-              <td class="text-center">{{ getMatchingPercentage(application.positionsApplied)}}</td>
-              <td class="">
-                <button class="btn p-0 me-1" (click)="downloadCV(application.id, application.cv); $event.stopPropagation()">
-                  <i class="las la-download text-secondary fs-20"></i>
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="filteredResults.length === 0">
-              <td colspan="4" class="text-center">No results found</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="d-flex justify-content-between p-2">
-          <ngb-pagination
-            [collectionSize]="total"
-            [(page)]="page"
-            [pageSize]="pageSize"
-          >
-          </ngb-pagination>
-
-          <select
-            class="form-select"
-            style="width: auto"
-            name="pageSize"
-            [(ngModel)]="pageSize"
-          >
-            <option [ngValue]="2">2 items per page</option>
-            <option [ngValue]="4">4 items per page</option>
-            <option [ngValue]="6">6 items per page</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
+
+
 
 

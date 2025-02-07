@@ -17,7 +17,7 @@ import {DatePipe, NgForOf, NgIf} from "@angular/common";
 })
 export class PositionViewComponent implements OnInit {
   positionId!: number;
-  position?: Position;
+  position!: Position;
   private positionService: PositionsService;
 
   constructor(private route: ActivatedRoute, positionService: PositionsService) {
