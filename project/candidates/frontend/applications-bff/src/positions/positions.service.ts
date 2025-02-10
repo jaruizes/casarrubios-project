@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Position } from './position.dto';
-import { throwIfEmpty } from 'rxjs';
 
 const mockData: Position[] = [
   {
