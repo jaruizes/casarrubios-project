@@ -74,13 +74,24 @@ public class PositionsRestController implements PositionsApi {
         positionDetailDTO.setRequirements(position.getRequirements().stream().map(requirement -> {
             var requirementDTO = new RequirementDTO();
             requirementDTO.setDescription(requirement.getDescription());
+            requirementDTO.setKey(requirement.getKey());
+            requirementDTO.setValue(requirement.getValue());
+            requirementDTO.setMandatory(requirement.getMandatory());
             return requirementDTO;
         }).toList());
+
         positionDetailDTO.setConditions(position.getConditions().stream().map(condition -> {
             var conditionDTO = new ConditionDTO();
             conditionDTO.setDescription(condition.getDescription());
             return conditionDTO;
         }).toList());
+
+        positionDetailDTO.setTasks(position.getTasks().stream().map(task -> {
+            var taskDTO = new TaskDTO();
+            taskDTO.setDescription(task.getDescription());
+            return taskDTO;
+        }).toList());
+
         return positionDetailDTO;
     }
 

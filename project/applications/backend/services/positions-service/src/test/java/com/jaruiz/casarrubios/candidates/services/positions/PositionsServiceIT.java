@@ -15,6 +15,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPaginatedPosition;
+import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPositionDetailDTO;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -69,18 +70,9 @@ public class PositionsServiceIT {
             .when()
             .get("/positions/1");
 
-        final PositionDetailDTO position = response.getBody().as(PositionDetailDTO.class);
-        Assertions.assertTrue(position.getId() > 0);
-        Assertions.assertTrue(position.getTitle() != null && !position.getTitle().isEmpty());
-        Assertions.assertTrue(position.getDescription() != null && !position.getDescription().isEmpty());
-
-        position.getRequirements().forEach(requirement -> {
-            Assertions.assertTrue(requirement.getDescription() != null && !requirement.getDescription().isEmpty());
-        });
-
-        position.getConditions().forEach(condition -> {
-            Assertions.assertTrue(condition.getDescription() != null && !condition.getDescription().isEmpty());
-        });
+        final PositionDetailDTO positionDTO = response.getBody().as(PositionDetailDTO.class);
+        assertEquals(200, response.getStatusCode());
+        assertPositionDetailDTO(positionDTO);
     }
 
     @Test

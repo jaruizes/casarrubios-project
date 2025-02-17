@@ -127,18 +127,37 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConditionDTO'
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskDTO'
     RequirementDTO:
       type: object
       properties:
+        key:
+          type: string
+          example: Java
+        value:
+          type: string
+          example: 10 years of experience
         description:
           type: string
           example: The candidate must have a degree in computer science
+        mandatory:
+          type: boolean
+          example: true
     ConditionDTO:
       type: object
       properties:
         description:
           type: string
           example: The candidate must have a degree in computer science
+    TaskDTO:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Design and develop software applications
 
 
   

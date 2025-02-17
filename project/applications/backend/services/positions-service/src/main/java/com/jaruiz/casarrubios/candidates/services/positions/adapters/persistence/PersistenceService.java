@@ -7,10 +7,8 @@ import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.ConditionEntity;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.PositionEntity;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.RequirementEntity;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Condition;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Position;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.PositionsList;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Requirement;
+import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.TaskEntity;
+import com.jaruiz.casarrubios.candidates.services.positions.business.model.*;
 import com.jaruiz.casarrubios.candidates.services.positions.business.ports.PersistencePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,29 +55,39 @@ public class PersistenceService implements PersistencePort {
         return positionEntityToPosition(positionEntity, true);
     }
 
-    private Position positionEntityToPosition(PositionEntity positionEntity, boolean includeRequirementsAndConditions) {
+    private Position positionEntityToPosition(PositionEntity positionEntity, boolean includeAllElements) {
         List<Condition> conditions = new ArrayList<>();
         List<Requirement> requirements = new ArrayList<>();
-        if (includeRequirementsAndConditions) {
+        List<Task> tasks = new ArrayList<>();
+        if (includeAllElements) {
             conditions = positionEntity.getConditions().stream().map(this::conditionsEntityToConditions).toList();
             requirements = positionEntity.getRequirements().stream().map(this::requirementsEntityToRequirements).toList();
+            tasks = positionEntity.getTasks().stream().map(this::taskEntityToTask).toList();
         }
 
         return new Position(positionEntity.getId(),
             positionEntity.getTitle(),
             positionEntity.getDescription(),
             requirements,
-            conditions);
+            conditions,
+            tasks);
     }
 
     private Requirement requirementsEntityToRequirements(RequirementEntity requirementEntity) {
-        return new Requirement(requirementEntity.getId(),
-            requirementEntity.getDescription());
+        return new Requirement(requirementEntity.getKey(),
+            requirementEntity.getValue(),
+            requirementEntity.getDescription(),
+            requirementEntity.getMandatory());
     }
 
     private Condition conditionsEntityToConditions(ConditionEntity conditionEntity) {
         return new Condition(conditionEntity.getId(),
             conditionEntity.getDescription());
+    }
+
+    private Task taskEntityToTask(TaskEntity taskEntity) {
+        return new Task(taskEntity.getId(),
+            taskEntity.getDescription());
     }
 
 }

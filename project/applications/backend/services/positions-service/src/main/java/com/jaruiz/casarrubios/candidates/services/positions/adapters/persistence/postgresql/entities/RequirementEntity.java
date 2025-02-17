@@ -14,6 +14,9 @@ public class RequirementEntity {
     @JoinColumn(name="position_id", nullable=false)
     private PositionEntity position;
 
+    private String key;
+    private String value;
+    private Boolean mandatory;
     private String description;
 
     public long getId() {
@@ -42,5 +45,29 @@ public class RequirementEntity {
 
     public void setPosition(PositionEntity position) {
         this.position = position;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Boolean getMandatory() {
+        return mandatory;
+    }
+
+    public void setMandatory(Boolean mandatory) {
+        this.mandatory = mandatory;
     }
 }

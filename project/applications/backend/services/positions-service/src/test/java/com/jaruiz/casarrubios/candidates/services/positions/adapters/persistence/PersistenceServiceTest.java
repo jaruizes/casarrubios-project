@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPosition;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPositionsList;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionEntityFake;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionsEntityListFake;
@@ -42,22 +43,7 @@ public class PersistenceServiceTest {
 
         final Position position = persistenceService.getPositionById(1L);
 
-        assertNotNull(position);
-        assertTrue(position.getId() > 0);
-        assertTrue(position.getTitle() != null && !position.getTitle().isEmpty());
-        assertTrue(position.getDescription() != null && !position.getDescription().isEmpty());
-        assertTrue(position.getRequirements() != null && !position.getRequirements().isEmpty());
-        assertTrue(position.getConditions() != null && !position.getConditions().isEmpty());
-
-        position.getRequirements().forEach(requirement -> {
-            assertTrue(requirement.getId() > 0);
-            assertTrue(requirement.getDescription() != null && !requirement.getDescription().isEmpty());
-        });
-
-        position.getConditions().forEach(condition -> {
-            assertTrue(condition.getId() > 0);
-            assertTrue(condition.getDescription() != null && !condition.getDescription().isEmpty());
-        });
+        assertPosition(position);
     }
 
     @Test

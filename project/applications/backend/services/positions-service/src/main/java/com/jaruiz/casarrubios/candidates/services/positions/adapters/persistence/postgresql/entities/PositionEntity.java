@@ -20,6 +20,9 @@ public class PositionEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
     private List<ConditionEntity> conditions;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
+    private List<TaskEntity> tasks;
+
     public long getId() {
         return id;
     }
@@ -58,5 +61,13 @@ public class PositionEntity {
 
     public void setConditions(List<ConditionEntity> conditions) {
         this.conditions = conditions;
+    }
+
+    public List<TaskEntity> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskEntity> tasks) {
+        this.tasks = tasks;
     }
 }

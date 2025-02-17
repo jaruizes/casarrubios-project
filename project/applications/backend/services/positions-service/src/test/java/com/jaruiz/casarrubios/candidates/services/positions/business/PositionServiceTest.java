@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPosition;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPositionsList;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionFake;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionsListFake;
@@ -35,22 +36,7 @@ public class PositionServiceTest {
 
         try {
             final Position position = positionService.getPositionDetail(1L);
-            assertNotNull(position);
-            assertTrue(position.getId() > 0);
-            assertTrue(position.getTitle() != null && !position.getTitle().isEmpty());
-            assertTrue(position.getDescription() != null && !position.getDescription().isEmpty());
-            assertTrue(position.getRequirements() != null && !position.getRequirements().isEmpty());
-            assertTrue(position.getConditions() != null && !position.getConditions().isEmpty());
-
-            position.getRequirements().forEach(requirement -> {
-                assertTrue(requirement.getId() > 0);
-                assertTrue(requirement.getDescription() != null && !requirement.getDescription().isEmpty());
-            });
-
-            position.getConditions().forEach(condition -> {
-                assertTrue(condition.getId() > 0);
-                assertTrue(condition.getDescription() != null && !condition.getDescription().isEmpty());
-            });
+            assertPosition(position);
 
         } catch (PositionNotFoundException e) {
             fail("Position not found");

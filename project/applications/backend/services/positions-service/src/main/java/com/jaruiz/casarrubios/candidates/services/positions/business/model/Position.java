@@ -9,13 +9,15 @@ public class Position {
     private final String description;
     private final List<Requirement> requirements;
     private final List<Condition> conditions;
+    private final List<Task> tasks;
 
-    public Position(long id, String title, String description, List<Requirement> requirements, List<Condition> conditions) {
+    public Position(long id, String title, String description, List<Requirement> requirements, List<Condition> conditions, List<Task> tasks) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.requirements = requirements;
         this.conditions = conditions;
+        this.tasks = tasks;
     }
 
     public long getId() {
@@ -36,5 +38,9 @@ public class Position {
 
     public List<Condition> getConditions() {
         return conditions;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
     }
 }

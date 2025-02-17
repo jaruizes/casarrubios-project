@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPaginatedPosition;
+import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPositionDetailDTO;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionFake;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionsListFake;
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,21 +48,8 @@ public class PositionRestControllerTest {
         final ResponseEntity<PositionDetailDTO> responseEntity = positionsRestController.getPositionDetail(1L);
         final PositionDetailDTO positionDTO = responseEntity.getBody();
 
-        assertNotNull(positionDTO);
         assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
-        assertTrue(positionDTO.getId() != null && positionDTO.getId() > 0);
-        assertTrue(positionDTO.getTitle() != null && !positionDTO.getTitle().isEmpty());
-        assertTrue(positionDTO.getDescription() != null && !positionDTO.getDescription().isEmpty());
-        assertTrue(positionDTO.getRequirements() != null && !positionDTO.getRequirements().isEmpty());
-        assertTrue(positionDTO.getConditions() != null && !positionDTO.getConditions().isEmpty());
-
-        positionDTO.getRequirements().forEach(requirement -> {
-            assertTrue(requirement.getDescription() != null && !requirement.getDescription().isEmpty());
-        });
-
-        positionDTO.getConditions().forEach(condition -> {
-            assertTrue(condition.getDescription() != null && !condition.getDescription().isEmpty());
-        });
+        assertPositionDetailDTO(positionDTO);
     }
 
     @Test
