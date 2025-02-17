@@ -16,7 +16,7 @@
     <properties>
         <java.version>21</java.version>
         <openapi-generator.version>7.10.0</openapi-generator.version>
-        <testcontainers.version>1.19.8</testcontainers.version>
+        <testcontainers.version>1.20.4</testcontainers.version>
     </properties>
     <dependencies>
         <dependency>

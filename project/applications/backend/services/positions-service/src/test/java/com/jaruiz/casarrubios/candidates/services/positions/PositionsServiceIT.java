@@ -1,9 +1,8 @@
 package com.jaruiz.casarrubios.candidates.services.positions;
 
-import java.util.Arrays;
+
 
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.PaginatedPositionsDTO;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.PositionDTO;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.PositionDetailDTO;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
