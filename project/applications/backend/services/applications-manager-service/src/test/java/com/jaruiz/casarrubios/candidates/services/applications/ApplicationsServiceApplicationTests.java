@@ -7,17 +7,15 @@ import java.nio.file.Paths;
 
 import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.ExceptionHandlerController;
 import com.jaruiz.casarrubios.candidates.services.applications.business.ApplicationsService;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.ApplicationErrorDTO;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.ApplicationResponseDTO;
+import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationErrorDTO;
+import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationResponseDTO;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.MinIOContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -76,7 +74,7 @@ class ApplicationsServiceApplicationTests {
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
             .multiPart("positionId", "1")
-            .multiPart("candidate", "{\"name\": \"John\",\"surname\": \"Doe\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("candidate", "{\"name\": \"John\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
             .when()
             .post("/applications");
 
@@ -93,7 +91,7 @@ class ApplicationsServiceApplicationTests {
         final Response response = given()
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
-            .multiPart("candidate", "{\"name\": \"John\",\"surname\": \"Doe\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("candidate", "{\"name\": \"John\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
             .when()
             .post("/applications");
 
@@ -129,7 +127,7 @@ class ApplicationsServiceApplicationTests {
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
             .multiPart("positionId", "1")
-            .multiPart("candidate", "{\"name\": \"John\",\"surname\": \"Doe\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("candidate", "{\"name\": \"John\",\"phone\": \"1234567890\"}", "application/json")
             .when()
             .post("/applications");
 
@@ -168,7 +166,7 @@ class ApplicationsServiceApplicationTests {
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
             .multiPart("positionId", "1")
-            .multiPart("candidate", "{\"name\": \"John\",\"surname\": \"Doe\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("candidate", "{\"name\": \"John\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
             .when()
             .post("/applications");
 

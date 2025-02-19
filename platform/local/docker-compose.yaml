@@ -8,152 +8,211 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=candidates
+      - POSTGRES_DB=applications
     volumes:
       - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
       - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
-  minio:
-    image: quay.io/minio/minio
-    command: server /data --console-address ":9001"
-    environment:
-      - MINIO_ROOT_USER=minioadmin
-      - MINIO_ROOT_PASSWORD=minioadmin
-    volumes:
-      - minio_data:/data
-    ports:
-      - 9000:9000
-      - 9001:9001
 
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.5.0
-    hostname: zookeeper
-    container_name: zookeeper
-    ports:
-      - "2181:2181"
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
-      EXTRA_ARGS: -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/zookeeper.yml
-    volumes:
-      - ./jmx-exporter:/usr/share/jmx_exporter/
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "2181" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  broker:
-    image: confluentinc/cp-server:7.5.0
-    hostname: broker
-    container_name: broker
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-    ports:
-      - "9092:9092"
-      - "29092:29092"
-      - "9101:9101"
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_JMX_PORT: 9101
-      KAFKA_JMX_HOSTNAME: localhost
-      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
-      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      CONFLUENT_METRICS_ENABLE: 'true'
-      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
-      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/kafka-broker.yml
-    volumes:
-      - ./jmx-exporter:/usr/share/jmx_exporter/
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "9092" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  connect:
-    image: quay.io/debezium/connect:3.0
-    hostname: connect
-    container_name: connect
-    depends_on:
-      - broker
-    ports:
-      - "8083:8083"
-    environment:
-      BOOTSTRAP_SERVERS: 'broker:29092'
-      ADVERTISED_HOST_NAME: connect
-      GROUP_ID: debezium-connect-group
-      CONFIG_STORAGE_TOPIC: dbz-connect-configs
-      CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      OFFSET_FLUSH_INTERVAL_MS: 10000
-      OFFSET_STORAGE_TOPIC: dbz-connect-offsets
-      OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      STATUS_STORAGE_TOPIC: docker-connect-status
-      STATUS_STORAGE_REPLICATION_FACTOR: 1
-      KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
-      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      ENABLE_DEBEZIUM_SCRIPTING: 'true'
-    healthcheck:
-        test: [ "CMD", "nc", "-z", "localhost", "8083" ]
-        interval: 30s
-        timeout: 10s
-        retries: 5
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui:latest
-    ports:
-      - 9081:9081
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-      broker:
-        condition: service_healthy
-      schema-registry:
-        condition: service_healthy
-    environment:
-      SERVER_PORT: 9081
-      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:29092"
-      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
-      KAFKA_CLUSTERS_0_NAME: local
-      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://schema-registry:8081"
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "9081" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  schema-registry:
-    image: confluentinc/cp-schema-registry:7.5.0
-    hostname: schema-registry
-    container_name: schema-registry
-    depends_on:
-      broker:
-        condition: service_healthy
+  applications-applications-app:
+    image: "applications/applications-app:1.0.0"
+    container_name: applications.applications-app
     ports:
       - "8081:8081"
+
+  applications-applications-bff:
+    image: "applications/applications-bff:1.0.0"
+    container_name: applications.applications-bff
+    ports:
+      - "3000:3000"
     environment:
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
-      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
-      SCHEMA_REGISTRY_JMX_OPTS: -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/schemaregistry.yml
-    volumes:
-      - ./jmx-exporter:/usr/share/jmx_exporter/
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "8081" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
+      - BACKEND_URL=http://applications-positions-service:8080
+
+  applications-positions-service:
+    image: "applications/positions-service:1.0.0"
+    container_name: applications.positions-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=applications
+
+
+
+#  applications-app:
+#    image: localhost/candidates-app:latest
+#    pull_policy: never
+#    ports:
+#      - "8081:8081"
+#
+#  applications-bff:
+#    image: localhost/applications-bff:latest
+#    pull_policy: never
+#    ports:
+#      - "3000:3000"
+
+
+
+
+
+#  postgresql:
+#    image: postgres:14
+#    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      - POSTGRES_PASSWORD=postgres
+#      - POSTGRES_USER=postgres
+#      - POSTGRES_DB=candidates
+#    volumes:
+#      - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
+#      - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
+#
+#  minio:
+#    image: quay.io/minio/minio
+#    command: server /data --console-address ":9001"
+#    environment:
+#      - MINIO_ROOT_USER=minioadmin
+#      - MINIO_ROOT_PASSWORD=minioadmin
+#    volumes:
+#      - minio_data:/data
+#    ports:
+#      - 9000:9000
+#      - 9001:9001
+
+#  zookeeper:
+#    image: confluentinc/cp-zookeeper:7.5.0
+#    hostname: zookeeper
+#    container_name: zookeeper
+#    ports:
+#      - "2181:2181"
+#    environment:
+#      ZOOKEEPER_CLIENT_PORT: 2181
+#      ZOOKEEPER_TICK_TIME: 2000
+#      EXTRA_ARGS: -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/zookeeper.yml
+#    volumes:
+#      - ./jmx-exporter:/usr/share/jmx_exporter/
+#    healthcheck:
+#      test: [ "CMD", "nc", "-z", "localhost", "2181" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#
+#  broker:
+#    image: confluentinc/cp-server:7.5.0
+#    hostname: broker
+#    container_name: broker
+#    depends_on:
+#      zookeeper:
+#        condition: service_healthy
+#    ports:
+#      - "9092:9092"
+#      - "29092:29092"
+#      - "9101:9101"
+#    environment:
+#      KAFKA_BROKER_ID: 1
+#      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+#      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+#      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+#      KAFKA_JMX_PORT: 9101
+#      KAFKA_JMX_HOSTNAME: localhost
+#      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+#      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
+#      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+#      CONFLUENT_METRICS_ENABLE: 'true'
+#      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+#      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/kafka-broker.yml
+#    volumes:
+#      - ./jmx-exporter:/usr/share/jmx_exporter/
+#    healthcheck:
+#      test: [ "CMD", "nc", "-z", "localhost", "9092" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#
+#  connect:
+#    image: quay.io/debezium/connect:3.0
+#    hostname: connect
+#    container_name: connect
+#    depends_on:
+#      - broker
+#    ports:
+#      - "8083:8083"
+#    environment:
+#      BOOTSTRAP_SERVERS: 'broker:29092'
+#      ADVERTISED_HOST_NAME: connect
+#      GROUP_ID: debezium-connect-group
+#      CONFIG_STORAGE_TOPIC: dbz-connect-configs
+#      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+#      OFFSET_FLUSH_INTERVAL_MS: 10000
+#      OFFSET_STORAGE_TOPIC: dbz-connect-offsets
+#      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+#      STATUS_STORAGE_TOPIC: docker-connect-status
+#      STATUS_STORAGE_REPLICATION_FACTOR: 1
+#      KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+#      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      ENABLE_DEBEZIUM_SCRIPTING: 'true'
+#    healthcheck:
+#        test: [ "CMD", "nc", "-z", "localhost", "8083" ]
+#        interval: 30s
+#        timeout: 10s
+#        retries: 5
+#
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui:latest
+#    ports:
+#      - 9081:9081
+#    depends_on:
+#      zookeeper:
+#        condition: service_healthy
+#      broker:
+#        condition: service_healthy
+#      schema-registry:
+#        condition: service_healthy
+#    environment:
+#      SERVER_PORT: 9081
+#      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:29092"
+#      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
+#      KAFKA_CLUSTERS_0_NAME: local
+#      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://schema-registry:8081"
+#    healthcheck:
+#      test: [ "CMD", "nc", "-z", "localhost", "9081" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#
+#  schema-registry:
+#    image: confluentinc/cp-schema-registry:7.5.0
+#    hostname: schema-registry
+#    container_name: schema-registry
+#    depends_on:
+#      broker:
+#        condition: service_healthy
+#    ports:
+#      - "8081:8081"
+#    environment:
+#      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+#      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+#      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+#      SCHEMA_REGISTRY_JMX_OPTS: -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/schemaregistry.yml
+#    volumes:
+#      - ./jmx-exporter:/usr/share/jmx_exporter/
+#    healthcheck:
+#      test: [ "CMD", "nc", "-z", "localhost", "8081" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 40s
 #
 
 #
@@ -375,3 +434,7 @@ services:
 
 volumes:
   minio_data:
+
+networks:
+  my_network:
+    driver: bridge

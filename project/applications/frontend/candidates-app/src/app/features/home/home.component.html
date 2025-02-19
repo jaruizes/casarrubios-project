@@ -36,7 +36,7 @@
               <tr *ngFor="let item of filteredResults" style="cursor: pointer" (click)="goToPositionDetail(item.id)">
                 <td class="">{{ item.id }}</td>
                 <td class="">{{ item.title }}</td>
-                <td class="text-truncate">{{ item.description }}</td>
+                <td class="truncate-text">{{ item.description }}</td>
                 <td class="text-center">{{ item.creationDate | date: 'dd-MM-yyyy'}}</td>
                 <td class="text-center">
                   @for (tag of item.tags; track tag.name) {
@@ -56,19 +56,9 @@
             [collectionSize]="total"
             [(page)]="page"
             [pageSize]="pageSize"
+            (pageChange)="pageChange($event)"
           >
           </ngb-pagination>
-
-          <select
-            class="form-select"
-            style="width: auto"
-            name="pageSize"
-            [(ngModel)]="pageSize"
-          >
-            <option [ngValue]="2">2 items per page</option>
-            <option [ngValue]="4">4 items per page</option>
-            <option [ngValue]="6">6 items per page</option>
-          </select>
         </div>
       </div>
     </div>

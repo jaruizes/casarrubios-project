@@ -32,9 +32,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.positionService.getAllPositions().subscribe((positions) => {
-      this.positions = positions;
-    });
+    this.loadData(0);
   }
 
   get filteredResults() {
@@ -49,7 +47,15 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['position-detail', { id: id }]);
   }
 
-  goToPositionView(id: number) {
-    this.router.navigate(['private/position-view', { id: id }]);
+  pageChange(page: number) {
+    this.loadData(page - 1);
+  }
+
+  private loadData(page: number = 0): void {
+    this.positionService.getAllPositions(page, this.pageSize).subscribe((paginatedPosition) => {
+      this.positions = paginatedPosition.positions;
+      this.total = paginatedPosition.totalElements;
+      this.pageSize = paginatedPosition.size;
+    });
   }
 }

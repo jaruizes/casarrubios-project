@@ -69,10 +69,6 @@ components:
             type: string
             description: The first name of the candidate
             example: John
-          surname:
-            type: string
-            description: The surname of the candidate
-            example: Doe
           email:
             type: string
             description: The email address of the candidate

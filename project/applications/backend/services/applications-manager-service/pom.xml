@@ -128,7 +128,7 @@
                                 <exceptionHandler>true</exceptionHandler>
                                 <unhandledException>true</unhandledException>
                                 <apiPackage>com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest</apiPackage>
-                                <modelPackage>com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto</modelPackage>
+                                <modelPackage>com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto</modelPackage>
                             </configOptions>
                         </configuration>
                     </execution>

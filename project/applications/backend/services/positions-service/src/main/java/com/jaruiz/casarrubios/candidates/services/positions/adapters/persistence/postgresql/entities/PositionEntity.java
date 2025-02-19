@@ -1,5 +1,6 @@
 package com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -13,6 +14,9 @@ public class PositionEntity {
     private long id;
     private String title;
     private String description;
+    private int applications;
+    private String tags;
+    private Date createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
     private List<RequirementEntity> requirements;
@@ -69,5 +73,29 @@ public class PositionEntity {
 
     public void setTasks(List<TaskEntity> tasks) {
         this.tasks = tasks;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getApplications() {
+        return applications;
+    }
+
+    public void setApplications(int applications) {
+        this.applications = applications;
     }
 }

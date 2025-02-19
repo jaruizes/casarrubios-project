@@ -3,13 +3,13 @@ package com.jaruiz.casarrubios.candidates.services.applications.adapters.api.res
 import java.io.IOException;
 import java.util.UUID;
 
+import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationResponseDTO;
+import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.CandidateDTO;
 import com.jaruiz.casarrubios.candidates.services.applications.business.ApplicationsService;
 import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationIncompleteException;
 import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationsGeneralException;
 import com.jaruiz.casarrubios.candidates.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.candidates.services.applications.business.model.Candidate;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.ApplicationResponseDTO;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.CandidateDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,6 @@ public class ApplicationsRestService implements ApplicationsApi {
 
     private Candidate mapCandidateDTOToCandidate(CandidateDTO candidateDTO) {
         return new Candidate(candidateDTO.getName(),
-                            candidateDTO.getSurname(),
                             candidateDTO.getEmail(),
                             candidateDTO.getPhone());
     }

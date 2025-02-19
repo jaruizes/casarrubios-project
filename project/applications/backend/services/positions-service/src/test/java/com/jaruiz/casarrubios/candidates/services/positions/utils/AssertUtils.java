@@ -12,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AssertUtils {
     public static void assertPaginatedPosition(long total, int page, int pageSize, PaginatedPositionsDTO paginatedPositionsDTO) {
+        int totalPages = total > 0 ? (int) Math.ceil((double) total / pageSize) : 0;
         assertNotNull(paginatedPositionsDTO);
         assertEquals(page, paginatedPositionsDTO.getNumber());
         assertEquals(pageSize, paginatedPositionsDTO.getSize());
         assertEquals(total, paginatedPositionsDTO.getTotalElements());
+        assertEquals(totalPages, paginatedPositionsDTO.getTotalPages());
 
         final List<PositionDTO> positions = paginatedPositionsDTO.getContent();
         assertNotNull(paginatedPositionsDTO.getContent());
@@ -30,6 +32,9 @@ public final class AssertUtils {
                 assertTrue(position.getId() != null && position.getId() > 0);
                 assertTrue(position.getTitle() != null && !position.getTitle().isEmpty());
                 assertTrue(position.getDescription() != null && !position.getDescription().isEmpty());
+                assertTrue(position.getTags() != null && !position.getTags().isEmpty());
+                assertTrue(position.getCreatedAt() != null && !position.getCreatedAt().isEmpty());
+                assertNotNull(position.getApplications());
             });
         }
     }
@@ -56,8 +61,11 @@ public final class AssertUtils {
         assertTrue(position.getId() > 0);
         assertTrue(position.getTitle() != null && !position.getTitle().isEmpty());
         assertTrue(position.getDescription() != null && !position.getDescription().isEmpty());
+        assertTrue(position.getTags() != null && !position.getTags().isEmpty());
+        assertNotNull(position.getCreatedAt());
         assertTrue(position.getRequirements() != null && !position.getRequirements().isEmpty());
         assertTrue(position.getConditions() != null && !position.getConditions().isEmpty());
+        assertTrue(position.getTasks() != null && !position.getTasks().isEmpty());
 
         position.getRequirements().forEach(requirement -> {
             assertTrue(requirement.getDescription() != null && !requirement.getDescription().isEmpty());
@@ -82,6 +90,8 @@ public final class AssertUtils {
         assertTrue(positionDTO.getId() != null && positionDTO.getId() > 0);
         assertTrue(positionDTO.getTitle() != null && !positionDTO.getTitle().isEmpty());
         assertTrue(positionDTO.getDescription() != null && !positionDTO.getDescription().isEmpty());
+        assertTrue(positionDTO.getTags() != null && !positionDTO.getTags().isEmpty());
+        assertTrue(positionDTO.getCreatedAt() != null && !positionDTO.getCreatedAt().isEmpty());
         assertTrue(positionDTO.getRequirements() != null && !positionDTO.getRequirements().isEmpty());
         assertTrue(positionDTO.getConditions() != null && !positionDTO.getConditions().isEmpty());
         assertTrue(positionDTO.getTasks() != null && !positionDTO.getTasks().isEmpty());

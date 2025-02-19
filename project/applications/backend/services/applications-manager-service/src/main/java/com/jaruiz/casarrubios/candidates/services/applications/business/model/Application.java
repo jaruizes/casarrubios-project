@@ -44,9 +44,6 @@ public class Application {
         return candidate.getName();
     }
 
-    public String getSurname() {
-        return candidate.getSurname();
-    }
 
     public String getPhone() {
         return candidate.getPhone();

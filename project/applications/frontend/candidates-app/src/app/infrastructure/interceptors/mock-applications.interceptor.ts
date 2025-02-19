@@ -12,7 +12,6 @@ import {Application} from "../../model/application";
 @Injectable()
 export class MockApplicationsInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('MockCandidatesInterceptor: ' + req.url);
     if (req.url.includes('https://api.example.com/candidates')) {
       const url = new URL(req.urlWithParams);
 

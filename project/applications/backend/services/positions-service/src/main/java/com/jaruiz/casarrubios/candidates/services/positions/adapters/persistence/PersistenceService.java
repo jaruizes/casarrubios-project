@@ -68,6 +68,9 @@ public class PersistenceService implements PersistencePort {
         return new Position(positionEntity.getId(),
             positionEntity.getTitle(),
             positionEntity.getDescription(),
+            positionEntity.getTags(),
+            positionEntity.getCreatedAt(),
+            positionEntity.getApplications(),
             requirements,
             conditions,
             tasks);

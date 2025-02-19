@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
     }
 
     public UUID uploadCV(Application application) throws ApplicationsGeneralException, ApplicationIncompleteException {
-        logger.info("Uploading CV [positionId = {}, name = {}, surname = {}]", application.getPositionId(), application.getName(), application.getSurname());
+        logger.info("Uploading CV [positionId = {}, name = {}]", application.getPositionId(), application.getName());
 
         if (!application.isComplete()) {
             logger.error("Application is incomplete");
@@ -35,23 +35,23 @@ import org.springframework.stereotype.Service;
 
         try {
             this.fileStorage.storeFile(application);
-            logger.info("CV stored [positionId = {}, name = {}, surname = {}, path = {}]", application.getPositionId(), application.getName(),
-                application.getSurname(), application.getFilePath());
+            logger.info("CV stored [positionId = {}, name = {}, path = {}]", application.getPositionId(), application.getName(),
+                application.getFilePath());
 
             this.metadataStorage.saveMetada(application);
-            logger.info("CV metadata saved to database [positionId = {}, name = {}, surname = {}, path = {}]", application.getPositionId(), application.getName(),
-                application.getSurname(), application.getFilePath());
+            logger.info("CV metadata saved to database [positionId = {}, name = {}, path = {}]", application.getPositionId(), application.getName(),
+                application.getFilePath());
 
             return application.getId();
 
         } catch (ApplicationFileNotStoredException e) {
-            logger.error("Error storing CV [positionId = {}, name = {}, surname = {}]", application.getPositionId(), application.getName(), application.getSurname());
+            logger.error("Error storing CV [positionId = {}, name = {}]", application.getPositionId(), application.getName());
             logger.error(e.getMessage());
 
             throw new ApplicationsGeneralException(application.getId(), FILE_NOT_STORED_ERROR);
         } catch (Exception e) {
-            logger.error("Error saving CV metadata to database [positionId = {}, name = {}, surname = {}, path = {}]", application.getPositionId(), application.getName(),
-                application.getSurname(), application.getFilePath());
+            logger.error("Error saving CV metadata to database [positionId = {}, name = {}, path = {}]", application.getPositionId(), application.getName(),
+               application.getFilePath());
             logger.error(e.getMessage());
 
             this.fileStorage.deleteFile(application.getFilePath());

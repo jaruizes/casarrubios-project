@@ -1,10 +1,8 @@
 package com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest;
 
-import java.io.IOException;
-
 import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationIncompleteException;
 import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationsGeneralException;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.ApplicationErrorDTO;
+import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationErrorDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -13,7 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

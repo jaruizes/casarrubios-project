@@ -1,6 +1,7 @@
 package com.jaruiz.casarrubios.candidates.services.positions.utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.ConditionEntity;
@@ -21,10 +22,10 @@ public final class FakeUtils {
         final Task taskFake = new Task(1L, "Description de prueba");
 
         if(withRequirementsAndConditions) {
-            return new Position(1L, "Title", "Description", List.of(requirementFake), List.of(conditionFake), List.of(taskFake));
+            return new Position(1L, "Title", "Description", "Java, Python", new Date(), 10, List.of(requirementFake), List.of(conditionFake), List.of(taskFake));
         }
 
-        return new Position(1L, "Title", "Description", null, null, null);
+        return new Position(1L, "Title", "Description", "Java, Python", new Date(), 10, null, null, null);
     }
 
     public static PositionsList buildPositionsListFake(int page, int size, long total) {
@@ -69,6 +70,9 @@ public final class FakeUtils {
         positionEntity.setId(1L);
         positionEntity.setTitle("Title");
         positionEntity.setDescription("Description");
+        positionEntity.setTags("Java, Python");
+        positionEntity.setCreatedAt(new Date());
+        positionEntity.setApplications(0);
         positionEntity.setRequirements(List.of(requirementFake));
         positionEntity.setConditions(List.of(conditionFake));
         positionEntity.setTasks(List.of(taskFake));

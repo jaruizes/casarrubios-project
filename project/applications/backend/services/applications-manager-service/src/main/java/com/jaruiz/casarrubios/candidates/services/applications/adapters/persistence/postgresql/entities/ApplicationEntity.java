@@ -11,7 +11,6 @@ public class ApplicationEntity {
     @Id
     private String id;
     private String name;
-    private String surname;
     private String email;
     private String phone;
     private String cv;
@@ -30,14 +29,6 @@ public class ApplicationEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     public String getEmail() {

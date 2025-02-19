@@ -65,7 +65,6 @@ public class FileStorageAdapter implements FileStoragePort {
     private Map<String, String> getMetadata(Application application) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("name", application.getName());
-        metadata.put("surname", application.getSurname());
         metadata.put("email", application.getEmail());
         metadata.put("phone", application.getPhone());
         metadata.put("positionId", String.valueOf(application.getPositionId()));
