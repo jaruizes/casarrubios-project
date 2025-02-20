@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Logger,
-  NotFoundException,
-  Param,
-  ParseIntPipe,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Logger, Param, ParseIntPipe, Query} from '@nestjs/common';
 import { PositionsService } from '../adapters/services/position-service/positions.service';
 import { PositionDTO, PositionsDTO, TagDTO } from './dto/positions.dto';
 import { PositionDetailDTO } from './dto/position-detail.dto';

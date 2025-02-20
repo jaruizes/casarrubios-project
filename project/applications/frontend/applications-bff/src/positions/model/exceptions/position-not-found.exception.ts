@@ -1,4 +1,4 @@
-import { BaseException } from './base.exception';
+import { BaseException } from '../../../shared/exceptions/base.exception';
 
 export class PositionNotFoundException extends BaseException {
 

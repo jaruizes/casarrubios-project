@@ -1,5 +1,6 @@
 export const environment = {
   api: {
-    positions: 'https://api.example.com/positions'
+    positions: 'http://localhost:3000/positions',
+    applications: 'http://localhost:3000/applications'
   }
 };

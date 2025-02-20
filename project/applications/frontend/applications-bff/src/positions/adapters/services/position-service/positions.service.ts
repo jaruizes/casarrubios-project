@@ -27,7 +27,7 @@ export class PositionsService {
 
       return response.data;
     } catch (error) {
-        if (error.isAxiosError && error.axiosError.code === 'ECONNREFUSED') {
+        if (error.isAxiosError && error.code === 'ECONNREFUSED') {
           throw new PositionsBackendNotAvailableException();
         }
 

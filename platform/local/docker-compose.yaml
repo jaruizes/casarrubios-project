@@ -12,6 +12,17 @@ services:
     volumes:
       - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
       - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
+  minio:
+    image: quay.io/minio/minio
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    ports:
+      - 9000:9000
+      - 9001:9001
 
   applications-applications-app:
     image: "applications/applications-app:1.0.0"
@@ -26,6 +37,7 @@ services:
       - "3000:3000"
     environment:
       - BACKEND_URL=http://applications-positions-service:8080
+      - APPLICATIONS_BACKEND_URL=http://applications-manager-service:8090
 
   applications-positions-service:
     image: "applications/positions-service:1.0.0"
@@ -40,7 +52,23 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=applications
 
-
+  applications-manager-service:
+    image: "applications/applications-manager-service:1.0.0"
+    container_name: applications.manager-service
+    ports:
+      - "8090:8090"
+    depends_on:
+      - postgresql
+      - minio
+    environment:
+      - SERVER_PORT=8090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=applications
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_NAME=minioadmin
+      - MINIO_ACCESS_SECRET=minioadmin
 
 #  applications-app:
 #    image: localhost/candidates-app:latest

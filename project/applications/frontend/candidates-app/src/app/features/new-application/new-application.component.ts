@@ -30,27 +30,28 @@ export class NewApplicationComponent {
     this.applicationForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       phone: ['', [Validators.required, Validators.pattern(/^[0-9]{9,15}$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      cv: [null, Validators.required]
+      email: ['', [Validators.required, Validators.email]]
     });
 
     this.applicationService = applicationService;
   }
 
   onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      this.uploadedFile = file;
-      this.convertFileToBase64(file);
-    } else {
-      alert('Only PDF files are allowed.');
-    }
+    this.uploadedFile = event.target.files[0];
+    console.log('...................');
+    console.log(this.uploadedFile);
+    // const file = event.target.files[0];
+    // if (file && file.type === 'application/pdf') {
+    //   this.uploadedFile = file;
+    //   // this.convertFileToBase64(file);
+    // } else {
+    //   alert('Only PDF files are allowed.');
+    // }
   }
 
   submitApplication() {
-    if (this.applicationForm.valid) {
-      this.applicationService.applyToPosition(this.buildApplicationData()).subscribe(
-        {
+    if (this.applicationForm.valid && this.uploadedFile) {
+      this.applicationService.applyToPosition(this.buildApplicationData(), this.uploadedFile).subscribe({
           next: (response) => {
             Swal.fire('Application submitted successfully!', 'We will contact you soon.', 'success').then(() => {
               this.applicationFinished.emit();
@@ -76,7 +77,6 @@ export class NewApplicationComponent {
         name: this.applicationForm.get('name')?.value,
         email: this.applicationForm.get('email')?.value,
         phone: this.applicationForm.get('phone')?.value,
-        cv: this.applicationForm.get('cv')?.value
       }
     };
   }
