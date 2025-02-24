@@ -1,9 +1,7 @@
 package com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest;
 
 import java.text.SimpleDateFormat;
-import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
 
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.*;
 import com.jaruiz.casarrubios.candidates.services.positions.business.exceptions.PositionNotFoundException;

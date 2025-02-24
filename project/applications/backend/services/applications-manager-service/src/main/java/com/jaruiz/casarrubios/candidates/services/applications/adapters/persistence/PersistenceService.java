@@ -27,6 +27,7 @@ public class PersistenceService implements MetadataStoragePort {
         applicationEntity.setEmail(application.getEmail());
         applicationEntity.setPhone(application.getPhone());
         applicationEntity.setCv(application.getFilePath());
+        applicationEntity.setPositionId(application.getPositionId());
 
         return applicationEntity;
     }

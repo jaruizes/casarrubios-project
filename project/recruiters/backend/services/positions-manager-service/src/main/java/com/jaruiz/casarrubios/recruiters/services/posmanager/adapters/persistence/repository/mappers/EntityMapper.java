@@ -12,30 +12,30 @@ import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.*;
 public class EntityMapper {
     public static PositionEntity buildPositionEntity(Position position) {
         final PositionEntity positionEntity = new PositionEntity();
-        positionEntity.setId(position.getId());
-        positionEntity.setTitle(position.getTitle());
-        positionEntity.setDescription(position.getDescription());
-        positionEntity.setStatus(position.getStatus().ordinal());
-        positionEntity.setCreatedAt(position.getCreatedAt());
-        positionEntity.setPublishedAt(position.getPublishedAt());
+        positionEntity.id = position.getId();
+        positionEntity.title = position.getTitle();
+        positionEntity.description = position.getDescription();
+        positionEntity.status = position.getStatus().ordinal();
+        positionEntity.createdAt = position.getCreatedAt();
+        positionEntity.publishedAt = position.getPublishedAt();
 
-        positionEntity.setRequirements(buildRequirementEntities(position.getRequirements(), positionEntity));
-        positionEntity.setBenefits(buildConditionEntities(position.getBenefits(), positionEntity));
-        positionEntity.setTasks(buildTaskEntities(position.getTasks(), positionEntity));
+        positionEntity.requirements = buildRequirementEntities(position.getRequirements(), positionEntity);
+        positionEntity.benefits = buildConditionEntities(position.getBenefits(), positionEntity);
+        positionEntity.tasks = buildTaskEntities(position.getTasks(), positionEntity);
 
         return positionEntity;
     }
 
     public static Position buildPosition(PositionEntity positionEntity, boolean includeVO) {
-        final PositionData data = new PositionData(positionEntity.getTitle(), positionEntity.getDescription());
+        final PositionData data = new PositionData(positionEntity.title, positionEntity.description);
         if (includeVO) {
-            data.addRequirements(buildRequirements(positionEntity.getRequirements()));
-            data.addBenefits(buildBenefits(positionEntity.getBenefits()));
-            data.addTasks(buildTasks(positionEntity.getTasks()));
+            data.addRequirements(buildRequirements(positionEntity.requirements));
+            data.addBenefits(buildBenefits(positionEntity.benefits));
+            data.addTasks(buildTasks(positionEntity.tasks));
         }
 
-        final Position position = new Position(positionEntity.getId(), data, positionEntity.getCreatedAt(), positionEntity.getPublishedAt());
-        position.setStatus(PositionStatus.values()[positionEntity.getStatus()]);
+        final Position position = new Position(positionEntity.id, data, positionEntity.createdAt, positionEntity.publishedAt);
+        position.setStatus(PositionStatus.values()[positionEntity.status]);
 
         return position;
     }
@@ -60,27 +60,27 @@ public class EntityMapper {
 
     private static RequirementEntity buildRequirementEntity(Requirement requirement, PositionEntity positionEntity) {
         final RequirementEntity requirementEntity = new RequirementEntity();
-        requirementEntity.setDescription(requirement.getDescription());
-        requirementEntity.setPosition(positionEntity);
-        requirementEntity.setKey(requirement.getKey());
-        requirementEntity.setValue(requirement.getValue());
-        requirementEntity.setMandatory(requirement.isMandatory());
+        requirementEntity.description = requirement.getDescription();
+        requirementEntity.position = positionEntity;
+        requirementEntity.key = requirement.getKey();
+        requirementEntity.value = requirement.getValue();
+        requirementEntity.mandatory = requirement.isMandatory();
 
         return requirementEntity;
     }
 
     private static BenefitEntity buildBenefitEntity(Benefit benefit, PositionEntity positionEntity) {
         final BenefitEntity benefitEntity = new BenefitEntity();
-        benefitEntity.setDescription(benefit.getDescription());
-        benefitEntity.setPosition(positionEntity);
+        benefitEntity.description = benefit.getDescription();
+        benefitEntity.position = positionEntity;
 
         return benefitEntity;
     }
 
     private static TaskEntity buildTask(Task task, PositionEntity positionEntity) {
         final TaskEntity taskEntity = new TaskEntity();
-        taskEntity.setDescription(task.getDescription());
-        taskEntity.setPosition(positionEntity);
+        taskEntity.description = task.getDescription();
+        taskEntity.position = positionEntity;
         return taskEntity;
     }
 
@@ -103,14 +103,14 @@ public class EntityMapper {
     }
 
     private static Requirement buildRequirement(RequirementEntity requirementEntity) {
-        return new Requirement(requirementEntity.getKey(), requirementEntity.getValue(), requirementEntity.getDescription(), requirementEntity.getMandatory());
+        return new Requirement(requirementEntity.key, requirementEntity.value, requirementEntity.description, requirementEntity.mandatory);
     }
 
     private static Benefit buildBenefit(BenefitEntity benefitEntity) {
-        return new Benefit(benefitEntity.getDescription());
+        return new Benefit(benefitEntity.description);
     }
 
     private static Task buildTask(TaskEntity taskEntity) {
-        return new Task(taskEntity.getDescription());
+        return new Task(taskEntity.description);
     }
 }

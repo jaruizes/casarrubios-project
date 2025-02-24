@@ -6,9 +6,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.PostgresRepository;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.ConditionEntity;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.PositionEntity;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.RequirementEntity;
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.Position;
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.PositionsList;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +23,7 @@ import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertU
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertUtils.assertPositionsList;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionEntityFake;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionsEntityListFake;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

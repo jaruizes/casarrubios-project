@@ -1,47 +1,19 @@
 package com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "TASKS")
-public class TaskEntity {
+public class TaskEntity extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    public long id;
 
     @ManyToOne
     @JoinColumn(name="position_id")
+    public PositionEntity position;
 
-    private PositionEntity position;
-
-    private String description;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Long getPositionId() {
-        return position.getId();
-    }
-
-    public PositionEntity getPosition() {
-        return position;
-    }
-
-    public void setPosition(PositionEntity position) {
-        this.position = position;
-    }
+    public String description;
 }

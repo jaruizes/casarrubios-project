@@ -1,7 +1,5 @@
 package com.jaruiz.casarrubios.candidates.services.positions.business;
 
-import java.util.List;
-
 import com.jaruiz.casarrubios.candidates.services.positions.business.exceptions.PositionNotFoundException;
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.Position;
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.PositionsList;

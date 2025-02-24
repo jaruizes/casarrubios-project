@@ -1,17 +1,9 @@
 package com.jaruiz.casarrubios.candidates.services.positions.adapters.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.PositionsRestController;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.PaginatedPositionsDTO;
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.PositionDTO;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.PositionDetailDTO;
 import com.jaruiz.casarrubios.candidates.services.positions.business.exceptions.PositionNotFoundException;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Condition;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Position;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.PositionsList;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Requirement;
 import com.jaruiz.casarrubios.candidates.services.positions.business.ports.PositionServicePort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,8 +16,6 @@ import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertU
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionFake;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionsListFake;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

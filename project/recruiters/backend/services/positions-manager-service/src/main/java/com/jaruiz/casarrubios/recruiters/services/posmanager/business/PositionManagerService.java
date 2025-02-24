@@ -6,6 +6,7 @@ import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Position;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.PositionData;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.PositionsList;
 
 public interface PositionManagerService {
 
@@ -13,5 +14,5 @@ public interface PositionManagerService {
     Position updatePosition(Position position) throws PositionInvalidException, PositionNotFoundException;
     void deletePosition(long id) throws PositionNotFoundException;
     Position getPositionDetail(long positionId) throws PositionNotFoundException;
-    List<Position> getAllPositions();
+    PositionsList getAllPositions(int page, int pageSize);
 }

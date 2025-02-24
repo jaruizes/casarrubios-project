@@ -18,15 +18,30 @@ paths:
       operationId: getAllPositions
       tags:
         - positions-manager
+      parameters:
+        - name: page
+          in: query
+          description: Page number for pagination (0-based index)
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+        - name: size
+          in: query
+          description: Number of items per page
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 10
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PositionDTO'
+                $ref: '#/components/schemas/PaginatedPositionsDTO'
     post:
       summary: Method to create a new position
       description: This method creates a new position with the given body information
@@ -141,6 +156,29 @@ paths:
                 $ref: '#/components/schemas/ApplicationErrorDTO'
 components:
   schemas:
+    PaginatedPositionsDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PositionDTO'
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of positions available
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of pages
+        size:
+          type: integer
+          format: int32
+          description: Number of elements per page
+        number:
+          type: integer
+          format: int32
+          description: Current page number
     PositionDTO:
       type: object
       properties:
@@ -154,10 +192,20 @@ components:
         description:
           type: string
           example: This position is for a software engineer
+        applications:
+          type: integer
+          format: int32
+          example: 10
+        tags:
+          type: string
+          example: Java, Python
+        createdAt:
+          type: string
+          example: 2017-02-16T20:22:28+00:00
         status:
           type: integer
           format: int32
-          example: 1
+          example: 10
     NewPositionDataDTO:
       type: object
       properties:
@@ -228,7 +276,7 @@ components:
         description:
           type: string
           example: The candidate must have a degree in computer science
-        isMandatory:
+        mandatory:
           type: boolean
           example: true
     BenefitDTO:

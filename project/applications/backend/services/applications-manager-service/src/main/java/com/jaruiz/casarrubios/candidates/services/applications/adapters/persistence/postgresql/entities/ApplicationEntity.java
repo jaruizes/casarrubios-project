@@ -14,6 +14,7 @@ public class ApplicationEntity {
     private String email;
     private String phone;
     private String cv;
+    private long positionId;
 
     public String getId() {
         return id;
@@ -53,5 +54,13 @@ public class ApplicationEntity {
 
     public void setCv(String cv) {
         this.cv = cv;
+    }
+
+    public long getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(long positionId) {
+        this.positionId = positionId;
     }
 }

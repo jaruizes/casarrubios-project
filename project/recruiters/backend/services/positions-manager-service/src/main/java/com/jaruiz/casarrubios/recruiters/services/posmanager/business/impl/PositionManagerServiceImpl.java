@@ -7,6 +7,7 @@ import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Position;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.PositionData;
+import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.PositionsList;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.ports.PersistencePort;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
@@ -65,9 +66,9 @@ public class PositionManagerServiceImpl implements PositionManagerService {
         return position;
     }
 
-    @Override public List<Position> getAllPositions() {
+    @Override public PositionsList getAllPositions(int page, int pageSize) {
         logger.info("Getting all positions");
-        return this.persistencePort.findAllPositions();
+        return this.persistencePort.findAllPositions(page, pageSize);
     }
 
     private static void checkIfPositionIsValid(PositionData data) throws PositionInvalidException {

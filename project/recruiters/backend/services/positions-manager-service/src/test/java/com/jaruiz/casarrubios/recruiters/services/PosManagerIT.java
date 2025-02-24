@@ -24,10 +24,11 @@ class PosManagerIT {
         final Response response = given()
             .when().get("/positions");
 
-        final PositionDTO[] positions = response.getBody().as(PositionDTO[].class);
+        final PaginatedPositionsDTO positions = response.getBody().as(PaginatedPositionsDTO.class);
         assertNotNull(positions);
-        assertEquals(2, positions.length);
-        for (PositionDTO position : positions) {
+        assertNotNull(positions.getContent());
+        assertEquals(2, positions.getContent().size());
+        for (PositionDTO position : positions.getContent()) {
             checkPosition(position);
         }
     }
@@ -68,8 +69,8 @@ class PosManagerIT {
     @Test
     public void givenPositionData_whenCreatePosition_thenANewPositionIsCreated() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").isMandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").isMandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -104,8 +105,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutTitle_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").isMandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").isMandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -138,8 +139,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutDescription_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").isMandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").isMandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -172,8 +173,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutReqs_whenCreatePosition_thenAnErrorIsThrown() {
 //        final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-//        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").isMandatory(true));
-//        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").isMandatory(true));
+//        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
+//        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -207,8 +208,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutTasks_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").isMandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").isMandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
 
 //        final List<TaskDTO> taskDTOS = new ArrayList<>();
 //        taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -242,8 +243,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutBenefits_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").isMandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").isMandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -302,7 +303,7 @@ class PosManagerIT {
             assertNotNull(requirement.getDescription());
             assertNotNull(requirement.getKey());
             assertNotNull(requirement.getValue());
-            assertNotNull(requirement.getIsMandatory());
+            assertNotNull(requirement.getMandatory());
         });
 
         var benefits = position.getBenefits();

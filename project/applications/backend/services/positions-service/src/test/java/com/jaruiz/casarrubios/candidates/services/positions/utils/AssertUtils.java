@@ -8,7 +8,6 @@ import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dt
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.Position;
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.PositionsList;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AssertUtils {
     public static void assertPaginatedPosition(long total, int page, int pageSize, PaginatedPositionsDTO paginatedPositionsDTO) {

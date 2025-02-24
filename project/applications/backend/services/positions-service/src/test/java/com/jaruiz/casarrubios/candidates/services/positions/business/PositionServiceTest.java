@@ -1,12 +1,8 @@
 package com.jaruiz.casarrubios.candidates.services.positions.business;
 
-import java.util.List;
-
 import com.jaruiz.casarrubios.candidates.services.positions.business.exceptions.PositionNotFoundException;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Condition;
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.Position;
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.PositionsList;
-import com.jaruiz.casarrubios.candidates.services.positions.business.model.Requirement;
 import com.jaruiz.casarrubios.candidates.services.positions.business.ports.PersistencePort;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +14,7 @@ import static com.jaruiz.casarrubios.candidates.services.positions.utils.AssertU
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionFake;
 import static com.jaruiz.casarrubios.candidates.services.positions.utils.FakeUtils.buildPositionsListFake;
 import static org.assertj.core.api.Fail.fail;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)

@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.jaruiz.casarrubios.recruiters.services.posmanager.api.rest.dto.*;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.PositionManagerService;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionInvalidException;
-import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
@@ -22,11 +20,14 @@ public class PosManagerRestService implements PositionsApi {
         this.positionService = positionService;
     }
 
-    @Override public List<PositionDTO> getAllPositions() {
-        logger.info("Getting all positions");
-        return positionService.getAllPositions().stream()
-            .map(this::mapToPositionDTO)
-            .toList();
+    @Override public PaginatedPositionsDTO getAllPositions(Integer page, Integer size) {
+        logger.info("Getting all positions [page: " + page + ", pageSize: " + size + "]");
+
+        final PositionsList positionsList = positionService.getAllPositions(page, size);
+        logger.info("Positions found: " + positionsList.getTotal());
+        logger.info("Returning page " + positionsList.getPage() + " of " + positionsList.getPageSize() + " positions");
+
+        return buildPaginatedPositionDTO(positionsList);
     }
 
     @Override public PositionDetailDTO getPositionDetail(Long positionId) {
@@ -55,6 +56,19 @@ public class PosManagerRestService implements PositionsApi {
 
         logger.info("Position created with Id: " + positionCreated.getId());
         return PosManagerRestService.mapToPositionDetailDTO(positionCreated);
+    }
+
+
+    private PaginatedPositionsDTO buildPaginatedPositionDTO(PositionsList positionsList) {
+        final PaginatedPositionsDTO paginatedPositionsDTO = new PaginatedPositionsDTO();
+        paginatedPositionsDTO.setNumber(positionsList.getPage());
+        paginatedPositionsDTO.setSize(positionsList.getPageSize());
+        paginatedPositionsDTO.setTotalElements(positionsList.getTotal());
+        paginatedPositionsDTO.setContent(positionsList.getPositions().stream()
+                                                      .map(this::mapToPositionDTO)
+                                                      .toList());
+
+        return paginatedPositionsDTO;
     }
 
     private PositionDTO mapToPositionDTO(Position position) {
@@ -101,7 +115,7 @@ public class PosManagerRestService implements PositionsApi {
         final RequirementDTO requirementDTO = new RequirementDTO();
         requirementDTO.setDescription(requirement.getDescription());
         requirementDTO.setKey(requirement.getKey());
-        requirementDTO.setIsMandatory(requirement.isMandatory());
+        requirementDTO.setMandatory(requirement.isMandatory());
         requirementDTO.setValue(requirement.getValue());
 
         return requirementDTO;
@@ -143,7 +157,7 @@ public class PosManagerRestService implements PositionsApi {
     }
 
     private static Requirement mapToRequirement(RequirementDTO requirementDTO) {
-        return new Requirement(requirementDTO.getKey(), requirementDTO.getValue(), requirementDTO.getDescription(), requirementDTO.getIsMandatory());
+        return new Requirement(requirementDTO.getKey(), requirementDTO.getValue(), requirementDTO.getDescription(), requirementDTO.getMandatory());
     }
 
     private static Benefit mapToCondition(BenefitDTO benefitDTO) {
