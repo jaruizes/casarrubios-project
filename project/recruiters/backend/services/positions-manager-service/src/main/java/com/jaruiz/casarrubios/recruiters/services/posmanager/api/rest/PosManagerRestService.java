@@ -94,7 +94,9 @@ public class PosManagerRestService implements PositionsApi {
         positionDTO.setDescription(position.getDescription());
         positionDTO.setStatus(position.getStatus().ordinal());
         positionDTO.setTags(position.getTags());
-        positionDTO.setCreatedAt(toIso8601(position.getCreatedAt()));
+        if (position.getCreatedAt() != null) {
+            positionDTO.setCreatedAt(toIso8601(position.getCreatedAt()));
+        }
 
         return positionDTO;
     }

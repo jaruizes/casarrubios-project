@@ -38,6 +38,7 @@ public class PersistenceService implements PersistencePort {
     }
 
     @Override
+    @Transactional
     public Position findPositionById(long id) {
         Position positionFound = null;
         final PositionEntity positionEntity = this.positionsRepository.findById(id);
