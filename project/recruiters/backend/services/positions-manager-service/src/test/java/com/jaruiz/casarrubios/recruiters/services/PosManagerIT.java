@@ -12,7 +12,8 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -21,13 +22,15 @@ class PosManagerIT {
     @Test
     @Order(1)
     public void givenSomePositions_whenGetAllPositions_thenListOfPositionsIsReturned() {
+        int page = 0;
+        int pageSize = 8;
         final Response response = given()
-            .when().get("/positions");
+            .when().get("/positions?page={page}&size={pageSize}", page, pageSize);
 
         final PaginatedPositionsDTO positions = response.getBody().as(PaginatedPositionsDTO.class);
         assertNotNull(positions);
         assertNotNull(positions.getContent());
-        assertEquals(2, positions.getContent().size());
+        assertEquals(pageSize, positions.getContent().size());
         for (PositionDTO position : positions.getContent()) {
             checkPosition(position);
         }
@@ -58,7 +61,7 @@ class PosManagerIT {
     @Order(4)
     public void givenAInvalidId_whenGetPositionById_thenAnErrorIsThrown() {
         final Response response = given()
-            .when().get("/positions/4");
+            .when().get("/positions/99");
 
         final ApplicationErrorDTO error = response.getBody().as(ApplicationErrorDTO.class);
         assertNotNull(error);
@@ -281,6 +284,8 @@ class PosManagerIT {
         assertNotNull(position.getTitle());
         assertNotNull(position.getDescription());
         assertNotNull(position.getStatus());
+        assertNotNull(position.getTags());
+        assertNotNull(position.getCreatedAt());
     }
 
     private void checkPositionDetail(PositionDetailDTO position) {

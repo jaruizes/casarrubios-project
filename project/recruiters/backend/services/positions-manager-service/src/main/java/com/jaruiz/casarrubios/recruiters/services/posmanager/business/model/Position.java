@@ -36,6 +36,10 @@ public class Position {
         return status;
     }
 
+    public String getTags() {
+        return getData().getTags();
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -66,5 +70,13 @@ public class Position {
 
     public void setStatus(PositionStatus status) {
         this.status = status;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setPublishedAt(LocalDateTime publishedAt) {
+        this.publishedAt = publishedAt;
     }
 }

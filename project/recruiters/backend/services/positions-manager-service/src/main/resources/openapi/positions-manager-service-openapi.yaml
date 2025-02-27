@@ -56,19 +56,19 @@ paths:
             schema:
               $ref: '#/components/schemas/NewPositionDataDTO'
       responses:
-        201:
+        '201':
           description: Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PositionDetailDTO'
-        400:
-          description: Bad format
+        '400':
+          description: Bad request
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApplicationErrorDTO'
-        500:
+        '500':
           description: Internal server error
           content:
             application/json:
@@ -134,10 +134,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PositionDetailDTO'
+              $ref: '#/components/schemas/PositionToUpdateDTO'
       responses:
-        201:
-          description: Created
+        200:
+          description: OK
           content:
             application/json:
               schema:
@@ -215,6 +215,9 @@ components:
         description:
           type: string
           example: This position is for a software engineer
+        tags:
+          type: string
+          example: Java, Python
         requirements:
           type: array
           items:
@@ -244,14 +247,43 @@ components:
           type: integer
           format: int32
           example: 1
+        tags:
+          type: string
+          example: Java, Python
+        applications:
+          type: integer
+          format: int32
+          example: 10
         createdAt:
           type: string
-          format: date-time
           example: 2024-12-23T15:30:00Z
         publishedAt:
           type: string
-          format: date-time
           example: 2024-12-23T15:30:00Z
+        requirements:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequirementDTO'
+        benefits:
+          type: array
+          items:
+            $ref: '#/components/schemas/BenefitDTO'
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskDTO'
+    PositionToUpdateDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Software Engineer
+        description:
+          type: string
+          example: This position is for a software engineer
+        tags:
+          type: string
+          example: Java, Python
         requirements:
           type: array
           items:

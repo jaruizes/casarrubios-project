@@ -1,7 +1,5 @@
 package com.jaruiz.casarrubios.recruiters.services.posmanager.business;
 
-import java.util.List;
-
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionInvalidException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.model.Position;

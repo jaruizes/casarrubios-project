@@ -1,7 +1,5 @@
 package com.jaruiz.casarrubios.recruiters.services.posmanager.business.impl;
 
-import java.util.List;
-
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.PositionManagerService;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionInvalidException;
 import com.jaruiz.casarrubios.recruiters.services.posmanager.business.exceptions.PositionNotFoundException;
@@ -33,16 +31,22 @@ public class PositionManagerServiceImpl implements PositionManagerService {
         return positionSaved;
     }
 
-    @Override public Position updatePosition(Position position) throws PositionInvalidException, PositionNotFoundException {
-        logger.info("Updating position with Id: " + position.getId());
+    @Override public Position updatePosition(Position positionToUpdate) throws PositionInvalidException, PositionNotFoundException {
+        final var id = positionToUpdate.getId();
+        logger.info("Updating positionToUpdate with Id: " + id);
 
-        checkIfPositionIsValid(position.getData());
-        checkIfPositionExists(position.getId());
+        checkIfPositionIsValid(positionToUpdate.getData());
+        Position currentPosition = getPositionDetail(id);
 
-        this.persistencePort.savePosition(position);
+        positionToUpdate.setStatus(currentPosition.getStatus());
+        positionToUpdate.setPublishedAt(currentPosition.getPublishedAt());
+        positionToUpdate.setCreatedAt(currentPosition.getCreatedAt());
 
-        logger.info("Position with Id: " + position.getId() + " updated");
-        return position;
+        this.persistencePort.savePosition(positionToUpdate);
+
+        logger.info("Position with Id: " + id + " updated");
+
+        return getPositionDetail(id);
     }
 
     @Override public void deletePosition(long id) throws PositionNotFoundException {
@@ -78,10 +82,13 @@ public class PositionManagerServiceImpl implements PositionManagerService {
         }
     }
 
-    private void checkIfPositionExists(long id) throws PositionNotFoundException {
-        if (this.persistencePort.findPositionById(id) == null) {
-            logger.error("Position with Id: " + id + " not found");
-            throw new PositionNotFoundException(id);
+    private Position checkIfPositionExists(long id) throws PositionNotFoundException {
+        Position position = this.persistencePort.findPositionById(id);
+        if (position != null) {
+            return position;
         }
+
+        logger.error("Position with Id: " + id + " not found");
+        throw new PositionNotFoundException(id);
     }
 }

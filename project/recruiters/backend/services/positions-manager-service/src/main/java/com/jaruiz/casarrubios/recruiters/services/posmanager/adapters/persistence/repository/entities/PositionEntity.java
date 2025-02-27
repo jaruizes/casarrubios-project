@@ -16,6 +16,7 @@ public class PositionEntity extends PanacheEntityBase {
     public String title;
     public String description;
     public int status;
+    public String tags;
     @Column(name = "created_at")
     public LocalDateTime createdAt;
     @Column(name = "published_at")

@@ -6,13 +6,15 @@ import java.util.List;
 public class PositionData {
     private final String title;
     private final String description;
+    private final String tags;
     private final List<Requirement> requirements;
     private final List<Benefit> benefits;
     private final List<Task> tasks;
 
-    public PositionData(String title, String description) {
+    public PositionData(String title, String description, String tags) {
         this.title = title;
         this.description = description;
+        this.tags = tags;
         this.requirements = new ArrayList<>();
         this.benefits = new ArrayList<>();
         this.tasks = new ArrayList<>();
@@ -24,6 +26,10 @@ public class PositionData {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getTags() {
+        return tags;
     }
 
     public List<Requirement> getRequirements() {

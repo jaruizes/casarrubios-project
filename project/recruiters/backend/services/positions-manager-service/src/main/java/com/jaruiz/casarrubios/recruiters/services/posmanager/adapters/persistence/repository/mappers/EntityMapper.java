@@ -18,6 +18,7 @@ public class EntityMapper {
         positionEntity.status = position.getStatus().ordinal();
         positionEntity.createdAt = position.getCreatedAt();
         positionEntity.publishedAt = position.getPublishedAt();
+        positionEntity.tags = position.getTags();
 
         positionEntity.requirements = buildRequirementEntities(position.getRequirements(), positionEntity);
         positionEntity.benefits = buildConditionEntities(position.getBenefits(), positionEntity);
@@ -27,7 +28,7 @@ public class EntityMapper {
     }
 
     public static Position buildPosition(PositionEntity positionEntity, boolean includeVO) {
-        final PositionData data = new PositionData(positionEntity.title, positionEntity.description);
+        final PositionData data = new PositionData(positionEntity.title, positionEntity.description, positionEntity.tags);
         if (includeVO) {
             data.addRequirements(buildRequirements(positionEntity.requirements));
             data.addBenefits(buildBenefits(positionEntity.benefits));

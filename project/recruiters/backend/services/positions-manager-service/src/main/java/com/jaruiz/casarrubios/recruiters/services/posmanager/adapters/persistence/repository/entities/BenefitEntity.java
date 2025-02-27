@@ -1,6 +1,5 @@
 package com.jaruiz.casarrubios.recruiters.services.posmanager.adapters.persistence.repository.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 
