@@ -1,6 +1,3 @@
-import unittest
-from unittest import TestCase
-
 import pytest
 from fastapi.testclient import TestClient
 

@@ -6,9 +6,9 @@ from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 from app.db.database import Base
 
-postgres = PostgresContainer("postgres:14").with_env("POSTGRES_USER", settings.DATABASE_USER)\
-                                        .with_env("POSTGRES_PASSWORD", settings.DATABASE_PASSWORD)\
-                                        .with_env("POSTGRES_DB", settings.DATABASE_NAME)
+postgres = PostgresContainer("postgres:14").with_env("POSTGRES_USER", settings.database_user)\
+                                        .with_env("POSTGRES_PASSWORD", settings.database_password)\
+                                        .with_env("POSTGRES_DB", settings.database_name)
 
 @pytest.fixture(scope="module", autouse=True)
 def test_db(request):

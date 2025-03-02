@@ -1,0 +1,1 @@
+docker build -t recruitment/applications-service:1.0.0 .
