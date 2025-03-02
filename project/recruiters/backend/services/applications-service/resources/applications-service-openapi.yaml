@@ -1,0 +1,117 @@
+openapi: 3.0.3
+info:
+  title: Applications API (Recruiters)
+  description: |-
+    This is the specification for the Applications API within the recruiters context.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+    description: Local server
+tags:
+  - name: applications
+    description: Operations about applications
+paths:
+    /applications:
+      get:
+        summary: Get all the applications associated to a position
+        description: Returns all the applications associated to a position
+        operationId: getApplicationsByPosition
+        tags:
+          - applications
+        parameters:
+          - name: positionId
+            in: query
+            description: Page number for pagination (0-based index)
+            required: true
+            schema:
+              type: integer
+              format: int32
+              default: 0
+          - name: page
+            in: query
+            description: Page number for pagination (0-based index)
+            required: false
+            schema:
+              type: integer
+              format: int32
+              default: 0
+          - name: pageSize
+            in: query
+            description: Number of items per page
+            required: false
+            schema:
+              type: integer
+              format: int32
+              default: 10
+        responses:
+          '200':
+            description: successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/PaginatedApplicationsDTO'
+components:
+  schemas:
+    PaginatedApplicationsDTO:
+      type: object
+      properties:
+        applications:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApplicationDTO'
+        totalElements:
+          type: integer
+          format: int64
+          description: Total number of applications available
+        totalPages:
+          type: integer
+          format: int32
+          description: Total number of pages
+        size:
+          type: integer
+          format: int32
+          description: Number of elements per page
+        number:
+          type: integer
+          format: int32
+          description: Current page number
+    ApplicationDTO:
+      type: object
+      properties:
+        candidate:
+          $ref: '#/components/schemas/CandidateDTO'
+        positionId:
+          type: integer
+          format: int64
+          description: The ID of the position
+          example: 1789
+        cvFile:
+          type: string
+          description: Path to the cv stored in the file system
+          example: /path/to/cv.pdf
+      required:
+        - candidate
+        - positionId
+        - cvFile
+    CandidateDTO:
+        type: object
+        properties:
+          name:
+            type: string
+            description: The name of the candidate
+            example: John
+          email:
+            type: string
+            description: The email address of the candidate
+            example: john.doe@example.com
+          phone:
+            type: string
+            description: The phone number of the candidate
+            example: +1234567890
+        required:
+          - name
+          - email
+          - phone
+
+
+  
