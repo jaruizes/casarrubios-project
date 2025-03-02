@@ -107,6 +107,7 @@ services:
       retries: 5
 
 
+  ### -------------------------------------------------------------- ###
   ### "CANDIDATE SIDE" SERVICES ###
   applications-applications-app:
     image: "applications/applications-app:1.0.0"
@@ -181,6 +182,37 @@ services:
         interval: 30s
         timeout: 10s
         retries: 5
+
+### -------------------------------------------------------------- ###
+### "RECRUITERS SIDE" SERVICES ###
+  recruitment-positions-service:
+    image: "recruitment/positions-manager-service:1.0.0"
+    container_name: recruitment.positions-manager-service
+    ports:
+      - "9080:9080"
+    depends_on:
+      - postgresql
+    environment:
+      - QUARKUS_SERVER_PORT=9080
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgresql:5432/recruiters
+      - QUARKUS_DATASOURCE_USERNAME=postgres
+      - QUARKUS_DATASOURCE_PASSWORD=postgres
+      - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
+  recruitment-applications-service:
+    image: "recruitment/applications-service:1.0.0"
+    container_name: recruitment.applications-service
+    ports:
+      - "9081:9081"
+    depends_on:
+      - postgresql
+    environment:
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=applications
+      - DATABASE_HOST=postgresql
+      - DATABASE_PORT=5432
+      - DATABASE_SCHEMA=recruiters
+
 #
 #  kafka-ui:
 #    image: provectuslabs/kafka-ui:latest
