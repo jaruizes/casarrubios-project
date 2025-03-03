@@ -185,6 +185,16 @@ services:
 
 ### -------------------------------------------------------------- ###
 ### "RECRUITERS SIDE" SERVICES ###
+  recruitment-recruitment-bff:
+    image: "recruitment/recruitment-bff:1.0.0"
+    container_name: recruitment.recruitment-bff
+    ports:
+      - "4000:4000"
+    environment:
+      - POSITIONS_SERVICE_URL=http://recruitment-positions-service:9080
+      - APPLICATIONS_SERVICE_URL=http://recruitment-applications-service:9081
+      - PORT=4000
+
   recruitment-positions-service:
     image: "recruitment/positions-manager-service:1.0.0"
     container_name: recruitment.positions-manager-service
@@ -193,8 +203,8 @@ services:
     depends_on:
       - postgresql
     environment:
-      - QUARKUS_SERVER_PORT=9080
-      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgresql:5432/recruiters
+      - QUARKUS_HTTP_PORT=9080
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgresql:5432/applications
       - QUARKUS_DATASOURCE_USERNAME=postgres
       - QUARKUS_DATASOURCE_PASSWORD=postgres
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
