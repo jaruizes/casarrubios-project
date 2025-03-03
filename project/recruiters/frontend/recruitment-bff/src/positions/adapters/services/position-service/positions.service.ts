@@ -11,20 +11,15 @@ import { PositionsBackendNotAvailableException } from '../../../model/exceptions
 import { PositionNotFoundException } from '../../../model/exceptions/position-not-found.exception';
 import { NewPositionDTO } from '../../../api/dto/new-position.dto';
 import { ServiceNewPositionDTO } from './dto/service-new-position.dto';
+import { Config } from '../../../../shared/config/config';
 
 @Injectable()
 export class PositionsService {
   private backendUrl: string;
   private readonly logger = new Logger(PositionsService.name);
 
-  constructor(
-    private httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {
-    this.backendUrl = this.configService.get<string>(
-      'BACKEND_URL',
-      'http://localhost:9080',
-    );
+  constructor(private httpService: HttpService, private readonly config: Config) {
+    this.backendUrl = this.config.getPositionsBackendUrl();
     this.logger.log(`Backend URL set to: ${this.backendUrl}`);
   }
 
@@ -32,7 +27,7 @@ export class PositionsService {
     page: number = 0,
     limit: number = 10,
   ): Promise<PaginatedPositionsDTO> {
-    const url = `${this.backendUrl}/positions?page=${page}&limit=${limit}`;
+    const url = `${this.backendUrl}/positions?page=${page}&size=${limit}`;
     this.logger.debug(`[SERVICE] Trying to fetch positions from: ${url}`);
 
     try {
@@ -56,7 +51,7 @@ export class PositionsService {
     }
   }
 
-  async getPositionById(id: number): Promise<PositionServiceDTO | undefined> {
+  async getPositionById(id: number): Promise<PositionServiceDTO> {
     const url = `${this.backendUrl}/positions/${id}`;
     this.logger.debug(`[SERVICE] Trying to fetch position from: ${url}`);
 
@@ -131,7 +126,7 @@ export class PositionsService {
     }
   }
 
-  private manageError(error: any, id: number): void {
+  private manageError(error: any, id: number): never {
     if (error.isAxiosError) {
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === 404) {

@@ -141,19 +141,9 @@
               [collectionSize]="total"
               [(page)]="page"
               [pageSize]="pageSize"
+              (pageChange)="pageChange($event)"
             >
             </ngb-pagination>
-
-            <select
-              class="form-select"
-              style="width: auto"
-              name="pageSize"
-              [(ngModel)]="pageSize"
-            >
-              <option [ngValue]="2">2 items per page</option>
-              <option [ngValue]="4">4 items per page</option>
-              <option [ngValue]="6">6 items per page</option>
-            </select>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {Router} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
-import {Position} from "../../model/position";
+import {PaginatedPositions, Position} from "../../model/position";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
 
 
@@ -37,9 +37,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.positionService.getAllPositions().subscribe((positions) => {
-      this.positions = positions;
-    });
+    this.loadData(0)
   }
 
   get filteredResults() {
@@ -74,5 +72,17 @@ export class HomeComponent implements OnInit {
   deletePosition(id: number) {
     console.log('Deleting position with id: ', id);
     this.deletePositionModalRef.close();
+  }
+
+  pageChange(page: number) {
+    this.loadData(page - 1);
+  }
+
+  private loadData(page: number = 0): void {
+    this.positionService.getAllPositions(page, this.pageSize).subscribe((paginatedPosition) => {
+      this.positions = paginatedPosition.positions;
+      this.total = paginatedPosition.totalElements;
+      this.pageSize = paginatedPosition.size;
+    });
   }
 }

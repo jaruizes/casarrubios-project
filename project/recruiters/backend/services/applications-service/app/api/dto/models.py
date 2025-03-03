@@ -22,6 +22,7 @@ class CandidateDTO(BaseModel):
 
 
 class ApplicationDTO(BaseModel):
+    applicationId: int = Field(..., description='The ID of the application', example=1)
     candidate: CandidateDTO
     positionId: int = Field(..., description='The ID of the position', example=1789)
     cvFile: str = Field(
@@ -29,6 +30,7 @@ class ApplicationDTO(BaseModel):
         description='Path to the cv stored in the file system',
         example='/path/to/cv.pdf',
     )
+    creationDate: str = Field()
 
 
 class PaginatedApplicationsDTO(BaseModel):

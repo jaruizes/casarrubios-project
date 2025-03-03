@@ -14,6 +14,13 @@
       <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
         <div class="text-end flex-row flex-wrap">
           <div class="pb-2">
+            <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
+              <i class="fa fa-home"></i> Back
+            </button>
+          </div>
+        </div>
+        <div class="text-end flex-row flex-wrap">
+          <div class="pb-2">
             @for (tag of position.tags; track tag.name) {
               <span class="badge bg-primary me-0.5 fs-14">{{ tag.name }}</span>
             }
@@ -22,7 +29,8 @@
       </div>
     </div>
   </div>
-  <div class="card-body">
+  @if (applications.length > 0) {
+    <div class="card-body">
     <div class="card border-dashed">
       <div class="card-header mb-2 bg-blue-subtle">
         <div class="row align-items-center">
@@ -60,10 +68,10 @@
                 <tr *ngFor="let application of filteredResults" style="cursor: pointer" (click)="goToApplicationDetail(application.id)">
                   <td class="">{{ application.id }}</td>
                   <td class="">{{ application.candidate }}</td>
-                  <td class="">{{ application.applicationDate | date: 'dd-MM-yyyy'}}</td>
+                  <td class="">{{ application.creationDate | date: 'dd-MM-yyyy'}}</td>
                   <td class="text-center">
-                    @for (tag of application.tags; track tag.name) {
-                      <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
+                    @for (tag of application.tags.split(','); track tag) {
+                      <span class="badge bg-primary me-0.5">{{ tag }}</span>
                     }
                   </td>
                   <td class="text-center">{{ getMatchingPercentage(application.positionsApplied)}}</td>
@@ -79,25 +87,16 @@
                 [collectionSize]="total"
                 [(page)]="page"
                 [pageSize]="pageSize"
+                (pageChange)="pageChange(position.id, $event)"
               >
               </ngb-pagination>
-
-              <select
-                class="form-select"
-                style="width: auto"
-                name="pageSize"
-                [(ngModel)]="pageSize"
-              >
-                <option [ngValue]="2">2 items per page</option>
-                <option [ngValue]="4">4 items per page</option>
-                <option [ngValue]="6">6 items per page</option>
-              </select>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  }
 </div>
 
 

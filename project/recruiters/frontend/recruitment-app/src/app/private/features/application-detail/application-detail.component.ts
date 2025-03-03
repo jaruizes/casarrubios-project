@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {DatePipe, Location} from "@angular/common";
 import {Application, ApplicationDetail} from "../../model/application";
 import {Position} from "../../model/position";
-import {ApplicationsService} from "../../services/applications.service";
+import {ApplicationsService} from "../../services/applications/applications.service";
 
 @Component({
   selector: 'app-application-detail',
@@ -25,7 +25,7 @@ export class ApplicationDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.applicationId = Number(this.route.snapshot.paramMap.get('id'));
-    this.applicationsService.getApplicationDetail(this.applicationId).subscribe((application) => {
+    this.applicationsService.getApplicationDetail(this.applicationId).subscribe((application: ApplicationDetail) => {
       this.application = application;
     });
   }
@@ -36,7 +36,7 @@ export class ApplicationDetailComponent implements OnInit {
 
   downloadCV() {
     const link = document.createElement('a');
-    link.href = this.application.candidate.cv;
+    link.href = this.application.cvFile;
     link.download = this.application.id + '.pdf';
     document.body.appendChild(link);
     link.click();

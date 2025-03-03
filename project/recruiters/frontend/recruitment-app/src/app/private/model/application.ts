@@ -8,22 +8,28 @@ export interface PositionApplied {
 export interface Application {
   id: number;
   candidate: string;
-  applicationDate: string;
-  tags: Tag[];
+  creationDate: string;
+  tags: string;
   cv: string;
   positionsApplied: PositionApplied[];
 }
 
+export interface  PaginatedApplications {
+  applications: Application[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  pageNumber: number;
+}
+
 interface Candidate {
   name: string;
-  lastName: string;
   email: string;
   phone: string;
   tags: Tag[];
   totalExperience: number;
   currentRole: string;
   summary: string;
-  cv: string;
 }
 
 interface Position {
@@ -35,9 +41,10 @@ interface Position {
 export interface ApplicationDetail {
   id: number;
   position: Position;
-  applicationDate: string;
+  creationDate: string;
   candidate: Candidate;
   matchingPercentage: number;
   questions: string[];
   analysis: string;
+  cvFile: string;
 }

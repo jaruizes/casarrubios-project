@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {Position} from "../model/position";
+import {PaginatedPositions, Position} from "../model/position";
 import {Observable} from "rxjs";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PositionsService {
-  private readonly baseUrl = 'https://api.example.com/positions'; // URL base del servicio REST
+  private readonly baseUrl = environment.api.positions;
 
   constructor(private http: HttpClient) {}
 
@@ -23,14 +24,16 @@ export class PositionsService {
   /**
    * Recuperar todas las posiciones con criterios opcionales
    * @param status (opcional) Estado de las posiciones a recuperar
+   * @param page
+   * @param pageSize
    * @returns Observable con la lista de posiciones
    */
-  getAllPositions(status?: number): Observable<Position[]> {
+  getAllPositions(page: number = 0, pageSize: number = 10): Observable<PaginatedPositions> {
     let params = new HttpParams();
-    if (status !== undefined) {
-      params = params.set('status', status.toString());
-    }
-    return this.http.get<Position[]>(`${this.baseUrl}`, { params });
+    params = params.set('page', page.toString());
+    params = params.set('limit', pageSize.toString());
+
+    return this.http.get<PaginatedPositions>(`${this.baseUrl}`, { params });
   }
 
   /**

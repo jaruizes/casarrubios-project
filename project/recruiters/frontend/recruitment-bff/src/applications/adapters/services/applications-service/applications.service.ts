@@ -1,26 +1,20 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { ConfigService } from '@nestjs/config';
 import {
   ServiceApplicationDTO,
   ServicePaginatedApplicationsDTO,
 } from './dto/application.dto';
 import { ApplicationsBackendNotAvailableException } from '../../../exceptions/applications-backend-not-available.exception';
 import { firstValueFrom } from 'rxjs';
+import { Config } from '../../../../shared/config/config';
 
 @Injectable()
 export class ApplicationsService {
-  private backendUrl: string;
+  private readonly backendUrl: string;
   private readonly logger = new Logger(ApplicationsService.name);
 
-  constructor(
-    private httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {
-    this.backendUrl = this.configService.get<string>(
-      'APPLICATIONS_BACKEND_URL',
-      'http://localhost:9081',
-    );
+  constructor(private httpService: HttpService, private readonly config: Config) {
+    this.backendUrl = this.config.getApplicationsBackendUrl();
     this.logger.log(
       `[Applications Service] Backend URL set to: ${this.backendUrl}`,
     );
@@ -28,7 +22,7 @@ export class ApplicationsService {
 
   async getApplicationById(
     applicationId: number,
-  ): Promise<ServiceApplicationDTO | undefined> {
+  ): Promise<ServiceApplicationDTO> {
     const url = `${this.backendUrl}/applications/${applicationId}`;
     this.logger.debug(
       `[Applications Service] Trying to fetch application from: ${url}`,

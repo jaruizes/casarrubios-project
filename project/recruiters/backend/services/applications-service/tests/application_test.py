@@ -25,7 +25,7 @@ def test_get_applications_empty():
     assert response.json()["applications"] == []
     assert response.json()["totalElements"] == 22
 
-def test_get_application_by_id_correct(db_session):
+def test_get_application_by_id_right(db_session):
     response = client.get("/applications/1")
 
     application = db_session.query(Application).filter(Application.id == 1).first()
@@ -39,6 +39,8 @@ def test_get_application_by_id_correct(db_session):
             "phone": application.phone,
         },
         "positionId": application.position_id,
+        "applicationId": 1,
+        "creationDate": application.created_at.isoformat(),
         "cvFile": application.cv,
     }
 

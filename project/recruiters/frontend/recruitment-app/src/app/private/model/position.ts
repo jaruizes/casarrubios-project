@@ -29,3 +29,12 @@ export interface Position {
   tasks: Task[];
   benefits: Benefit[];
 }
+
+
+export interface PaginatedPositions {
+  positions: Position[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}

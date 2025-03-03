@@ -1,0 +1,1 @@
+docker build -t recruitment/recruitment-bff:1.0.0 .

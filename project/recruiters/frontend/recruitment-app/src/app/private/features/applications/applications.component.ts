@@ -1,13 +1,13 @@
 import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
-import {DatePipe, NgForOf, NgIf} from "@angular/common";
+import {DatePipe, Location, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {NgbModal, NgbModalRef, NgbPagination} from "@ng-bootstrap/ng-bootstrap";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
 import {Position} from "../../model/position";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
-import {Application, PositionApplied} from "../../model/application";
-import {ApplicationsService} from "../../services/applications.service";
+import {Application, PaginatedApplications, PositionApplied} from "../../model/application";
+import {ApplicationsService} from "../../services/applications/applications.service";
 
 @Component({
   selector: 'app-applications',
@@ -28,11 +28,11 @@ export class ApplicationsComponent implements OnInit {
   searchTerm: string = '';
   total: number = 10;
   pageSize: number = 10;
-  page: number = 1;
+  page: number = 0;
   applications: Application[] = [];
   position: Position;
 
-  constructor(private router: Router, private applicationsService: ApplicationsService) {
+  constructor(private location: Location, private router: Router, private applicationsService: ApplicationsService) {
     this.router = router;
     this.applicationsService = applicationsService;
     this.position = {} as Position;
@@ -42,17 +42,20 @@ export class ApplicationsComponent implements OnInit {
     console.log(this.router.getCurrentNavigation()?.extras.state);
 
     this.position = history.state.position;
-    this.applicationsService.getApplicationsByPosition(this.position.id).subscribe((candidates) => {
-      this.applications = candidates;
-    });
+    this.loadApplications(this.position.id, 0);
   }
 
   get filteredResults() {
     let searchTerm = this.searchTerm.toLowerCase();
-    return this.applications.filter(item =>
-      item.candidate.toLowerCase().includes(searchTerm) ||
-      item.tags.filter(tag => tag.name.toLowerCase().includes(searchTerm)).length > 0
+    return this.applications.filter((application: Application) =>
+      application.candidate.toLowerCase().includes(searchTerm)
     );
+
+    return this.applications;
+  }
+
+  back(): void {
+    this.location.back();
   }
 
   getMatchingPercentage(positionsApplied: PositionApplied[]): number {
@@ -61,6 +64,18 @@ export class ApplicationsComponent implements OnInit {
 
   goToApplicationDetail(id: number) {
     this.router.navigate(['private/application-detail', { id: id }]);
+  }
+
+  pageChange(positionId: number,page: number) {
+    this.loadApplications(positionId, page - 1);
+  }
+
+  private loadApplications(positionId: number, page: number): void {
+    this.applicationsService.getApplicationsByPosition(positionId, page, this.pageSize).subscribe((paginatedApplications) => {
+      this.applications = paginatedApplications.applications;
+      this.total = paginatedApplications.totalElements;
+      this.pageSize = paginatedApplications.size;
+    });
   }
 
 }

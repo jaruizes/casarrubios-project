@@ -10,8 +10,9 @@ import {
   Query,
 } from '@nestjs/common';
 import {
-  ApplicationDTO,
-  PaginatedApplicationsDTO,
+  ApplicationDetailDTO,
+  ApplicationDTO, CandidateDataDTO,
+  PaginatedApplicationsDTO, PositionAppliedDTO
 } from './dto/application.dto';
 import { ApplicationsService } from '../adapters/services/applications-service/applications.service';
 import { ErrorDTO } from '../../positions/api/dto/error.dto';
@@ -20,25 +21,28 @@ import {
   ServiceApplicationDTO,
   ServicePaginatedApplicationsDTO,
 } from '../adapters/services/applications-service/dto/application.dto';
+import { PositionDetailDTO } from '../../positions/api/dto/position-detail.dto';
+import { PositionsService } from '../../positions/adapters/services/position-service/positions.service';
+import { PositionServiceDTO } from '../../positions/adapters/services/position-service/dto/service-positions.dto';
 
 @Controller('applications')
 export class ApplicationsController {
   private readonly logger = new Logger(ApplicationsController.name);
 
-  constructor(private readonly applicationsService: ApplicationsService) {}
+  constructor(private readonly applicationsService: ApplicationsService, private readonly positionsService: PositionsService) {}
 
   @Get(':applicationId')
   async getApplicationById(
     @Param('applicationId', ParseIntPipe) applicationId: number,
-  ): Promise<ApplicationDTO | undefined> {
-    this.logger.log(`Trying to fetch application with id: ${applicationId}`);
+  ): Promise<ApplicationDetailDTO | undefined> {
+    this.logger.log(`Trying to fetch application detail with id: ${applicationId}`);
 
     try {
-      const applicationServiceDTO: ServiceApplicationDTO | undefined =
-        await this.applicationsService.getApplicationById(applicationId);
-      this.logger.log(`Received position with id: ${applicationId}`);
-      if (applicationServiceDTO) {
-        return this.toApplicationDTO(applicationServiceDTO);
+      const applicationServiceDTO: ServiceApplicationDTO | undefined = await this.applicationsService.getApplicationById(applicationId);
+      const position: PositionServiceDTO = await this.positionsService.getPositionById(applicationServiceDTO.positionId);
+      if (applicationServiceDTO && position) {
+        this.logger.log(`Found application with id: ${applicationId}`);
+        return this.toApplicationDetailDTO(applicationServiceDTO, position);
       }
     } catch (error) {
       if (error instanceof ApplicationsBackendNotAvailableException) {
@@ -60,6 +64,8 @@ export class ApplicationsController {
           HttpStatus.NOT_FOUND,
         );
       }
+
+      // TODO: PositionNotFoundException && PositionBackendNotAvailableException
 
       this.logger.error(
         `Error fetching position with id ${applicationId}: ${error.message}`,
@@ -99,27 +105,51 @@ export class ApplicationsController {
     };
   }
 
-  private toPaginatedApplicationsDTO(
-    servicePaginatedApplicationsDTO: ServicePaginatedApplicationsDTO,
-  ): PaginatedApplicationsDTO {
-    return {
-      applications: servicePaginatedApplicationsDTO.applications.map(
-        (serviceApplicationDTO) => this.toApplicationDTO(serviceApplicationDTO),
-      ),
-      totalElements: servicePaginatedApplicationsDTO.totalElements,
-      totalPages: servicePaginatedApplicationsDTO.totalPages,
-      size: servicePaginatedApplicationsDTO.size,
-      number: servicePaginatedApplicationsDTO.number,
-    };
-  }
-
   private toApplicationDTO(
     serviceApplicationDTO: ServiceApplicationDTO,
   ): ApplicationDTO {
+    const positionsApplied: PositionAppliedDTO[] = [
+      {
+        id: serviceApplicationDTO.positionId,
+        matchingPercentage: 0
+      }
+    ]
+
     return {
+      id: serviceApplicationDTO.applicationId,
       positionId: serviceApplicationDTO.positionId,
-      candidate: serviceApplicationDTO.candidate,
+      candidate: serviceApplicationDTO.candidate.name,
       cvFile: serviceApplicationDTO.cvFile,
+      tags: 'TBD, TBD, TBD, TBD',
+      creationDate: serviceApplicationDTO.creationDate,
+      positionsApplied: positionsApplied
+    };
+  }
+
+  private toApplicationDetailDTO(applicationDTO: ServiceApplicationDTO, positionDTO: PositionServiceDTO): ApplicationDetailDTO {
+    const candidateDataDTO: CandidateDataDTO = {
+      name: applicationDTO.candidate.name,
+      email: applicationDTO.candidate.email,
+      phone: applicationDTO.candidate.phone,
+      tags: 'TBD, TBD',
+      totalExperience: 0,
+      currentRole: 'TBD',
+      summary: 'TBD'
+    }
+
+    return {
+      id: applicationDTO.applicationId,
+      position: {
+        id: positionDTO.id,
+        title: positionDTO.title,
+        createdAt: positionDTO.createdAt
+      },
+      candidate: candidateDataDTO,
+      cvFile: applicationDTO.cvFile,
+      creationDate: applicationDTO.creationDate,
+      matchingPercentage: 0,
+      questions: ['TBD', 'TBD'],
+      analysis: 'TBD'
     };
   }
 }

@@ -26,10 +26,10 @@
         <div class="row">
           <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
             <div class="d-flex align-items-center flex-row flex-wrap">
-              <h4 class="fw-semibold fs-22 mb-1">{{ application.candidate.name + ' ' + application.candidate.lastName}}</h4>
+              <h4 class="fw-semibold fs-22 mb-1">{{ application.candidate.name}}</h4>
             </div>
             <div>
-              <p class="mb-0 text-muted fw-medium">Application Date: {{ application.applicationDate | date: 'dd-MM-yyyy'  }}</p>
+              <p class="mb-0 text-muted fw-medium">Application Date: {{ application.creationDate | date: 'dd-MM-yyyy'  }}</p>
             </div>
           </div>
           <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
