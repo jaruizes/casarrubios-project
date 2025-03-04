@@ -22,7 +22,7 @@ public class PersistenceService implements MetadataStoragePort {
 
     private ApplicationEntity toEntity(Application application) {
         final ApplicationEntity applicationEntity = new ApplicationEntity();
-        applicationEntity.setId(application.getId().toString());
+        applicationEntity.setId(application.getId());
         applicationEntity.setName(application.getName());
         applicationEntity.setEmail(application.getEmail());
         applicationEntity.setPhone(application.getPhone());

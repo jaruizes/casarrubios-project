@@ -22,7 +22,7 @@ export class ApplicationsService {
     return this.http.get<PaginatedApplications>(`${this.baseUrl}`, { params });
   }
 
-  getApplicationDetail(id: number): Observable<ApplicationDetail> {
+  getApplicationDetail(id: string): Observable<ApplicationDetail> {
     return this.http.get<ApplicationDetail>(`${this.baseUrl}/${id}`);
   }
 }

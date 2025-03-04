@@ -7,9 +7,9 @@ public class ApplicationDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    private String id;
+    private Long id;
+    private Long positionId;
     private String name;
-    private String surname;
     private String email;
     private String phone;
     private String cv;
@@ -17,12 +17,20 @@ public class ApplicationDTO implements Serializable {
 
     public ApplicationDTO() { }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(Long positionId) {
+        this.positionId = positionId;
     }
 
     public String getName() {
@@ -31,14 +39,6 @@ public class ApplicationDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     public String getEmail() {
@@ -71,9 +71,5 @@ public class ApplicationDTO implements Serializable {
 
     public void setCreated_at(long created_at) {
         this.created_at = created_at;
-    }
-
-    @Override public String toString() {
-        return "ApplicationDTO{" + "id='" + id + '\'' + ", name='" + name + '\'' + ", surname='" + surname + '\'' + ", email='" + email + '\'' + ", phone='" + phone + '\'' + ", cv='" + cv + '\'' + ", created_at=" + created_at + '}';
     }
 }

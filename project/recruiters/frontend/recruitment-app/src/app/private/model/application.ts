@@ -6,7 +6,8 @@ export interface PositionApplied {
 }
 
 export interface Application {
-  id: number;
+  id: string;
+  shortId: string;
   candidate: string;
   creationDate: string;
   tags: string;
@@ -39,7 +40,8 @@ interface Position {
 }
 
 export interface ApplicationDetail {
-  id: number;
+  id: string;
+  shortId: string;
   position: Position;
   creationDate: string;
   candidate: Candidate;

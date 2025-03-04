@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
@@ -43,7 +44,7 @@ def get_applications(
 @router.get(
     '/applications/{application_id}', response_model=ApplicationDTO, tags=['applicationDTO']
 )
-def get_application_by_id(application_id: int, db: Session = Depends(get_db)) -> ApplicationDTO:
+def get_application_by_id(application_id: UUID, db: Session = Depends(get_db)) -> ApplicationDTO:
     logger.info(f"Getting application by ID {application_id}")
 
     application = ApplicationService.get_application_by_id(db, application_id)

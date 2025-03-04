@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy.orm import Session
 
 from app.db.models import Application
@@ -12,6 +14,6 @@ class ApplicationService:
         return ApplicationRepository.get_all_by_position(db, position_id, page_size, offset)
 
     @staticmethod
-    def get_application_by_id(db: Session, application_id: int) -> Application:
+    def get_application_by_id(db: Session, application_id: UUID) -> Application:
         return ApplicationRepository.get_by_id(db, application_id)
 

@@ -6,7 +6,6 @@ public class Application {
 
     private final UUID id;
     private final String name;
-    private final String surname;
     private final String email;
     private final String phone;
     private final String cv;

@@ -5,6 +5,6 @@ import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [ConfigModule],
   providers: [Config],
-  exports: [Config]
+  exports: [Config],
 })
 export class SharedModule {}

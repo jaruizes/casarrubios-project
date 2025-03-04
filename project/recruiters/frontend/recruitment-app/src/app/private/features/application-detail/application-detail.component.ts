@@ -18,13 +18,13 @@ export class ApplicationDetailComponent implements OnInit {
   application!: ApplicationDetail;
   position!: Position;
 
-  private applicationId!: number;
+  private applicationId!: string;
 
   constructor(private location: Location, private route: ActivatedRoute, private applicationsService: ApplicationsService) {
   }
 
   ngOnInit(): void {
-    this.applicationId = Number(this.route.snapshot.paramMap.get('id'));
+    this.applicationId = this.route.snapshot.paramMap.get('id') || '';
     this.applicationsService.getApplicationDetail(this.applicationId).subscribe((application: ApplicationDetail) => {
       this.application = application;
     });

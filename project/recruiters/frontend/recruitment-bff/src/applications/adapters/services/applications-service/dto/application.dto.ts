@@ -5,7 +5,7 @@ interface CandidateDataDTO {
 }
 
 export interface ServiceApplicationDTO {
-  applicationId: number;
+  applicationId: string;
   positionId: number;
   candidate: CandidateDataDTO;
   cvFile: string;

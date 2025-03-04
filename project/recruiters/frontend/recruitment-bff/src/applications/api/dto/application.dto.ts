@@ -14,7 +14,8 @@ export interface PositionAppliedDTO {
 }
 
 export interface ApplicationDTO {
-  id: number;
+  id: string;
+  shortId: string;
   positionId: number;
   candidate: string;
   tags?: string;
@@ -30,7 +31,8 @@ interface PositionDTO {
 }
 
 export interface ApplicationDetailDTO {
-  id: number;
+  id: string;
+  shortId: string;
   position: PositionDTO;
   candidate: CandidateDataDTO;
   cvFile: string;

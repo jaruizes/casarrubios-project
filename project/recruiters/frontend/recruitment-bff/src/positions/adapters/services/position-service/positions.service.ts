@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { ConfigService } from '@nestjs/config';
 import { AxiosError, AxiosResponse } from 'axios';
 import {
   PaginatedPositionsDTO,
@@ -18,7 +17,10 @@ export class PositionsService {
   private backendUrl: string;
   private readonly logger = new Logger(PositionsService.name);
 
-  constructor(private httpService: HttpService, private readonly config: Config) {
+  constructor(
+    private httpService: HttpService,
+    private readonly config: Config,
+  ) {
     this.backendUrl = this.config.getPositionsBackendUrl();
     this.logger.log(`Backend URL set to: ${this.backendUrl}`);
   }

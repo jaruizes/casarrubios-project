@@ -1,5 +1,7 @@
 package com.jaruiz.casarrubios.candidates.services.applications.adapters.persistence.postgresql.entities;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -9,18 +11,18 @@ import jakarta.persistence.Table;
 public class ApplicationEntity {
 
     @Id
-    private String id;
+    private UUID id;
     private String name;
     private String email;
     private String phone;
     private String cv;
     private long positionId;
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

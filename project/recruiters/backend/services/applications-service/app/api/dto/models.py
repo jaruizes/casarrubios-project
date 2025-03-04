@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import List, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
 
@@ -22,7 +23,7 @@ class CandidateDTO(BaseModel):
 
 
 class ApplicationDTO(BaseModel):
-    applicationId: int = Field(..., description='The ID of the application', example=1)
+    applicationId: UUID = Field(..., description='The ID of the application', example=1)
     candidate: CandidateDTO
     positionId: int = Field(..., description='The ID of the position', example=1789)
     cvFile: str = Field(

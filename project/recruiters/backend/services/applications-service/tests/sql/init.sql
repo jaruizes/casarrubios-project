@@ -1,9 +1,8 @@
--- Crear el esquema
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE SCHEMA IF NOT EXISTS recruiters;
 
--- Crear la tabla de aplicaciones
 CREATE TABLE IF NOT EXISTS recruiters.applications (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(255) NOT NULL,
@@ -12,29 +11,28 @@ CREATE TABLE IF NOT EXISTS recruiters.applications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insertar datos iniciales
-INSERT INTO recruiters.applications (name, email, phone, cv, position_id)
+INSERT INTO recruiters.applications (id, name, email, phone, cv, position_id)
 VALUES
-('Alice Smith', 'alice@example.com', '+123456789', '/path/to/cv1.pdf', 1),
-('Bob Johnson', 'bob@example.com', '+987654321', '/path/to/cv2.pdf', 1),
-('Charlie Brown', 'charlie@example.com', '+123123123', '/path/to/cv3.pdf', 1),
-('David Wilson', 'david@example.com', '+321321321', '/path/to/cv4.pdf', 1),
-('Eva Green', 'eva@example.com', '+456456456', '/path/to/cv5.pdf', 1),
-('Frank White', 'frank@example.com', '+654654654', '/path/to/cv6.pdf', 1),
-('Grace Black', 'grace@example.com', '+789789789', '/path/to/cv7.pdf', 1),
-('Hannah Blue', 'hannah@example.com', '+987987987', '/path/to/cv8.pdf', 1),
-('Ian Gray', 'ian@example.com', '+111222333', '/path/to/cv9.pdf', 1),
-('Jack Brown', 'jack@example.com', '+444555666', '/path/to/cv10.pdf', 1),
-('Karen White', 'karen@example.com', '+777888999', '/path/to/cv11.pdf', 1),
-('Leo Green', 'leo@example.com', '+000111222', '/path/to/cv12.pdf', 1),
-('Mia Black', 'mia@example.com', '+333444555', '/path/to/cv13.pdf', 1),
-('Nina Blue', 'nina@example.com', '+666777888', '/path/to/cv14.pdf', 1),
-('Oscar Gray', 'oscar@example.com', '+999000111', '/path/to/cv15.pdf', 1),
-('Paul Brown', 'paul@example.com', '+222333444', '/path/to/cv16.pdf', 1),
-('Quinn White', 'quinn@example.com', '+555666777', '/path/to/cv17.pdf', 1),
-('Rachel Green', 'rachel@example.com', '+888999000', '/path/to/cv18.pdf', 1),
-('Sam Black', 'sam@example.com', '+111222333', '/path/to/cv19.pdf', 1),
-('Tina Blue', 'tina@example.com', '+444555666', '/path/to/cv20.pdf', 1),
-('Uma Gray', 'uma@example.com', '+777888999', '/path/to/cv21.pdf', 1),
-('Victor Brown', 'victor@example.com', '+000111222', '/path/to/cv22.pdf', 1);
+(gen_random_uuid(), 'Alice Smith', 'alice@example.com', '+123456789', '/path/to/cv1.pdf', 1),
+(gen_random_uuid(), 'Bob Johnson', 'bob@example.com', '+987654321', '/path/to/cv2.pdf', 1),
+(gen_random_uuid(), 'Charlie Brown', 'charlie@example.com', '+123123123', '/path/to/cv3.pdf', 1),
+(gen_random_uuid(), 'David Wilson', 'david@example.com', '+321321321', '/path/to/cv4.pdf', 1),
+(gen_random_uuid(), 'Eva Green', 'eva@example.com', '+456456456', '/path/to/cv5.pdf', 1),
+(gen_random_uuid(), 'Frank White', 'frank@example.com', '+654654654', '/path/to/cv6.pdf', 1),
+(gen_random_uuid(), 'Grace Black', 'grace@example.com', '+789789789', '/path/to/cv7.pdf', 1),
+(gen_random_uuid(), 'Hannah Blue', 'hannah@example.com', '+987987987', '/path/to/cv8.pdf', 1),
+(gen_random_uuid(), 'Ian Gray', 'ian@example.com', '+111222333', '/path/to/cv9.pdf', 1),
+(gen_random_uuid(), 'Jack Brown', 'jack@example.com', '+444555666', '/path/to/cv10.pdf', 1),
+(gen_random_uuid(), 'Karen White', 'karen@example.com', '+777888999', '/path/to/cv11.pdf', 1),
+(gen_random_uuid(), 'Leo Green', 'leo@example.com', '+000111222', '/path/to/cv12.pdf', 1),
+(gen_random_uuid(), 'Mia Black', 'mia@example.com', '+333444555', '/path/to/cv13.pdf', 1),
+(gen_random_uuid(), 'Nina Blue', 'nina@example.com', '+666777888', '/path/to/cv14.pdf', 1),
+(gen_random_uuid(), 'Oscar Gray', 'oscar@example.com', '+999000111', '/path/to/cv15.pdf', 1),
+(gen_random_uuid(), 'Paul Brown', 'paul@example.com', '+222333444', '/path/to/cv16.pdf', 1),
+(gen_random_uuid(), 'Quinn White', 'quinn@example.com', '+555666777', '/path/to/cv17.pdf', 1),
+(gen_random_uuid(), 'Rachel Green', 'rachel@example.com', '+888999000', '/path/to/cv18.pdf', 1),
+(gen_random_uuid(), 'Sam Black', 'sam@example.com', '+111222333', '/path/to/cv19.pdf', 1),
+(gen_random_uuid(), 'Tina Blue', 'tina@example.com', '+444555666', '/path/to/cv20.pdf', 1),
+(gen_random_uuid(), 'Uma Gray', 'uma@example.com', '+777888999', '/path/to/cv21.pdf', 1),
+(gen_random_uuid(), 'Victor Brown', 'victor@example.com', '+000111222', '/path/to/cv22.pdf', 1);
 

@@ -13,7 +13,8 @@ import {Application, ApplicationDetail} from "../../model/application";
 export class MockApplicationsInterceptor implements HttpInterceptor {
   private mockData: Application[] = [
     {
-      id: 1,
+      id: '1',
+      shortId: '1',
       candidate: 'Juan Palomo',
       tags: 'TBD, TBD',
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
@@ -25,7 +26,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       ]
     },
     {
-      id: 2,
+      id: '1',
+      shortId: '1',
       candidate: 'María García',
       tags: 'TBD, TBD',
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
@@ -37,7 +39,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       ]
     },
     {
-      id: 3,
+      id: '1',
+      shortId: '1',
       candidate: 'Pedro Pérez',
       tags: 'TBD, TBD',
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
@@ -49,7 +52,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       ]
     },
     {
-      id: 4,
+      id: '1',
+      shortId: '1',
       candidate: 'Ana López',
       tags: 'TBD, TBD',
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
@@ -61,7 +65,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       ]
     },
     {
-      id: 5,
+      id: '1',
+      shortId: '1',
       candidate: 'Carlos Sánchez',
       tags: 'TBD, TBD',
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
@@ -73,7 +78,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       ]
     },
     {
-      id: 6,
+      id: '1',
+      shortId: '1',
       candidate: 'Sara Martínez',
       tags: 'TBD, TBD',
       cv: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf",
@@ -88,7 +94,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
 
   private mockApplicationDetailData: ApplicationDetail[] = [
     {
-      id: 1,
+      id: '1',
+      shortId: '1',
       position: { id: 1, title: 'Frontend Developer', createdAt: '2025-01-22T10:23:08.350Z' },
       creationDate: '2025-01-22T10:23:08.350Z',
       candidate: {
@@ -106,7 +113,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       cvFile: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf"
     },
     {
-      id: 2,
+      id: '1',
+      shortId: '1',
       position: { id: 2, title: 'Backend Developer', createdAt: '2025-01-24T10:23:08.350Z' },
       creationDate: '2025-01-24T10:23:08.350Z',
       candidate: {
@@ -124,7 +132,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       cvFile: "/assets/cvs/Fictional_AI_Expert_CV_Spanish.pdf"
     },
     {
-      id: 3,
+      id: '1',
+      shortId: '1',
       position: {id: 3, title: 'Data Scientist', createdAt: '2025-01-26T10:23:08.350Z'},
       creationDate: '2025-01-26T10:23:08.350Z',
       candidate: {
@@ -150,7 +159,7 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
       const url = new URL(req.urlWithParams);
 
       if (req.method === 'GET' && req.url.match(/\/\d+$/)) {
-        const applicationId = parseInt(req.url.split('/').pop() || '0', 10);
+        const applicationId = req.url.split('/').pop();
         const application = this.mockApplicationDetailData.find((application) => application.id === applicationId);
         if (application) {
           return of(new HttpResponse({ status: 200, body: application }));

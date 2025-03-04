@@ -4,14 +4,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.*;
+import java.util.UUID;
 
 import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.ExceptionHandlerController;
 import com.jaruiz.casarrubios.candidates.services.applications.business.ApplicationsService;
 import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationErrorDTO;
 import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationResponseDTO;
+import com.jaruiz.casarrubios.candidates.services.applications.infrastructure.config.Config;
+import io.minio.BucketExistsArgs;
+import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
+import io.minio.MinioClient;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -24,6 +32,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApplicationsServiceApplicationTests {
+    private static final String NAME = "John Doe";
+    private static final String EMAIL = "johndoe@email.com";
+    private static final String PHONE = "1234567890";
+    private static final String POSITION_ID = "1";
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
         "postgres:16-alpine"
@@ -35,6 +47,12 @@ class ApplicationsServiceApplicationTests {
     static String getBucketName() {
         return "test";
     }
+
+    @Autowired
+    private MinioClient minioClient;
+
+    @Autowired
+    private Config config;
 
     @LocalServerPort
     private Integer port;
@@ -73,8 +91,8 @@ class ApplicationsServiceApplicationTests {
         final Response response = given()
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
-            .multiPart("positionId", "1")
-            .multiPart("candidate", "{\"name\": \"John\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("positionId", POSITION_ID)
+            .multiPart("candidate", "{\"name\": \"" + NAME + "\",\"email\": \"" + EMAIL + "\",\"phone\": \"" + PHONE + "\"}", "application/json")
             .when()
             .post("/applications");
 
@@ -84,6 +102,8 @@ class ApplicationsServiceApplicationTests {
         assertTrue(applicationResponseDTO.getApplicationId() != null && !applicationResponseDTO.getApplicationId().isEmpty());
         assertTrue(applicationResponseDTO.getPosition() != null && applicationResponseDTO.getPosition() > 0);
 
+        checkSavedData(applicationResponseDTO.getApplicationId());
+        checkCVIsStored(applicationResponseDTO.getApplicationId());
     }
 
     @Test
@@ -91,7 +111,7 @@ class ApplicationsServiceApplicationTests {
         final Response response = given()
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
-            .multiPart("candidate", "{\"name\": \"John\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("candidate", "{\"name\": \"" + NAME + "\",\"email\": \"" + EMAIL + "\",\"phone\": \"" + PHONE + "\"}", "application/json")
             .when()
             .post("/applications");
 
@@ -102,7 +122,7 @@ class ApplicationsServiceApplicationTests {
     void givenAInvalidResumeAndNoCompleteData_whenUpload_thenA400isReceived() throws IOException {
         final Response response = given()
             .contentType("multipart/form-data")
-            .multiPart("positionId", "1")
+            .multiPart("positionId", POSITION_ID)
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
             .when()
             .post("/applications");
@@ -114,7 +134,7 @@ class ApplicationsServiceApplicationTests {
     void givenAInvalidResumeAndNoCandidateData_whenUpload_thenA400isReceived() throws IOException {
         final Response response = given()
             .contentType("multipart/form-data")
-            .multiPart("positionId", "1")
+            .multiPart("positionId", POSITION_ID)
             .when()
             .post("/applications");
 
@@ -126,8 +146,8 @@ class ApplicationsServiceApplicationTests {
         final Response response = given()
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
-            .multiPart("positionId", "1")
-            .multiPart("candidate", "{\"name\": \"John\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("positionId", POSITION_ID)
+            .multiPart("candidate", "{\"name\": \"" + NAME + "\",\"email\": \"" + EMAIL + "\"}", "application/json")
             .when()
             .post("/applications");
 
@@ -165,8 +185,8 @@ class ApplicationsServiceApplicationTests {
         final Response response = given()
             .contentType("multipart/form-data")
             .multiPart("cvFile", "Fictional_AI_Expert_CV_Spanish.pdf", getFile(), "application/pdf")
-            .multiPart("positionId", "1")
-            .multiPart("candidate", "{\"name\": \"John\",\"email\": \"john.doe@example.com\",\"phone\": \"1234567890\"}", "application/json")
+            .multiPart("positionId", POSITION_ID)
+            .multiPart("candidate", "{\"name\": \"" + NAME + "\",\"email\": \"" + EMAIL + "\",\"phone\": \"" + PHONE + "\"}", "application/json")
             .when()
             .post("/applications");
 
@@ -180,9 +200,6 @@ class ApplicationsServiceApplicationTests {
 
     }
 
-
-
-
     private static void assertBadRequestMissingParams(Response response) {
         assertEquals(400, response.getStatusCode());
         final ApplicationErrorDTO applicationErrorDTO = response.getBody().as(ApplicationErrorDTO.class);
@@ -195,4 +212,37 @@ class ApplicationsServiceApplicationTests {
         return Files.readAllBytes(path);
     }
 
+    private void checkSavedData(String applicationId) {
+        final String select = "SELECT ID, NAME, EMAIL, PHONE, CV, POSITION_ID, CREATED_AT FROM applications.applications WHERE id = '" + applicationId + "'";
+
+        try (Connection connection = DriverManager.getConnection(postgres.getJdbcUrl(), postgres.getUsername(), postgres.getPassword())) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(select);
+            assertTrue(resultSet.next());
+            assertEquals(applicationId, resultSet.getString("ID"));
+            assertEquals(NAME, resultSet.getString("NAME"));
+            assertEquals(EMAIL, resultSet.getString("EMAIL"));
+            assertEquals(PHONE, resultSet.getString("PHONE"));
+            assertEquals(Integer.valueOf(POSITION_ID), resultSet.getInt("POSITION_ID"));
+            assertNotNull(resultSet.getTimestamp("CREATED_AT"));
+            assertNotNull(resultSet.getString("CV"));
+        } catch (SQLException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    private void checkCVIsStored(String applicationId) {
+        try {
+            assertTrue(minioClient.bucketExists(BucketExistsArgs.builder().bucket(config.getBucketName()).build()));
+            final GetObjectResponse response = minioClient.getObject(GetObjectArgs.builder().bucket(config.getBucketName()).object(applicationId).build());
+            assertNotNull(response);
+            assertNotNull(response.object());
+            byte[] content = response.readAllBytes();
+            assertNotNull(content);
+            assertTrue(content.length > 0);
+
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 }

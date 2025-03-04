@@ -62,7 +62,7 @@ export class ApplicationsComponent implements OnInit {
     return positionsApplied.filter((position) => position.id === this.position.id)[0].matchingPercentage;
   }
 
-  goToApplicationDetail(id: number) {
+  goToApplicationDetail(id: string) {
     this.router.navigate(['private/application-detail', { id: id }]);
   }
 

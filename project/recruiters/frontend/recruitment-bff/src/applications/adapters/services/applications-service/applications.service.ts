@@ -13,7 +13,10 @@ export class ApplicationsService {
   private readonly backendUrl: string;
   private readonly logger = new Logger(ApplicationsService.name);
 
-  constructor(private httpService: HttpService, private readonly config: Config) {
+  constructor(
+    private httpService: HttpService,
+    private readonly config: Config,
+  ) {
     this.backendUrl = this.config.getApplicationsBackendUrl();
     this.logger.log(
       `[Applications Service] Backend URL set to: ${this.backendUrl}`,
@@ -21,7 +24,7 @@ export class ApplicationsService {
   }
 
   async getApplicationById(
-    applicationId: number,
+    applicationId: string,
   ): Promise<ServiceApplicationDTO> {
     const url = `${this.backendUrl}/applications/${applicationId}`;
     this.logger.debug(

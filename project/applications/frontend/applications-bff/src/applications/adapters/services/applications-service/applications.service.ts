@@ -23,7 +23,6 @@ export class ApplicationsService {
 
     const formData = new FormData();
     formData.append('positionId', newApplication.positionId.toString());
-    // formData.append('candidate', new Blob([JSON.stringify(newApplication.candidate)], { type: "application/json"}));
     formData.append('candidate', newApplication.candidate, { contentType: 'application/json' });
     formData.append('cvFile', file.buffer, { filename: file.originalname, contentType: file.mimetype });
 
@@ -33,8 +32,6 @@ export class ApplicationsService {
     console.log('------------------------------------');
 
     try {
-      // const application = this.toApplicationDTO(newApplication, file);
-      // const response = await firstValueFrom(this.httpService.post<ApplicationResponseDTO>(url, application));
       const config = {
         headers: {
           'Accept': 'application/json',
@@ -56,17 +53,5 @@ export class ApplicationsService {
       this.logger.error(`Error fetching positions: ${error.message}`, error.stack);
       throw new Error(`Error fetching positions: ${error.message}`);
     }
-  }
-
-  private toApplicationDTO(newApplication: NewApplicationDTO, file: Express.Multer.File): ApplicationDTO {
-    return {
-      positionId: newApplication.positionId,
-      candidate: {
-        name: newApplication.candidate.name,
-        email: newApplication.candidate.email,
-        phone: newApplication.candidate.phone
-      },
-      cvFile: file.buffer.toString('base64')
-    };
   }
 }
