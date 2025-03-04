@@ -1,11 +1,10 @@
-import {Component, OnInit, PipeTransform, TemplateRef, ViewChild} from '@angular/core';
-import {NgbHighlight, NgbModal, NgbModalOptions, NgbModalRef, NgbPagination} from "@ng-bootstrap/ng-bootstrap";
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {NgbHighlight, NgbModal, NgbModalRef, NgbPagination} from "@ng-bootstrap/ng-bootstrap";
 import {AsyncPipe, CommonModule, DecimalPipe, NgIf} from "@angular/common";
-import {FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {map, Observable, startWith} from "rxjs";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
-import {PaginatedPositions, Position} from "../../model/position";
+import {Position} from "../../model/position";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
 
 

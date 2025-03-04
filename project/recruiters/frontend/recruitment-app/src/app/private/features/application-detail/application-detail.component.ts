@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {DatePipe, Location} from "@angular/common";
-import {Application, ApplicationDetail} from "../../model/application";
+import {ApplicationDetail} from "../../model/application";
 import {Position} from "../../model/position";
 import {ApplicationsService} from "../../services/applications/applications.service";
 

@@ -1,9 +1,8 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {map, Observable} from "rxjs";
-import {Application, ApplicationDetail, PaginatedApplications, PositionApplied} from "../../model/application";
+import {Observable} from "rxjs";
+import {ApplicationDetail, PaginatedApplications} from "../../model/application";
 import {environment} from "../../../../environments/environment";
-import {Tag} from "../../model/position";
 
 @Injectable({
   providedIn: 'root'

@@ -1,4 +1,4 @@
-import { PositionStatusPipePipe } from './position-status-pipe.pipe';
+import {PositionStatusPipePipe} from './position-status-pipe.pipe';
 
 describe('PositionStatusPipePipe', () => {
   it('create an instance', () => {

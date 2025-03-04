@@ -1,12 +1,11 @@
-import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DatePipe, Location, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {NgbModal, NgbModalRef, NgbPagination} from "@ng-bootstrap/ng-bootstrap";
+import {NgbPagination} from "@ng-bootstrap/ng-bootstrap";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
 import {Position} from "../../model/position";
-import {ActivatedRoute, Router} from "@angular/router";
-import {PositionsService} from "../../services/positions.service";
-import {Application, PaginatedApplications, PositionApplied} from "../../model/application";
+import {Router} from "@angular/router";
+import {Application, PositionApplied} from "../../model/application";
 import {ApplicationsService} from "../../services/applications/applications.service";
 
 @Component({

@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core'
+import {Component} from '@angular/core'
 import {Router, RouterModule} from '@angular/router'
-import { NgbDropdownModule, NgbNavModule } from '@ng-bootstrap/ng-bootstrap'
+import {NgbDropdownModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap'
 
 @Component({
   selector: 'app-header',

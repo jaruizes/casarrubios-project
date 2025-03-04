@@ -1,12 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core'
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms'
-import { Router, RouterLink} from '@angular/router'
+import {Component, OnInit} from '@angular/core'
+import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators,} from '@angular/forms'
+import {Router, RouterLink} from '@angular/router'
 
 @Component({
     selector: 'app-login',

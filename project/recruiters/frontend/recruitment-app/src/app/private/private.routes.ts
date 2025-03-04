@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { HomeComponent } from "./features/home/home.component";
+import {Routes} from '@angular/router';
+import {HomeComponent} from "./features/home/home.component";
 import {PrivateComponent} from "./private.component";
 import {PositionDetailComponent} from "./features/position-detail/position-detail.component";
 import {PositionViewComponent} from "./features/position-view/position-view.component";
