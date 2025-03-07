@@ -4,6 +4,7 @@ import com.jaruiz.casarrubios.recruiters.services.business.ApplicationsUpdaterSe
 import com.jaruiz.casarrubios.recruiters.services.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.business.ports.PersistenceService;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -17,6 +18,7 @@ public class ApplicationsUpdaterServiceImpl implements ApplicationsUpdaterServic
         this.persistenceService = persistenceService;
     }
 
+    @Transactional
     @Override
     public void processApplication(Application application) {
         logger.info("Processing application with Id: " + application.getId());

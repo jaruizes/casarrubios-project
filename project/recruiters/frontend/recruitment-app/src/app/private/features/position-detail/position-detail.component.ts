@@ -34,7 +34,7 @@ export class PositionDetailComponent implements OnInit {
       applications: 0,
       creationDate: '',
       requirements: [
-        { key: '', value: '', description: '', isMandatory: false }
+        { key: '', value: '', description: '', mandatory: false }
       ],
       tasks: [
         { description: '' }
@@ -77,7 +77,7 @@ export class PositionDetailComponent implements OnInit {
       key: '',
       value: '',
       description: '',
-      isMandatory: false
+      mandatory: false
     }
     this.position.requirements.push(newRequirement)
   }

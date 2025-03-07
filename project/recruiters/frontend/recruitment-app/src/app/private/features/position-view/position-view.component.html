@@ -34,7 +34,7 @@
         <ul class="pt-2">
           <li *ngFor="let req of position.requirements" class="lead">
             <strong>{{ req.key }}:</strong> {{ req.value }} - {{ req.description }}
-            <span *ngIf="req.isMandatory" class="text-danger">(Obligatorio)</span>
+            <span *ngIf="req.mandatory" class="text-danger">(Obligatorio)</span>
           </li>
         </ul>
       </div>

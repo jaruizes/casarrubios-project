@@ -9,15 +9,16 @@ public class Application {
     private final String email;
     private final String phone;
     private final String cv;
+    private final long positionId;
     private final long createdAt;
 
-    public Application(UUID id, String name, String surname, String email, String phone, String cv, long createdAt) {
+    public Application(UUID id, String name, String email, String phone, String cv, long positionId, long createdAt) {
         this.id = id;
         this.name = name;
-        this.surname = surname;
         this.email = email;
         this.phone = phone;
         this.cv = cv;
+        this.positionId = positionId;
         this.createdAt = createdAt;
     }
 
@@ -27,10 +28,6 @@ public class Application {
 
     public String getName() {
         return name;
-    }
-
-    public String getSurname() {
-        return surname;
     }
 
     public String getEmail() {
@@ -47,5 +44,9 @@ public class Application {
 
     public long getCreatedAt() {
         return createdAt;
+    }
+
+    public long getPositionId() {
+        return positionId;
     }
 }

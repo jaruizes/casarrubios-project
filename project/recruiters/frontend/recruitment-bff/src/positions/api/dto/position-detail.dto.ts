@@ -6,7 +6,7 @@ export interface RequirementDTO {
   key: string;
   value: string;
   description: string;
-  isMandatory: boolean;
+  mandatory: boolean;
 }
 
 export interface TaskDTO {

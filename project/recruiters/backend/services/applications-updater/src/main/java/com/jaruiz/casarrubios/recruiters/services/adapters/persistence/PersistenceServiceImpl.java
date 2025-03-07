@@ -32,12 +32,12 @@ public class PersistenceServiceImpl implements PersistenceService {
 
     private ApplicationEntity mapToEntity(Application application) {
         ApplicationEntity applicationEntity = new ApplicationEntity();
-        applicationEntity.setId(application.getId().toString());
+        applicationEntity.setId(application.getId());
         applicationEntity.setName(application.getName());
-        applicationEntity.setSurname(application.getSurname());
         applicationEntity.setEmail(application.getEmail());
         applicationEntity.setPhone(application.getPhone());
         applicationEntity.setCv(application.getCv());
+        applicationEntity.setPositionId(application.getPositionId());
         applicationEntity.setCreatedAt(new Timestamp(application.getCreatedAt()));
         return applicationEntity;
     }

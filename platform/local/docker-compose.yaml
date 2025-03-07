@@ -86,7 +86,7 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:
-      - 9081:9081
+      - 8001:8001
     depends_on:
       zookeeper:
         condition: service_healthy
@@ -95,7 +95,7 @@ services:
 #      schema-registry:
 #        condition: service_healthy
     environment:
-      SERVER_PORT: 9081
+      SERVER_PORT: 8001
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:29092"
       KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
       KAFKA_CLUSTERS_0_NAME: local
@@ -185,6 +185,12 @@ services:
 
 ### -------------------------------------------------------------- ###
 ### "RECRUITERS SIDE" SERVICES ###
+  recruitment-recruitment-app:
+    image: "recruitment/recruitment-app:1.0.0"
+    container_name: recruitment.recruitment-app
+    ports:
+      - "9070:9070"
+
   recruitment-recruitment-bff:
     image: "recruitment/recruitment-bff:1.0.0"
     container_name: recruitment.recruitment-bff

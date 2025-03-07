@@ -2,26 +2,31 @@ package com.jaruiz.casarrubios.recruiters.services.adapters.api.async.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ApplicationDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    private Long id;
+    private UUID id;
+    @JsonProperty("position_id")
     private Long positionId;
     private String name;
     private String email;
     private String phone;
     private String cv;
-    private long created_at;
+    @JsonProperty("created_at")
+    private Long createdAt;
 
     public ApplicationDTO() { }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -65,11 +70,11 @@ public class ApplicationDTO implements Serializable {
         this.cv = cv;
     }
 
-    public long getCreated_at() {
-        return created_at;
+    public Long getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(long created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Long createdAt) {
+        this.createdAt = createdAt;
     }
 }

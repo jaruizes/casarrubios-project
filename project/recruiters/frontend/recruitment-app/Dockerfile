@@ -11,5 +11,5 @@ FROM nginx:1.23
 COPY --from=build /app/dist/recruitment-app/browser /usr/share/nginx/html
 COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 8080
+EXPOSE 9070
 CMD ["nginx", "-g", "daemon off;"]

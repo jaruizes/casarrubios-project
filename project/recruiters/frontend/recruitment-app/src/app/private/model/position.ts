@@ -6,7 +6,7 @@ export interface Requirement {
   key: string;
   value: string;
   description: string;
-  isMandatory: boolean;
+  mandatory: boolean;
 }
 
 export interface Task {

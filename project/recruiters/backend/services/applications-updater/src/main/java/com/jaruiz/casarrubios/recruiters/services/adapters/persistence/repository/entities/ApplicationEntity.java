@@ -1,6 +1,7 @@
 package com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.entities;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,23 +13,24 @@ import jakarta.persistence.Table;
 public class ApplicationEntity {
 
     @Id
-    private String id;
+    private UUID id;
     private String name;
-    private String surname;
     private String email;
     private String phone;
     private String cv;
+    @Column(name = "position_id")
+    private Long positionId;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
 
     public ApplicationEntity() { }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -38,14 +40,6 @@ public class ApplicationEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
     }
 
     public String getEmail() {
@@ -78,5 +72,13 @@ public class ApplicationEntity {
 
     public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(Long positionId) {
+        this.positionId = positionId;
     }
 }
