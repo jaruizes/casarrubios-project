@@ -1,9 +1,13 @@
 package com.jaruiz.casarrubios.recruiters.services.applications.adapters.fileStorage;
 
+import java.util.UUID;
+
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.CVNotFoundException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.CVServicePort;
 import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
-import io.minio.*;
+import io.minio.GetObjectArgs;
+import io.minio.GetObjectResponse;
+import io.minio.MinioClient;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,14 +21,14 @@ public class MinioCVServiceAdapter implements CVServicePort {
     }
 
     @Override
-    public byte[] getCV(String applicationId) throws CVNotFoundException {
+    public byte[] getCV(UUID applicationId) throws CVNotFoundException {
         try {
             final GetObjectResponse response = minioClient.getObject(GetObjectArgs.builder()
                                                                                   .bucket(config.getBucketName())
-                                                                                  .object(applicationId).build());
+                                                                                  .object(applicationId.toString()).build());
             return response.readAllBytes();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CVNotFoundException(applicationId);
         }
     }
 }

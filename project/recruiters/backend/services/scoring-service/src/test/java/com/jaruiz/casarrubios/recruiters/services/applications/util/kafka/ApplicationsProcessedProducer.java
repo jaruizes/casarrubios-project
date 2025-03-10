@@ -1,10 +1,15 @@
 package com.jaruiz.casarrubios.recruiters.services.applications.util.kafka;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
+import static org.junit.Assert.fail;
 
 @Service
 public class ApplicationsProcessedProducer {
@@ -19,7 +24,15 @@ public class ApplicationsProcessedProducer {
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     public void publishApplicationProcessedEvent(UUID applicationId, long positionId) {
-        kafkaTemplate.send("applications-processed", applicationId.toString(), buildApplicationFake(applicationId, positionId));
+        try {
+            SendResult<String, Object> result = kafkaTemplate.send(Config.APPLICATIONS_RECEIVED_TOPIC, applicationId.toString(), buildApplicationFake(applicationId, positionId)).get();
+            if (result.getRecordMetadata() == null) {
+                fail("Error publishing application processed event");
+            }
+        } catch (Exception e) {
+            fail("Error publishing application processed event");
+        }
+
     }
 
     private String buildApplicationFake(UUID applicationId, long positionId) {
