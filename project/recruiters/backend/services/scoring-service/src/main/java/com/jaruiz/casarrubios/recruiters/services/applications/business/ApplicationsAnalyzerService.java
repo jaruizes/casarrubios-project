@@ -2,7 +2,9 @@ package com.jaruiz.casarrubios.recruiters.services.applications.business;
 
 import java.util.UUID;
 
+import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.AnalysingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.CVNotFoundException;
+import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.TextExtractingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.ResumeAnalysis;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.CVServicePort;
@@ -26,14 +28,14 @@ public class ApplicationsAnalyzerService {
         this.cvAnalyzerService = cvAnalyzerService;
     }
 
-    public ResumeAnalysis analyzeApplication(Application application) throws CVNotFoundException {
+    public ResumeAnalysis analyzeApplication(Application application) throws CVNotFoundException, AnalysingException, TextExtractingException {
         final String cvText = getTextFromCv(application.getId());
         logger.info("Analyzed CV with id {} successfully", application.getId());
-        return cvAnalyzerService.analyze(cvText);
+        return cvAnalyzerService.analyze(application.getId(), cvText);
     }
 
-    private String getTextFromCv(UUID applicationId) throws CVNotFoundException {
+    private String getTextFromCv(UUID applicationId) throws CVNotFoundException, TextExtractingException {
         byte[] cv = cvService.getCV(applicationId);
-        return textExtractor.extractTextFromCV(cv);
+        return textExtractor.extractTextFromCV(applicationId, cv);
     }
 }

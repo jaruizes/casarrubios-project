@@ -1,19 +1,23 @@
 package com.jaruiz.casarrubios.recruiters.services.applications.util.kafka;
 
+import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import static org.junit.Assert.fail;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 @Service
 public class ApplicationsProcessedProducer {
-
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationsProcessedProducer.class);
     public static final String APPLICATION_NAME = "John Doe";
     public static final String APPLICATION_EMAIL = "email@email.com";
     public static final String APPLICATION_PHONE = "123456789";
@@ -22,25 +26,54 @@ public class ApplicationsProcessedProducer {
 
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
+    @Autowired
+    private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
-    public void publishApplicationProcessedEvent(UUID applicationId, long positionId) {
+    public void publishWrongApplicationReceivedEvent(UUID applicationId, long positionId) {
+        publishApplicationReceivedEvent(applicationId, buildWrongApplicationReceivedEvent(applicationId, positionId));
+    }
+
+    public void publishApplicationReceivedEvent(UUID applicationId, long positionId) {
+        publishApplicationReceivedEvent(applicationId, buildApplicationReceivedEvent(applicationId, positionId));
+    }
+
+    private void publishApplicationReceivedEvent(UUID applicationId, String applicationReceivedEvent) {
+        waitTillListenersReady();
         try {
-            SendResult<String, Object> result = kafkaTemplate.send(Config.APPLICATIONS_RECEIVED_TOPIC, applicationId.toString(), buildApplicationFake(applicationId, positionId)).get();
+            SendResult<String, Object> result = kafkaTemplate.send(Config.APPLICATIONS_RECEIVED_TOPIC, applicationId.toString(), applicationReceivedEvent).get();
             if (result.getRecordMetadata() == null) {
-                fail("Error publishing application processed event");
+                fail("Error publishing application received event");
             }
         } catch (Exception e) {
             fail("Error publishing application processed event");
         }
-
     }
 
-    private String buildApplicationFake(UUID applicationId, long positionId) {
+    private void waitTillListenersReady() {
+        await().atMost(10, TimeUnit.SECONDS)
+               .until(() -> Objects.requireNonNull(kafkaListenerEndpointRegistry.getListenerContainer("application-received-listener")).isRunning() &&
+                   Objects.requireNonNull(kafkaListenerEndpointRegistry.getListenerContainer("application-analysed-listener")).isRunning() &&
+                   Objects.requireNonNull(kafkaListenerEndpointRegistry.getListenerContainer("application-dlq-listener")).isRunning());
+    }
+
+    private String buildApplicationReceivedEvent(UUID applicationId, long positionId) {
         return "{\n" +
             "    \"id\": \"" + applicationId + "\",\n" +
             "    \"name\": \"" + APPLICATION_NAME + "\",\n" +
             "    \"email\": \"" + APPLICATION_EMAIL + "\",\n" +
             "    \"phone\": \"" + APPLICATION_PHONE + "\",\n" +
+            "    \"cv\": \"" + APPLICATION_CV + "\",\n" +
+            "    \"position_id\": " + positionId + ",\n" +
+            "    \"created_at\": " + APPLICATION_CREATED_AT + "\n" +
+            "}";
+    }
+
+    private String buildWrongApplicationReceivedEvent(UUID applicationId, long positionId) {
+        return "{\n" +
+            "    \"id\": \"" + applicationId + "\",\n" +
+            "    \"namdsdse\": \"" + APPLICATION_NAME + "\",\n" +
+            "    \"emadsdsil\": \"" + APPLICATION_EMAIL + "\",\n" +
+            "    \"phodsdsne\": \"" + APPLICATION_PHONE + "\",\n" +
             "    \"cv\": \"" + APPLICATION_CV + "\",\n" +
             "    \"position_id\": " + positionId + ",\n" +
             "    \"created_at\": " + APPLICATION_CREATED_AT + "\n" +

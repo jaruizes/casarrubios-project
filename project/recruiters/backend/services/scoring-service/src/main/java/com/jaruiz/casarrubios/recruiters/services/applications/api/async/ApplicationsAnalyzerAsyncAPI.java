@@ -4,14 +4,17 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ApplicationAnalysisFailedEventDTO;
 import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ApplicationAnalysedEventDTO;
+import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ApplicationAnalysisFailedEventDTO;
 import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.NewApplicationReceivedDTO;
 import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ResumeAnalysisDTO;
 import com.jaruiz.casarrubios.recruiters.services.applications.api.async.mappers.ApplicationMapper;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ApplicationsAnalyzerService;
+import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.AnalysingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.CVNotFoundException;
+import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.TextExtractingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.ResumeAnalysis;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.ApplicationAnalysedProducerPort;
@@ -29,6 +32,7 @@ import static com.jaruiz.casarrubios.recruiters.services.applications.infrastruc
 public class ApplicationsAnalyzerAsyncAPI implements ApplicationAnalysedProducerPort {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationsAnalyzerAsyncAPI.class);
     public static final String ERROR_RESUME_NOT_FOUND = "AA0002";
+    public static final String ERROR_PROCESSING_APPLICATION_RECEIVED_EVENT = "ARE0001";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ApplicationMapper mapper;
@@ -43,7 +47,7 @@ public class ApplicationsAnalyzerAsyncAPI implements ApplicationAnalysedProducer
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @KafkaListener(topics = APPLICATIONS_RECEIVED_TOPIC, groupId = "analysing-services")
+    @KafkaListener(id = "application-received-listener", topics = APPLICATIONS_RECEIVED_TOPIC, groupId = "analysing-services")
     public void consume(ConsumerRecord<String, String> record) {
         try {
             NewApplicationReceivedDTO application = objectMapper.readValue(record.value(), NewApplicationReceivedDTO.class);
@@ -55,14 +59,18 @@ public class ApplicationsAnalyzerAsyncAPI implements ApplicationAnalysedProducer
 
             this.sendApplicationAnalysedEvent(newApplication.getId(), analysis);
             logger.info("Application analysed event sent [application id = {}]", newApplication.getId());
-        } catch (JsonProcessingException e) {
-            final String message = "Error processing application [key = " + record.key() + "]. Error parsing application";
-            logger.error(message);
-            this.sendToDQL(UUID.fromString(record.key()), "AA0001", message);
+        } catch (AnalysingException e) {
+            this.sendToDQL(UUID.fromString(record.key()), e.getCode(), e.getMessage());
         } catch (CVNotFoundException e) {
             final String message = "Error processing application [key = " + record.key() + "]. Resume not found in storage";
             logger.error(message);
             this.sendToDQL(UUID.fromString(record.key()), ERROR_RESUME_NOT_FOUND, message);
+        } catch (JsonProcessingException e) {
+            logger.error("Error processing application received [key = {}, value = {}]", record.key(), record.value());
+            String message = "[key: " + record.key() + "] [value: " + record.value() + "]";
+            this.sendToDQL(UUID.fromString(record.key()), ERROR_PROCESSING_APPLICATION_RECEIVED_EVENT, message);
+        } catch (TextExtractingException e) {
+            this.sendToDQL(UUID.fromString(record.key()), e.getCode(), e.getMessage());
         }
     }
 

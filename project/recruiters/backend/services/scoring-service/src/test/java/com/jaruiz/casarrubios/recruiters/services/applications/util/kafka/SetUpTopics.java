@@ -2,13 +2,11 @@ package com.jaruiz.casarrubios.recruiters.services.applications.util.kafka;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Future;
 
 import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
 import lombok.Getter;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
-import org.apache.kafka.clients.admin.ListTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

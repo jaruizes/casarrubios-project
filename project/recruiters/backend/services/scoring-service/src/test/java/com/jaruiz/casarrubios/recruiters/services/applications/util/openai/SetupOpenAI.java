@@ -1,24 +1,19 @@
 package com.jaruiz.casarrubios.recruiters.services.applications.util.openai;
 
 import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.context.annotation.Bean;
 import org.springframework.boot.test.context.TestConfiguration;
-
+import org.springframework.context.annotation.Bean;
 import static org.mockito.Mockito.*;
 
 @TestConfiguration
-public class TestOpenAiConfig {
+public class SetupOpenAI {
 
     @Bean
     public OpenAiChatModel mockOpenAiChatModel() {
-        OpenAiChatModel mockModel = mock(OpenAiChatModel.class);
-
-        when(mockModel.call(anyString())).thenReturn(getFakeResponse());
-
-        return mockModel;
+        return mock(OpenAiChatModel.class);
     }
 
-    private String getFakeResponse() {
+    public static String getFakeResponse() {
         return """
             {
                 "summary": "Senior Architect with 20+ years of experience.",
@@ -29,6 +24,23 @@ public class TestOpenAiConfig {
                 "keyResponsibilities": ["Architect complex solutions"],
                 "interviewQuestions": ["Explain how you designed an event-driven system"],
                 "totalYearsExperience": 20,
+                "averagePermanency": 3.5,
+                "tags": ["Cloud", "Kafka"]
+            }
+            """;
+    }
+
+    public static String getWrongFakeResponse() {
+        return """
+            {
+                "summary": "Senior Architect with 20+ years of experience.",
+                "strengths": ["Expert in cloud", "Strong leadership"],
+                "consddscerns": ["English level at B2"],
+                "hardsddsSkills": [{"skill": "Java", "level": 5}],
+                "softdsdsSkills": [{"skill": "Leadership", "level": 5}],
+                "keyRsdaesponsibilities": ["Architect complex solutions"],
+                "interviewQuestions": ["Explain how you designed an event-driven system"],
+                "totadsadaslYearsExperience": 20,
                 "averagePermanency": 3.5,
                 "tags": ["Cloud", "Kafka"]
             }
