@@ -8,7 +8,6 @@ This repository will serve as a portfolio, showcasing various topics in architec
 
 The aim is to include the most of these topics:
 
-- GenAI and RAG
 - Front: Angular, Vue, React
 - Backend: Spring Boot, Quarkus, Node
 - Authorization, Authentication
@@ -18,6 +17,7 @@ The aim is to include the most of these topics:
   - Schema Registry
   - Management
 - Databases: SQL and NoSQL
+- GenAI
 - Kafka, Kafka Connect, KStreams
 - CDC: Debezium
 - Testcontainers
@@ -33,6 +33,11 @@ Later on, I'll include Kubernetes (local) and, eventually, cloud infrastructure 
 - IaC: Terraform & CDK
 - AWS: EKS, Lambda, Fargate, RDS, DMS, Cognito, Bedrock
 
+
+To explore:
+- jwt-cli (https://github.com/mike-engel/jwt-cli)
+- jwtui (https://jwtui.cli.rs/)
+- DevToys (https://devtoys.app/)
 
 
 # Use case (What?)
