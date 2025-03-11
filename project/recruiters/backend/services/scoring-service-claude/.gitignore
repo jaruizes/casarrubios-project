@@ -7,6 +7,12 @@ __pycache__/
 *.so
 .venv
 
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+
 # Distribution / packaging
 .Python
 build/

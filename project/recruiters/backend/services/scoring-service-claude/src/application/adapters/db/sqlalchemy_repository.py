@@ -1,40 +1,23 @@
 # src/application/adapters/db/sqlalchemy_repository.py
 import logging
 from typing import Optional
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import sessionmaker
 
 from src.domain.model.position import Position as DomainPosition
 from src.domain.model.position import Requirement as DomainRequirement
 from src.domain.model.position import Task as DomainTask
 from src.domain.model.position import Benefit as DomainBenefit
-from src.application.ports.repository import PositionRepository
 from src.application.adapters.db.models import Position as DbPosition
 
 logger = logging.getLogger(__name__)
 
 
-class SQLAlchemyPositionRepository(PositionRepository):
-    """
-    Implementación del repositorio de posiciones usando SQLAlchemy
-    """
-
+class PositionRepository():
     def __init__(self, session_factory):
         self.session_factory = session_factory
 
     def get_position_by_id(self, position_id: int) -> Optional[DomainPosition]:
-        """
-        Obtiene una posición por su ID incluyendo requisitos, tareas y beneficios
-
-        Args:
-            position_id: ID de la posición a buscar
-
-        Returns:
-            Objeto Position con todos sus datos relacionados o None si no existe
-        """
         session = self.session_factory()
         try:
-            # Consultar la posición con todas sus relaciones en una sola consulta
             db_position = session.query(DbPosition).filter(
                 DbPosition.id == position_id
             ).first()
@@ -43,7 +26,6 @@ class SQLAlchemyPositionRepository(PositionRepository):
                 logger.warning(f"Position with id {position_id} not found")
                 return None
 
-            # Convertir de modelo de BD a modelo de dominio
             position = DomainPosition(
                 id=db_position.id,
                 title=db_position.title,
@@ -54,7 +36,6 @@ class SQLAlchemyPositionRepository(PositionRepository):
                 tags=db_position.tags
             )
 
-            # Convertir requisitos
             position.requirements = [
                 DomainRequirement(
                     id=req.id,
@@ -66,7 +47,6 @@ class SQLAlchemyPositionRepository(PositionRepository):
                 for req in db_position.requirements
             ]
 
-            # Convertir tareas
             position.tasks = [
                 DomainTask(
                     id=task.id,
@@ -75,7 +55,6 @@ class SQLAlchemyPositionRepository(PositionRepository):
                 for task in db_position.tasks
             ]
 
-            # Convertir beneficios
             position.benefits = [
                 DomainBenefit(
                     id=benefit.id,

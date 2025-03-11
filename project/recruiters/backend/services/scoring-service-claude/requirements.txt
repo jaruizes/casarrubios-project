@@ -7,3 +7,7 @@ opentelemetry-instrumentation-asyncpg
 opentelemetry-instrumentation-logging
 opentelemetry-exporter-otlp
 pydantic==2.4.2
+confluent-kafka
+openai
+numpy
+scikit-learn
