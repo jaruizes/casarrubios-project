@@ -1,8 +1,8 @@
 import json
 import logging
 import socket
-from confluent_kafka import Producer
 
+from confluent_kafka import Producer
 
 logger = logging.getLogger(__name__)
 

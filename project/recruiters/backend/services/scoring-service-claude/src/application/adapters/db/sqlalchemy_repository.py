@@ -1,12 +1,11 @@
-# src/application/adapters/db/sqlalchemy_repository.py
 import logging
 from typing import Optional
 
+from src.application.adapters.db.models import Position as DbPosition
+from src.domain.model.position import Benefit as DomainBenefit
 from src.domain.model.position import Position as DomainPosition
 from src.domain.model.position import Requirement as DomainRequirement
 from src.domain.model.position import Task as DomainTask
-from src.domain.model.position import Benefit as DomainBenefit
-from src.application.adapters.db.models import Position as DbPosition
 
 logger = logging.getLogger(__name__)
 

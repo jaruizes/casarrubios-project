@@ -1,16 +1,14 @@
 # tests/conftest.py
-import asyncio
+import logging
 import os
 import threading
+import time
 from pathlib import Path
 
 import pytest
-import logging
-import time
-
 from confluent_kafka import Consumer, KafkaException
-from testcontainers.postgres import PostgresContainer
 from testcontainers.kafka import KafkaContainer
+from testcontainers.postgres import PostgresContainer
 
 from src.main import main
 
@@ -28,7 +26,7 @@ logger = logging.getLogger(__name__)
 #     loop.close()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def postgres_container(request):
     script = Path(__file__).parent / "sql" / "init.sql"
     postgres = (PostgresContainer("postgres:14")
@@ -39,7 +37,7 @@ def postgres_container(request):
 
     def remove_container():
         postgres.stop()
-    request.addfinalizer(remove_container)
+    # request.addfinalizer(remove_container)
 
     logger.info(f"PostgreSQL container started: {postgres.get_connection_url()}")
     yield postgres
@@ -47,7 +45,7 @@ def postgres_container(request):
     logger.info("PostgreSQL container stopped")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def kafka_container(request):
     kafka = KafkaContainer("confluentinc/cp-kafka:latest")
     kafka.start()
@@ -56,7 +54,7 @@ def kafka_container(request):
 
     def remove_container():
         kafka.stop()
-    request.addfinalizer(remove_container)
+    # request.addfinalizer(remove_container)
 
     yield bootstrap_servers
     kafka.stop()
@@ -132,36 +130,6 @@ def wait_for_result_in_kafka(kafka_container):
                     return msg
         finally:
             consumer.close()
-        #
-        #
-        #
-        #
-        #
-        #
-        # consumer.start(__assert_event_received)
-        #
-        # await consumer.start()
-        #
-        # start_time = time.time()
-        # result = None
-        #
-        # try:
-        #     while time.time() - start_time < timeout:
-        #         # Poll for 1 second
-        #         msgs = await consumer.getmany(timeout_ms=1000)
-        #
-        #         for tp, messages in msgs.items():
-        #             if messages:
-        #                 # Return the latest message
-        #                 result = messages[-1]
-        #                 return result
-        #
-        #         # Wait a bit before polling again
-        #         await asyncio.sleep(0.5)
-        #
-        #     return None  # Timeout reached
-        # finally:
-        #     await consumer.stop()
 
     return _wait_for_result
 

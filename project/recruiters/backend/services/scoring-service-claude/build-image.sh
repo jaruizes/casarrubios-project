@@ -1,0 +1,1 @@
+docker build -t recruitment/scoring-service:1.0.0 .

@@ -1,17 +1,18 @@
-# src/main.py
 import asyncio
 import logging
 import signal
 import sys
 
-from src.config import load_config
-from src.infrastructure.db.sqlalchemy_connection import SQLAlchemyConnection
-from src.infrastructure.kafka.kafka_consumer import KafkaConsumer
-from src.infrastructure.observability.opentelemetry import setup_telemetry, shutdown_telemetry
+import openai
+
 from src.application.adapters.db.sqlalchemy_repository import PositionRepository
 from src.application.api.scoring_service_async_api import ScoringServiceAsyncAPI
-from src.infrastructure.kafka.kafka_producer import KafkaProducer
+from src.config import load_config
 from src.domain.services.scoring_service import ScoringService
+from src.infrastructure.db.sqlalchemy_connection import SQLAlchemyConnection
+from src.infrastructure.kafka.kafka_consumer import KafkaConsumer
+from src.infrastructure.kafka.kafka_producer import KafkaProducer
+from src.infrastructure.observability.opentelemetry import setup_telemetry, shutdown_telemetry
 
 
 # Configuración de logging
@@ -68,9 +69,12 @@ def startup():
                                      producer=producer,
                                      output_topic=config.kafka.output_topic)
 
+    logger.info("Initializing Open AI...")
+    openai.api_key = config.openai_key
+
     logger.info("Initializing API...")
     scoring_service_async_api = ScoringServiceAsyncAPI(scoring_service=scoring_service)
-    consumer.start(scoring_service_async_api.process_application)
+    consumer.start(scoring_service_async_api.handle_application_analyzed_event)
 
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):

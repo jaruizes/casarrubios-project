@@ -1,4 +1,5 @@
 import logging
+
 from confluent_kafka import Consumer, KafkaError, KafkaException
 
 logger = logging.getLogger(__name__)

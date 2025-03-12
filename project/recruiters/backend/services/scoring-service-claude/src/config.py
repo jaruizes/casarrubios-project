@@ -1,5 +1,5 @@
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 
@@ -29,15 +29,15 @@ class TelemetryConfig:
 
 @dataclass
 class ApplicationConfig:
-    db: DatabaseConfig = DatabaseConfig()
-    kafka: KafkaConfig = KafkaConfig()
-    telemetry: TelemetryConfig = TelemetryConfig()
+    db: DatabaseConfig = field(default_factory=DatabaseConfig)
+    kafka: KafkaConfig = field(default_factory=KafkaConfig)
+    telemetry: TelemetryConfig = field(default_factory=TelemetryConfig)
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
     openai_key: str = os.getenv("OPENAI_API_KEY")
 
 
 def load_config() -> ApplicationConfig:
-    appconfig =  ApplicationConfig(
+    appconfig = ApplicationConfig(
         db=DatabaseConfig(
             host=os.getenv("DB_HOST", "localhost"),
             port=int(os.getenv("DB_PORT", "5432")),

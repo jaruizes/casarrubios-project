@@ -1,5 +1,4 @@
 asyncpg==0.28.0
-aiokafka
 kafka-python
 opentelemetry-api
 opentelemetry-sdk
@@ -11,3 +10,7 @@ confluent-kafka
 openai
 numpy
 scikit-learn
+mypy==1.5.1
+isort==5.12.0
+sqlalchemy==2.0.4
+psycopg2-binary==2.9.9
