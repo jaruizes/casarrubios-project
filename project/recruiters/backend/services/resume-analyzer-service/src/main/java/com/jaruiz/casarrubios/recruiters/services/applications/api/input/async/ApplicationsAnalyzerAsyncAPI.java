@@ -9,34 +9,35 @@ import com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.m
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ApplicationsAnalyzerService;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.ApplicationAnalyzerEventsPublisherPort;
+import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import static com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config.APPLICATIONS_RECEIVED_TOPIC;
 
 @Service
 public class ApplicationsAnalyzerAsyncAPI {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationsAnalyzerAsyncAPI.class);
-    public static final String ERROR_RESUME_NOT_FOUND = "AA0002";
     public static final String ERROR_PROCESSING_APPLICATION_RECEIVED_EVENT = "ARE0001";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ApplicationMapper mapper;
     private final ApplicationsAnalyzerService applicationsAnalyzerService;
     private final ApplicationAnalyzerEventsPublisherPort eventPublisher;
+    private final Config config;
 
 
     public ApplicationsAnalyzerAsyncAPI(ApplicationMapper mapper, ApplicationsAnalyzerService applicationsAnalyzerService,
-        ApplicationAnalyzerEventsPublisherPort eventPublisher) {
+        ApplicationAnalyzerEventsPublisherPort eventPublisher, Config config) {
         this.mapper = mapper;
         this.applicationsAnalyzerService = applicationsAnalyzerService;
         this.eventPublisher = eventPublisher;
+        this.config = config;
     }
 
-    @KafkaListener(id = "application-received-listener", topics = APPLICATIONS_RECEIVED_TOPIC, groupId = "analysing-services")
-    public void consume(ConsumerRecord<String, String> record) {
+    @KafkaListener(id = "application-received-listener", topics = "#{config.applicationsReceivedTopic}", groupId = "analysing-services")
+    public void handleApplicationReceivedEvent(ConsumerRecord<String, String> record) {
         try {
             NewApplicationReceivedDTO application = objectMapper.readValue(record.value(), NewApplicationReceivedDTO.class);
             logger.info("Application received [key = {}, value = {}]", record.key(), application);

@@ -27,6 +27,8 @@ public class ApplicationsProcessedProducer {
     @Autowired
     private KafkaTemplate<String, Object> kafkaTemplate;
     @Autowired
+    private Config config;
+    @Autowired
     private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
     public void publishWrongApplicationReceivedEvent(UUID applicationId, long positionId) {
@@ -40,7 +42,7 @@ public class ApplicationsProcessedProducer {
     private void publishApplicationReceivedEvent(UUID applicationId, String applicationReceivedEvent) {
         waitTillListenersReady();
         try {
-            SendResult<String, Object> result = kafkaTemplate.send(Config.APPLICATIONS_RECEIVED_TOPIC, applicationId.toString(), applicationReceivedEvent).get();
+            SendResult<String, Object> result = kafkaTemplate.send(config.getApplicationsReceivedTopic(), applicationId.toString(), applicationReceivedEvent).get();
             if (result.getRecordMetadata() == null) {
                 fail("Error publishing application received event");
             }

@@ -14,11 +14,12 @@ import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.Te
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import static com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.ApplicationsAnalyzerAsyncAPI.ERROR_RESUME_NOT_FOUND;
 
 @Service
 public class ApplicationsAnalyzerService {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationsAnalyzerService.class);
+    public static final String ERROR_RESUME_NOT_FOUND = "AA0002";
+
 
     private final CVServicePort cvService;
     private final TextExtractorPort textExtractor;

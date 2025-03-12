@@ -33,7 +33,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 import static com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.ApplicationsAnalyzerAsyncAPI.ERROR_PROCESSING_APPLICATION_RECEIVED_EVENT;
-import static com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.ApplicationsAnalyzerAsyncAPI.ERROR_RESUME_NOT_FOUND;
+import static com.jaruiz.casarrubios.recruiters.services.applications.business.ApplicationsAnalyzerService.ERROR_RESUME_NOT_FOUND;
 import static com.jaruiz.casarrubios.recruiters.services.applications.util.kafka.SetUpTopics.createKafkaTopics;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;

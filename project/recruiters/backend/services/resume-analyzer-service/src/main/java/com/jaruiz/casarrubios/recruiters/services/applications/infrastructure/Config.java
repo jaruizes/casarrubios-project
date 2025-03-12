@@ -8,11 +8,16 @@ import org.springframework.kafka.annotation.EnableKafka;
 @Getter @Configuration
 @EnableKafka
 public class Config {
-    public static final String APPLICATIONS_DQL_TOPIC = "applications-to-dql";
-    public static final String APPLICATIONS_RECEIVED_TOPIC = "applications-received";
-    public static final String APPLICATIONS_ANALYSED_TOPIC = "applications-analysed";
-
     @Value("${cv.bucket.name}")
     private String bucketName;
+
+    @Value("${applications-received.topic:recruitment.applications-received}")
+    private String applicationsReceivedTopic;
+
+    @Value("${applications-received.topic:recruitment.applications-analyzed}")
+    private String applicationsAnalyzedTopic;
+
+    @Value("${applications-dlq.topic:recruitment.applications-dlq}")
+    private String dlqTopic;
 
 }

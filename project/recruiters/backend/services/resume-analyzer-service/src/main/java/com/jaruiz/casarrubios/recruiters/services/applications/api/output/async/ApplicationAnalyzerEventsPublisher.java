@@ -11,14 +11,13 @@ import com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.
 import com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.mappers.ApplicationAnalysisMapper;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.ResumeAnalysis;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.ApplicationAnalyzerEventsPublisherPort;
+import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import static com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config.APPLICATIONS_ANALYSED_TOPIC;
-import static com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config.APPLICATIONS_DQL_TOPIC;
 
 @Service
 public class ApplicationAnalyzerEventsPublisher implements ApplicationAnalyzerEventsPublisherPort {
@@ -26,10 +25,12 @@ public class ApplicationAnalyzerEventsPublisher implements ApplicationAnalyzerEv
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ApplicationAnalysisMapper mapper;
+    private final Config config;
 
-    public ApplicationAnalyzerEventsPublisher(KafkaTemplate<String, String> kafkaTemplate, ApplicationAnalysisMapper mapper) {
+    public ApplicationAnalyzerEventsPublisher(KafkaTemplate<String, String> kafkaTemplate, ApplicationAnalysisMapper mapper, Config config) {
         this.kafkaTemplate = kafkaTemplate;
         this.mapper = mapper;
+        this.config = config;
     }
 
     @Override
@@ -38,7 +39,8 @@ public class ApplicationAnalyzerEventsPublisher implements ApplicationAnalyzerEv
         final ApplicationAnalysedEventDTO applicationAnalysedEventDTO = buildApplicationAnalysedEvent(applicationId, positionId, resumeAnalysis);
         final String applicationAnalysedEvent = applicationAnalysedEventToJsonString(applicationAnalysedEventDTO);
 
-        final ProducerRecord<String, String> applicationAnalysedEventRecord = new ProducerRecord<>(APPLICATIONS_ANALYSED_TOPIC, applicationId.toString(), applicationAnalysedEvent);
+        final String applicationsAnalyzedTopic = this.config.getApplicationsAnalyzedTopic();
+        final ProducerRecord<String, String> applicationAnalysedEventRecord = new ProducerRecord<>(applicationsAnalyzedTopic, applicationId.toString(), applicationAnalysedEvent);
         CompletableFuture<SendResult<String, String>> result = this.kafkaTemplate.send(applicationAnalysedEventRecord);
         result.whenComplete((sendResult, throwable) -> {
             if (throwable != null) {
@@ -59,7 +61,8 @@ public class ApplicationAnalyzerEventsPublisher implements ApplicationAnalyzerEv
                                                                                                                      .code(code)
                                                                                                                      .build();
         final String applicacionAnalysisFailedEventJsonString = applicationAnalysedFailedEventToJsonString(applicationAnalysisFailedEventDTO);
-        final ProducerRecord<String, String> applicationToDQLRecord = new ProducerRecord<>(APPLICATIONS_DQL_TOPIC, applicationId.toString(), applicacionAnalysisFailedEventJsonString);
+        final String applicationsDLQtopic = this.config.getDlqTopic();
+        final ProducerRecord<String, String> applicationToDQLRecord = new ProducerRecord<>(applicationsDLQtopic, applicationId.toString(), applicacionAnalysisFailedEventJsonString);
         CompletableFuture<SendResult<String, String>> result = this.kafkaTemplate.send(applicationToDQLRecord);
         result.whenComplete((sendResult, throwable) -> {
             if (throwable != null) {

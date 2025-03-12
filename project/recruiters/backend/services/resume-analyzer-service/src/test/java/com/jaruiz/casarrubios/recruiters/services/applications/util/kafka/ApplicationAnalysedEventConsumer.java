@@ -10,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import static com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config.APPLICATIONS_ANALYSED_TOPIC;
-import static com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config.APPLICATIONS_DQL_TOPIC;
+
 
 @Service
 public class ApplicationAnalysedEventConsumer {
@@ -22,8 +21,8 @@ public class ApplicationAnalysedEventConsumer {
     @Getter private ApplicationAnalysedEventDTO applicationAnalysedEventDTO;
     @Getter private ApplicationAnalysisFailedEventDTO applicationAnalysisFailedEventDTO;
 
-    @KafkaListener(id = "application-analysed-listener", topics = APPLICATIONS_ANALYSED_TOPIC, groupId = "test-service")
-    public void consume(ConsumerRecord<String, String> record) {
+    @KafkaListener(id = "application-analysed-listener", topics = "#{config.applicationsAnalyzedTopic}", groupId = "analysing-services")
+    public void handleApplicationAnalyzedEvent(ConsumerRecord<String, String> record) {
         try {
             this.applicationAnalysedEventDTO = objectMapper.readValue(record.value(), ApplicationAnalysedEventDTO.class);
         } catch (JsonProcessingException e) {
@@ -32,8 +31,8 @@ public class ApplicationAnalysedEventConsumer {
         }
     }
 
-    @KafkaListener(id = "application-dlq-listener", topics = APPLICATIONS_DQL_TOPIC, groupId = "test-service")
-    public void consumeDLQ(ConsumerRecord<String, String> record) {
+    @KafkaListener(id = "application-dlq-listener", topics = "#{config.dlqTopic}", groupId = "analysing-services")
+    public void handleApplicationDQLEvent(ConsumerRecord<String, String> record) {
         try {
             this.applicationAnalysisFailedEventDTO = objectMapper.readValue(record.value(), ApplicationAnalysisFailedEventDTO.class);
         } catch (JsonProcessingException e) {

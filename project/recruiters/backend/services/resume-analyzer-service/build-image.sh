@@ -3,4 +3,4 @@ set -e
 
 mvn clean package -DskipTests
 mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
-docker build -t applications/applications-manager-service:1.0.0 .
+docker build -t recruitment/applications-analyzer-service:1.0.0 .
