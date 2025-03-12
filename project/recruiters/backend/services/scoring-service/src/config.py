@@ -23,7 +23,7 @@ class KafkaConfig:
 
 @dataclass
 class TelemetryConfig:
-    enabled: bool = os.getenv("TELEMETRY_ENABLED", "true").lower() == "true"
+    enabled: bool = os.getenv("TELEMETRY_ENABLED", "true").lower() == "false"
     otlp_endpoint: Optional[str] = os.getenv("OTLP_EXPORTER_ENDPOINT")
 
 
