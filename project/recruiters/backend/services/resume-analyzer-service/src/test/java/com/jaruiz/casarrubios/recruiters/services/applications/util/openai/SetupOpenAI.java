@@ -3,7 +3,7 @@ package com.jaruiz.casarrubios.recruiters.services.applications.util.openai;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @TestConfiguration
 public class SetupOpenAI {

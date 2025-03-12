@@ -1,4 +1,4 @@
-package com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto;
+package com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.dto;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ApplicationAnalysedEventDTO implements Serializable {
     private UUID applicationId;
+    private Long positionId;
     private ResumeAnalysisDTO analysis;
 }

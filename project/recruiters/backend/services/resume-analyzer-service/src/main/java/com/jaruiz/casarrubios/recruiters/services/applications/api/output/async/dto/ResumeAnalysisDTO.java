@@ -1,4 +1,4 @@
-package com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto;
+package com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.dto;
 
 import java.util.List;
 

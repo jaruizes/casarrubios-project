@@ -4,8 +4,8 @@ import java.io.FileInputStream;
 import java.time.Duration;
 import java.util.UUID;
 
-import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ApplicationAnalysedEventDTO;
-import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ApplicationAnalysisFailedEventDTO;
+import com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.dto.ApplicationAnalysedEventDTO;
+import com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.dto.ApplicationAnalysisFailedEventDTO;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.AnalysingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.TextExtractingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.util.kafka.ApplicationAnalysedEventConsumer;
@@ -32,8 +32,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.utility.DockerImageName;
-import static com.jaruiz.casarrubios.recruiters.services.applications.api.async.ApplicationsAnalyzerAsyncAPI.ERROR_PROCESSING_APPLICATION_RECEIVED_EVENT;
-import static com.jaruiz.casarrubios.recruiters.services.applications.api.async.ApplicationsAnalyzerAsyncAPI.ERROR_RESUME_NOT_FOUND;
+import static com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.ApplicationsAnalyzerAsyncAPI.ERROR_PROCESSING_APPLICATION_RECEIVED_EVENT;
+import static com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.ApplicationsAnalyzerAsyncAPI.ERROR_RESUME_NOT_FOUND;
 import static com.jaruiz.casarrubios.recruiters.services.applications.util.kafka.SetUpTopics.createKafkaTopics;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.*;
@@ -106,6 +106,7 @@ class ApplicationsAnalyzerAppTests {
 
                 assertNotNull(applicationAnalysedEventDTO);
                 assertEquals(applicationId, applicationAnalysedEventDTO.getApplicationId());
+                assertEquals(7L, applicationAnalysedEventDTO.getPositionId());
                 assertNotNull(applicationAnalysedEventDTO.getAnalysis());
                 assertTrue(applicationAnalysedEventDTO.getAnalysis().getConcerns() != null && !applicationAnalysedEventDTO.getAnalysis().getConcerns().isEmpty());
                 assertTrue(applicationAnalysedEventDTO.getAnalysis().getStrengths() != null && !applicationAnalysedEventDTO.getAnalysis().getStrengths().isEmpty());

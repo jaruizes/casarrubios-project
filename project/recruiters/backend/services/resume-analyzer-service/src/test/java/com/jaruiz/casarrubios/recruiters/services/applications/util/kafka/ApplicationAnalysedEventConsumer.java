@@ -2,8 +2,8 @@ package com.jaruiz.casarrubios.recruiters.services.applications.util.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ApplicationAnalysedEventDTO;
-import com.jaruiz.casarrubios.recruiters.services.applications.api.async.dto.ApplicationAnalysisFailedEventDTO;
+import com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.dto.ApplicationAnalysedEventDTO;
+import com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.dto.ApplicationAnalysisFailedEventDTO;
 import lombok.Getter;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;

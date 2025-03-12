@@ -7,12 +7,14 @@ import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptio
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.TextExtractingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.ResumeAnalysis;
+import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.ApplicationAnalyzerEventsPublisherPort;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.CVServicePort;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.LLMServicePort;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.TextExtractorPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import static com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.ApplicationsAnalyzerAsyncAPI.ERROR_RESUME_NOT_FOUND;
 
 @Service
 public class ApplicationsAnalyzerService {
@@ -21,17 +23,35 @@ public class ApplicationsAnalyzerService {
     private final CVServicePort cvService;
     private final TextExtractorPort textExtractor;
     private final LLMServicePort cvAnalyzerService;
+    private final ApplicationAnalyzerEventsPublisherPort eventPublisher;
 
-    public ApplicationsAnalyzerService(CVServicePort cvService, TextExtractorPort textExtractor, LLMServicePort cvAnalyzerService) {
+    public ApplicationsAnalyzerService(CVServicePort cvService, TextExtractorPort textExtractor, LLMServicePort cvAnalyzerService, ApplicationAnalyzerEventsPublisherPort eventPublisher) {
         this.cvService = cvService;
         this.textExtractor = textExtractor;
         this.cvAnalyzerService = cvAnalyzerService;
+        this.eventPublisher = eventPublisher;
     }
 
-    public ResumeAnalysis analyzeApplication(Application application) throws CVNotFoundException, AnalysingException, TextExtractingException {
-        final String cvText = getTextFromCv(application.getId());
-        logger.info("Analyzed CV with id {} successfully", application.getId());
-        return cvAnalyzerService.analyze(application.getId(), cvText);
+    public void analyzeApplication(Application application) {
+        final UUID applicationId = application.getId();
+        try {
+            final String cvText = getTextFromCv(application.getId());
+            final ResumeAnalysis analysis = cvAnalyzerService.analyze(applicationId, cvText);
+            logger.info("Analyzed CV with id {} successfully", applicationId);
+
+            this.eventPublisher.sendApplicationAnalysedEvent(applicationId, application.getPositionId(), analysis);
+            logger.info("Sent application analyzed event for application with id {}", applicationId);
+        } catch (AnalysingException e) {
+            logger.error("Error analysing application from LLM[key = {}]", applicationId);
+            this.eventPublisher.sendToDQL(applicationId, e.getCode(), e.getMessage());
+        } catch (CVNotFoundException e) {
+            final String message = "Error processing application [key = " + applicationId + "]. Resume not found in storage";
+            logger.error(message);
+            this.eventPublisher.sendToDQL(applicationId, ERROR_RESUME_NOT_FOUND, message);
+        } catch (TextExtractingException e) {
+            logger.error("Error extracting text from application [key = {}]", applicationId);
+            this.eventPublisher.sendToDQL(applicationId, e.getCode(), e.getMessage());
+        }
     }
 
     private String getTextFromCv(UUID applicationId) throws CVNotFoundException, TextExtractingException {

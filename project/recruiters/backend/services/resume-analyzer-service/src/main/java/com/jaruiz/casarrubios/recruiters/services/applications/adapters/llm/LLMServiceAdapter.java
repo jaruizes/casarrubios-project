@@ -1,12 +1,9 @@
 package com.jaruiz.casarrubios.recruiters.services.applications.adapters.llm;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jaruiz.casarrubios.recruiters.services.applications.api.async.ApplicationsAnalyzerAsyncAPI;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.AnalysingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.ResumeAnalysis;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.LLMServicePort;

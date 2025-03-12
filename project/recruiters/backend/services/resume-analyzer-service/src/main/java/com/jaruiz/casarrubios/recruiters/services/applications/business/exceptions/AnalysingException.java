@@ -1,7 +1,5 @@
 package com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions;
 
-import java.util.UUID;
-
 import lombok.Getter;
 
 @Getter public class AnalysingException extends Exception {
