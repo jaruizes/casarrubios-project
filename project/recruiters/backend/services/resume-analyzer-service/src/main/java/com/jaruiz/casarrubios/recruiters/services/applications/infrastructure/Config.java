@@ -14,7 +14,7 @@ public class Config {
     @Value("${applications-received.topic:recruitment.applications-received}")
     private String applicationsReceivedTopic;
 
-    @Value("${applications-received.topic:recruitment.applications-analyzed}")
+    @Value("${applications-analyzed.topic:recruitment.applications-analyzed}")
     private String applicationsAnalyzedTopic;
 
     @Value("${applications-dlq.topic:recruitment.applications-dlq}")

@@ -1,4 +1,4 @@
-package com.jaruiz.casarrubios.recruiters.services.adapters.api.async.dto;
+package com.jaruiz.casarrubios.recruiters.services.api.input.async.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ApplicationDTO implements Serializable {
+public class ApplicationCDCDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -20,7 +20,7 @@ public class ApplicationDTO implements Serializable {
     @JsonProperty("created_at")
     private Long createdAt;
 
-    public ApplicationDTO() { }
+    public ApplicationCDCDTO() { }
 
     public UUID getId() {
         return id;

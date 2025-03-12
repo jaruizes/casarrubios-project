@@ -229,6 +229,45 @@ services:
       - DATABASE_PORT=5432
       - DATABASE_SCHEMA=recruiters
 
+  recruitment-applications-analyzer-service:
+    image: "recruitment/applications-analyzer-service:1.0.0"
+    container_name: recruitment.applications-analyzer-service
+    ports:
+      - "9082:9082"
+    depends_on:
+      - postgresql
+      - broker
+    environment:
+      - SERVER_PORT=9082
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=applications
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_NAME=minioadmin
+      - MINIO_ACCESS_SECRET=minioadmin
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
+      - SPRING_AI_OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  recruitment-scoring-service:
+    image: "recruitment/scoring-service:1.0.0"
+    container_name: recruitment.scoring-service
+    depends_on:
+      - postgresql
+      - broker
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=applications
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - KAFKA_BOOTSTRAP_SERVERS=broker:29092
+      - KAFKA_CONSUMER_GROUP=scoring-service
+      - KAFKA_CONSUMER_OFFSET_RESET=earliest
+      - KAFKA_INPUT_TOPIC=recruitment.applications-analyzed
+      - KAFKA_OUTPUT_TOPIC=recruitment.applications-scored
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+
 #
 #  kafka-ui:
 #    image: provectuslabs/kafka-ui:latest

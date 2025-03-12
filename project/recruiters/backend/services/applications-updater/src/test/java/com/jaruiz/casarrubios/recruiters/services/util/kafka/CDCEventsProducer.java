@@ -6,7 +6,7 @@ import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
-public class ApplicationsProducer {
+public class CDCEventsProducer {
     public static final String APPLICATION_NAME = "John Doe";
     public static final String APPLICATION_EMAIL = "email@email.com";
     public static final String APPLICATION_PHONE = "123456789";
@@ -18,7 +18,7 @@ public class ApplicationsProducer {
     @Inject
     @Channel("cdc-applications-out") Emitter<String> emitter;
 
-    public UUID publishApplication() {
+    public UUID publishChangeEvent() {
         final UUID applicationId = UUID.randomUUID();
         emitter.send(buildApplicationFake(applicationId));
 
