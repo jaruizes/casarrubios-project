@@ -1,23 +1,16 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from app.db.models import Application
-from app.main import app
-from app.db.database import get_db
-from tests.database_test import test_db
+from src.adapters.db.models import Application
+from src.infrastructure.app.app import app
+
+pytestmark = pytest.mark.asyncio
 
 client = TestClient(app)
 
-@pytest.fixture(scope="module", autouse=True)
-def setup_db(test_db):
-    app.dependency_overrides[get_db] = test_db
-
-@pytest.fixture(scope="module", autouse=True)
-def db_session(test_db):
-    db = next(test_db())
-    yield db
-    db.close()
-
+# @pytest.fixture(scope="module", autouse=True)
+# def setup_db(test_db):
+#     app.dependency_overrides[get_db] = test_db
 
 def test_get_applications_empty():
     response = client.get("/applications?positionId=1&pageSize=5&page=10")

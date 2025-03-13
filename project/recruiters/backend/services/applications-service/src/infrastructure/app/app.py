@@ -1,11 +1,9 @@
 from fastapi import FastAPI
 
-from app.api import applications
-from app.core.config import settings
+from src.api.input.rest import applications_rest_api
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
-# Crear la instancia de FastAPI
 app = FastAPI(
     title="Recruiters API",
     version="1.0.0",
@@ -25,9 +23,9 @@ app.add_middleware(
 )
 
 # Incluir rutas de la API
-app.include_router(applications.router, prefix="", tags=["applications"])
+app.include_router(applications_rest_api.router, prefix="", tags=["applications"])
 
 # Ruta de salud para verificar que la API está corriendo
 @app.get("/")
 def health_check():
-    return {"status": "running", "env": settings.APP_ENV}
+    return {"status": "running"}

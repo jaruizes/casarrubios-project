@@ -1,16 +1,17 @@
+import logging
 from typing import List
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy.orm import Session
 
-from app.api.dto.models import PaginatedApplicationsDTO, CandidateDTO, ApplicationDTO
-from app.core.logger import logger
-from app.db.database import get_db
-from app.services.application_service import ApplicationService
-from app.services.models.PaginatedResult import PaginatedResult
-from app.db.models import Application
+from src.api.input.rest.dto.models import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO
+from src.domain.services.application_service import ApplicationService
+from src.domain.models.paginated_result import PaginatedResult
+from src.adapters.db.models import Application
 
+from src.infrastructure.app.dependencies import get_application_service
+
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get(
@@ -20,11 +21,11 @@ def get_applications(
     positionId: int = Query(..., description="The ID of the position"),
     pageSize: int = Query(10, ge=1, le=100),
     page: int = Query(0, ge=0),
-    db: Session = Depends(get_db)) -> PaginatedApplicationsDTO:
+    application_service: ApplicationService = Depends(get_application_service)) -> PaginatedApplicationsDTO:
 
     logger.info(f"Getting applications for position {positionId} with page size {pageSize} and page {page}")
 
-    paginated_result: PaginatedResult = ApplicationService.get_applications(db, positionId, pageSize, page)
+    paginated_result: PaginatedResult = application_service.get_applications(positionId, pageSize, page)
     logger.info(f"Found {paginated_result.total_elements} applications. Returning page {page} of {pageSize} elements")
 
     total_pages = paginated_result.total_elements // pageSize
@@ -44,10 +45,10 @@ def get_applications(
 @router.get(
     '/applications/{application_id}', response_model=ApplicationDTO, tags=['applicationDTO']
 )
-def get_application_by_id(application_id: UUID, db: Session = Depends(get_db)) -> ApplicationDTO:
+def get_application_by_id(application_id: UUID, application_service: ApplicationService = Depends(get_application_service)) -> ApplicationDTO:
     logger.info(f"Getting application by ID {application_id}")
 
-    application = ApplicationService.get_application_by_id(db, application_id)
+    application = application_service.get_application_by_id(application_id)
     if not application:
         logger.error(f"Application with ID {application_id} not found")
         raise HTTPException(status_code=404, detail=f"Application with ID {application_id} not found")

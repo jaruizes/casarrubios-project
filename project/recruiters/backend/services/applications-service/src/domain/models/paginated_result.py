@@ -1,6 +1,6 @@
 from typing import List
 
-from app.db.models import Application
+from src.adapters.db.models import Application
 
 
 class PaginatedResult:
