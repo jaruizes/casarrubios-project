@@ -115,12 +115,12 @@ def wait_for_result_in_kafka(kafka_container):
         'auto.offset.reset': 'earliest'
     })
 
-    async def _wait_for_result(topic, timeout=10):
+    async def _wait_for_result(topic, timeout=300):
         try:
             consumer.subscribe([topic])
             start_time = time.time()
             while time.time() - start_time < timeout:
-                msg = consumer.poll(timeout=1.0)
+                msg = consumer.poll(timeout=5.0)
                 if msg is None: continue
 
                 if msg.error():

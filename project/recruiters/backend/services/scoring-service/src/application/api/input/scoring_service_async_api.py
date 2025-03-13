@@ -2,7 +2,7 @@ import json
 import logging
 from typing import Any
 
-from src.application.api.dto.application_analyzed_event_dto import ApplicationAnalysedEventDTO
+from src.application.api.input.dto.application_analyzed_event_dto import ApplicationAnalysedEventDTO
 from src.domain.model.application_analysis import ApplicationAnalysis, ResumeAnalysis, Skill
 from src.domain.services.scoring_service import ScoringService
 

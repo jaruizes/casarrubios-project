@@ -6,7 +6,7 @@ from typing import Any
 
 import pytest
 
-from src.application.api.dto.application_scored_event_dto import ApplicationScoredEvent
+from src.application.api.output.dto.application_scored_event_dto import ApplicationScoredEventDTO
 from src.infrastructure.kafka.kafka_producer import KafkaProducer
 
 logger = logging.getLogger(__name__)
@@ -29,22 +29,28 @@ async def test_score(setup_e2e, kafka_container, setup_topics, wait_for_result_i
 def __assert_event_received(message: Any):
     assert message is not None
     if hasattr(message, 'value'):
-        application_scored_event = ApplicationScoredEvent(**json.loads(message.value()))
+        application_scored_event = ApplicationScoredEventDTO(**json.loads(message.value()))
     else:
-        application_scored_event = ApplicationScoredEvent(**message)
+        application_scored_event = ApplicationScoredEventDTO(**message)
 
     assert application_scored_event.applicationId is not None
-    assert application_scored_event.score >= 0.0
-    assert application_scored_event.tasksScore >= 0.0
-    assert application_scored_event.requirementScore >= 0.0
-    assert application_scored_event.descScore >= 0.0
-    assert application_scored_event.timeSpent >= 0.0
+    assert application_scored_event.positionId is not None
+    assert application_scored_event.analysis is not None
+    assert application_scored_event.scoring is not None
 
-    logger.info(f"Time spent: {application_scored_event.timeSpent}")
-    logger.info(f"Score: {application_scored_event.score}")
-    logger.info(f"Desc score: {application_scored_event.descScore}")
-    logger.info(f"Requirement score: {application_scored_event.requirementScore}")
-    logger.info(f"Tasks score: {application_scored_event.tasksScore}")
+    scoring = application_scored_event.scoring
+
+    assert scoring['score'] >= 0.0
+    assert scoring['tasksScore'] >= 0.0
+    assert scoring['requirementScore'] >= 0.0
+    assert scoring['descScore'] >= 0.0
+    assert scoring['timeSpent'] >= 0.0
+
+    logger.info(f"Time spent: {scoring['timeSpent']}")
+    logger.info(f"Score: {scoring['score']}")
+    logger.info(f"Desc score: {scoring['descScore']}")
+    logger.info(f"Requirement score: {scoring['requirementScore']}")
+    logger.info(f"Tasks score: {scoring['tasksScore']}")
 
 
 def __build_application_analysed_event():

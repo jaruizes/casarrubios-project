@@ -6,7 +6,8 @@ import sys
 import openai
 
 from src.application.adapters.db.sqlalchemy_repository import PositionRepository
-from src.application.api.scoring_service_async_api import ScoringServiceAsyncAPI
+from src.application.api.input.scoring_service_async_api import ScoringServiceAsyncAPI
+from src.application.api.output.application_scoring_publisher import ApplicationScoringPublisher
 from src.config import load_config
 from src.domain.services.scoring_service import ScoringService
 from src.infrastructure.db.sqlalchemy_connection import SQLAlchemyConnection
@@ -64,10 +65,14 @@ def startup():
                              topic=config.kafka.input_topic,
                              group_id=config.kafka.consumer_group)
 
+    applicationScoringPublisher = ApplicationScoringPublisher(
+        kafka_producer=producer,
+        output_topic=config.kafka.output_topic
+    )
+
     logger.info("Initializing Scoring Service...")
     scoring_service = ScoringService(position_repository=position_repository,
-                                     producer=producer,
-                                     output_topic=config.kafka.output_topic)
+                                     applicationScoringPublisher=applicationScoringPublisher)
 
     logger.info("Initializing Open AI...")
     openai.api_key = config.openai_key

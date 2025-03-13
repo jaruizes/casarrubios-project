@@ -5,9 +5,10 @@ opentelemetry-sdk
 opentelemetry-instrumentation-asyncpg
 opentelemetry-instrumentation-logging
 opentelemetry-exporter-otlp
-pydantic==2.4.2
+pydantic
 confluent-kafka
 openai
+httpx
 numpy
 scikit-learn
 mypy==1.5.1

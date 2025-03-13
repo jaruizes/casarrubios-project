@@ -6,17 +6,17 @@ import openai
 from sklearn.metrics.pairwise import cosine_similarity
 
 from src.application.adapters.db.sqlalchemy_repository import PositionRepository
-from src.application.api.dto.application_scored_event_dto import ApplicationScoredEvent
+from src.application.api.output.application_scoring_publisher import ApplicationScoringPublisher
 from src.domain.model.application_analysis import ApplicationAnalysis
+from src.domain.model.application_scoring import Scoring, ApplicationScoring
 from src.infrastructure.kafka.kafka_producer import KafkaProducer
 
 logger = logging.getLogger(__name__)
 
 class ScoringService:
-    def __init__(self, position_repository: PositionRepository, producer: KafkaProducer, output_topic: str):
+    def __init__(self, position_repository: PositionRepository, applicationScoringPublisher: ApplicationScoringPublisher):
         self.position_repository = position_repository
-        self.producer = producer
-        self.output_topic = output_topic
+        self.applicationScoringPublisher = applicationScoringPublisher
 
     def score(self, application_analysis: ApplicationAnalysis):
         logger.info(f"Computing CV score for position {application_analysis.position_id} and application {application_analysis.application_id}")
@@ -41,21 +41,36 @@ class ScoringService:
         logger.info(f"[{position.id} //  {application_analysis.application_id}] Requirement score: {requirement_score}")
         logger.info(f"[{position.id} //  {application_analysis.application_id}] Tasks score: {task_score}")
 
-        application_scored_event = ApplicationScoredEvent(
-            applicationId=application_analysis.application_id,
+        scoring = Scoring(
+            application_id=application_analysis.application_id,
             score=final_score,
-            descScore=desc_score,
-            requirementScore=requirement_score,
-            tasksScore=task_score,
-            timeSpent=time_spent
+            desc_score=desc_score,
+            requirement_score=requirement_score,
+            tasks_score=task_score,
+            time_spent=time_spent
         )
 
-        self.producer.send(self.output_topic, application_scored_event.__dict__, application_analysis.application_id)
-        logger.info(f"[{application_analysis.application_id} //  {position.id}] Scoring {final_score}. Event sent to Kafka")
+        application_scoring = ApplicationScoring(
+            application_id=application_analysis.application_id,
+            position_id=application_analysis.position_id,
+            analysis=analysis,
+            scoring=scoring
+        )
+
+        logger.info(f"Scoring computed for position {position.id} and application {application_analysis.application_id}: {final_score}")
+
+        # self.producer.send(self.output_topic, application_scoring.__dict__, application_analysis.application_id)
+        self.applicationScoringPublisher.publish_application_scored_event(application_scoring)
+
 
     def __get_embedding(self, text: str):
-        response = openai.embeddings.create(input=text, model="text-embedding-3-small")
-        return np.array(response.data[0].embedding).reshape(1, -1)
+        try:
+            response = openai.embeddings.create(input=text, model="text-embedding-3-small")
+            return np.array(response.data[0].embedding).reshape(1, -1)
+        except Exception as e:
+            logger.error(f"Error getting embedding for text: {text}")
+            logger.error(str(e))
+            raise e
 
     def __compute_semantic_similarity(self, text1: str, text2: str):
         embedding1 = self.__get_embedding(text1)
