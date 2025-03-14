@@ -19,7 +19,7 @@ class Application(Base):
     position_id = Column(Integer, nullable=False, name="position_id")
     created_at = Column(DateTime, default=func.now(), name="created_at")
 
-    # Relaciones
+
     resume_analysis = relationship("ResumeAnalysis", back_populates="application", uselist=False,
                                    cascade="all, delete-orphan")
     scoring = relationship("Scoring", back_populates="application", uselist=False, cascade="all, delete-orphan")

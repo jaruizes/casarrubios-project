@@ -9,29 +9,49 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+class SkillDTO(BaseModel):
+    skill: str
+    level: str
+
+class ResumeAnalysisDTO(BaseModel):
+    summary: str
+    strengths: List[str]
+    concerns: List[str]
+    hardSkills: List[SkillDTO]
+    softSkills: List[SkillDTO]
+    keyResponsibilities: List[str]
+    interviewQuestions: List[str]
+    totalYearsExperience: int
+    averagePermanency: float
+    tags: List[str]
+
+class ScoringDTO(BaseModel):
+    score: float
+    descScore: float
+    requirementScore: float
+    tasksScore: float
+    timeSpent: float
 
 class CandidateDTO(BaseModel):
-    name: str = Field(..., description='The name of the candidate', example='John')
-    email: str = Field(
-        ...,
-        description='The email address of the candidate',
-        example='john.doe@example.com',
-    )
-    phone: str = Field(
-        ..., description='The phone number of the candidate', example=1234567890
-    )
+    name: str
+    email: str
+    phone: str
 
 
 class ApplicationDTO(BaseModel):
-    applicationId: UUID = Field(..., description='The ID of the application', example=1)
+    applicationId: UUID
     candidate: CandidateDTO
-    positionId: int = Field(..., description='The ID of the position', example=1789)
-    cvFile: str = Field(
-        ...,
-        description='Path to the cv stored in the file system',
-        example='/path/to/cv.pdf',
-    )
+    positionId: int
+    cvFile: str
     creationDate: str = Field()
+    analysis: Optional[ResumeAnalysisDTO] = None
+    scoring: Optional[ScoringDTO] = None
+
+    def add_analysis(self, analysis: ResumeAnalysisDTO):
+        self.analysis = analysis
+
+    def add_scoring(self, scoring: ScoringDTO):
+        self.scoring = scoring
 
 
 class PaginatedApplicationsDTO(BaseModel):

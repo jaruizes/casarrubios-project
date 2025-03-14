@@ -13,28 +13,27 @@ logger = logging.getLogger(__name__)
 class ApplicationScoredEventHandler():
     def __init__(self, applications_service: ApplicationService):
         self.applications_service = applications_service
-        # self.consumer = consumer
-        # self.consumer.start(self.handle_application_scored_event)
-
 
     def handle_application_scored_event(self, message: Any):
-        if hasattr(message, 'value'):
-            application_analysed_event_dto = ApplicationScoredEventDTO(**json.loads(message.value()))
-        else:
-            application_analysed_event_dto = ApplicationScoredEventDTO(**message)
+        try:
+            application_analysed_event_dto = json.loads(message.value())
+            application_id = application_analysed_event_dto["applicationId"]
+            # application_analysed_event_dto = ApplicationScoredEventDTO(**event_json)
 
-        logger.info(f"Processing application {application_analysed_event_dto['application_id']}")
-        application_scoring = self.__map_to_application_scoring(application_analysed_event_dto)
-        self.applications_service.save_application_scoring(application_scoring)
+            logger.info(f"Processing application {application_id}")
+            application_scoring = self.__map_to_application_scoring(application_analysed_event_dto)
+            self.applications_service.save_application_scoring(application_scoring)
 
-        logger.info(f"Application {application_scoring['application_id']} has been processed")
+            logger.info(f"Application {application_id} has been processed")
+        except Exception as e:
+            logger.exception(f"Error processing application scored event: {str(e)}")
 
     def __map_to_application_scoring(self, application_scored_event: ApplicationScoredEventDTO) -> ApplicationScoring:
         scoring_dto = application_scored_event["scoring"]
         analysis_dto = application_scored_event["analysis"]
 
         scoring = Scoring(
-            application_id=application_scored_event.applicationId,
+            application_id=application_scored_event["applicationId"],
             score=scoring_dto["score"],
             desc_score=scoring_dto["descScore"],
             requirement_score=scoring_dto["requirementScore"],
@@ -56,8 +55,8 @@ class ApplicationScoredEventHandler():
         )
 
         return ApplicationScoring(
-            application_id=UUID(application_scored_event.applicationId),
-            position_id=application_scored_event.positionId,
+            application_id=UUID(application_scored_event["applicationId"]),
+            position_id=application_scored_event["positionId"],
             analysis=analysis,
             scoring=scoring
         )

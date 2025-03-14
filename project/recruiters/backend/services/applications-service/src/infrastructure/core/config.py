@@ -27,6 +27,6 @@ def load_config() -> ApplicationConfig:
         bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092"),
         consumer_group=os.getenv("KAFKA_CONSUMER_GROUP", "application-scoring-service"),
         offset_reset=os.getenv("KAFKA_CONSUMER_OFFSET_RESET", "earliest"),
-        input_topic=os.getenv("KAFKA_INPUT_TOPIC", "application-analysed-events"),
+        input_topic=os.getenv("KAFKA_INPUT_TOPIC", "recruiters.application-analysed-events"),
         log_level=os.getenv("LOG_LEVEL", "INFO")
     )

@@ -4,10 +4,11 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, HTTPException
 
-from src.api.input.rest.dto.models import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO
+from src.api.input.rest.dto.models import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO, ResumeAnalysisDTO, \
+    SkillDTO, ScoringDTO
 from src.domain.services.application_service import ApplicationService
 from src.domain.models.paginated_result import PaginatedResult
-from src.adapters.db.models import Application
+from src.adapters.db.models import Application, HardSkill
 
 from src.infrastructure.app.dependencies import get_application_service
 
@@ -59,4 +60,31 @@ def get_application_by_id(application_id: UUID, application_service: Application
 def build_application_dto(application: Application) -> ApplicationDTO:
     creation_date = application.created_at.isoformat()
     candidate: CandidateDTO = CandidateDTO(name=application.name, email=application.email, phone=application.phone)
-    return ApplicationDTO(applicationId=application.id, candidate=candidate, positionId=application.position_id, cvFile=application.cv, creationDate=creation_date)
+    application_dto = ApplicationDTO(applicationId=application.id, candidate=candidate, positionId=application.position_id, cvFile=application.cv, creationDate=creation_date)
+
+    if application.resume_analysis is not None:
+        analysis: ResumeAnalysisDTO = ResumeAnalysisDTO(
+            summary=application.resume_analysis.summary,
+            strengths=[strength.strength for strength in application.strengths],
+            concerns=[concern.concern for concern in application.concerns],
+            hardSkills=[SkillDTO(skill=hard_skill.skill, level=hard_skill.level) for hard_skill in application.hard_skills],
+            softSkills=[SkillDTO(skill=soft_skill.skill, level=soft_skill.level) for soft_skill in application.soft_skills],
+            keyResponsibilities=[responsibility.responsibility for responsibility in application.key_responsibilities],
+            interviewQuestions=[question.question for question in application.interview_questions],
+            totalYearsExperience=application.resume_analysis.total_years_experience,
+            averagePermanency=application.resume_analysis.average_permanency,
+            tags=[tag.tag for tag in application.tags]
+        )
+        application_dto.add_analysis(analysis)
+
+    if application.scoring is not None:
+        scoring: ScoringDTO = ScoringDTO(
+            score=application.scoring.score,
+            descScore=application.scoring.desc_score,
+            requirementScore=application.scoring.requirement_score,
+            tasksScore=application.scoring.tasks_score,
+            timeSpent=application.scoring.time_spent
+        )
+        application_dto.add_scoring(scoring)
+
+    return application_dto
