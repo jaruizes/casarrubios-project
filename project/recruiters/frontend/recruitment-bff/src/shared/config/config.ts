@@ -13,7 +13,7 @@ export class Config {
     );
     this.applicationsBackendUrl = this.configService.get<string>(
       'APPLICATIONS_SERVICE_URL',
-      'http://localhost:9081',
+      'http://localhost:8000',
     );
   }
 

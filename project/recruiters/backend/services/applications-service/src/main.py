@@ -2,6 +2,7 @@ import asyncio
 import logging
 import signal
 import sys
+import threading
 
 from src.adapters.db.repositories import ApplicationRepository
 from src.api.input.message.application_scored_event_handler import ApplicationScoredEventHandler
@@ -23,9 +24,7 @@ def setup_logging(log_level: str):
         handlers=[logging.StreamHandler(sys.stdout)]
     )
 
-def shutdown(
-        consumer: KafkaConsumer,
-        db_connection: SQLAlchemyConnection):
+async def shutdown_handler(consumer: KafkaConsumer, db_connection: SQLAlchemyConnection):
     logging.info("Shutting down application...")
 
     consumer.stop()
@@ -56,13 +55,14 @@ def configFastAPIApp():
     @app.get("/")
     def health_check():
         return {"status": "running"}
-
+    
+    return app
 
 def startup():
     setup_logging('INFO')
     logger = logging.getLogger(__name__)
     logger.info('Starting up')
-    configFastAPIApp()
+    app = configFastAPIApp()
 
     config = load_config()
 
@@ -85,21 +85,37 @@ def startup():
         topic=config.input_topic,
         group_id=config.consumer_group
     )
+    
+    # Iniciar Kafka consumer en background
     consumer.start(application_scored_event_handler.handle_application_scored_event)
 
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):
         loop.add_signal_handler(
             sig,
-            lambda: asyncio.create_task(shutdown(consumer, db_connection))
+            lambda: asyncio.create_task(shutdown_handler(consumer, db_connection))
         )
 
     logger.info("Application Scoring Service started successfully")
-
+    
+    # Retornar la app de FastAPI para que uvicorn la pueda iniciar
+    return app
 
 def main():
     try:
-        startup()
+        import uvicorn
+        import os
+        
+        # Usar el puerto de la variable de entorno o 8000 por defecto
+        port = int(os.environ.get("PORT", 8000))
+
+        uvicorn.run(
+            "src.main:startup",
+            host="0.0.0.0",
+            port=port,
+            factory=True,
+            reload=True
+        )
     except KeyboardInterrupt:
         print("Application stopped by user")
     except Exception as e:
@@ -109,5 +125,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

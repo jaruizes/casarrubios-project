@@ -30,6 +30,32 @@ interface PositionDTO {
   createdAt: string;
 }
 
+interface ScoringDTO {
+  score: number;
+  descScore: number;
+  requirementScore: number;
+  tasksScore: number;
+  timeSpent: number;
+}
+
+export interface SkillDTO {
+  skill: string;
+  level: number;
+}
+
+interface AnalysisDTO {
+  summary: string;
+  strengths: string[];
+  concerns: string[];
+  hardSkills: SkillDTO[];
+  softSkills: SkillDTO[];
+  keyResponsibilities: string[];
+  interviewQuestions: string[];
+  totalYearsExperience: number
+  averagePermanency: number
+  tags: string[];
+}
+
 export interface ApplicationDetailDTO {
   id: string;
   shortId: string;
@@ -37,9 +63,8 @@ export interface ApplicationDetailDTO {
   candidate: CandidateDataDTO;
   cvFile: string;
   creationDate: string;
-  matchingPercentage: number;
-  questions: string[];
-  analysis: string;
+  scoring?: ScoringDTO;
+  analysis?: AnalysisDTO;
 }
 
 export class PaginatedApplicationsDTO {

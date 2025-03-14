@@ -34,20 +34,13 @@ export class ApplicationsController {
   ) {}
 
   @Get(':applicationId')
-  async getApplicationById(
-    @Param('applicationId') applicationId: string,
-  ): Promise<ApplicationDetailDTO | undefined> {
-    this.logger.log(
-      `Trying to fetch application detail with id: ${applicationId}`,
-    );
+  async getApplicationById(@Param('applicationId') applicationId: string): Promise<ApplicationDetailDTO | undefined> {
+    this.logger.log(`Trying to fetch application detail with id: ${applicationId}`);
 
     try {
-      const applicationServiceDTO: ServiceApplicationDTO | undefined =
-        await this.applicationsService.getApplicationById(applicationId);
-      const position: PositionServiceDTO =
-        await this.positionsService.getPositionById(
-          applicationServiceDTO.positionId,
-        );
+      const applicationServiceDTO: ServiceApplicationDTO | undefined = await this.applicationsService.getApplicationById(applicationId);
+      const position: PositionServiceDTO = await this.positionsService.getPositionById(applicationServiceDTO.positionId);
+
       if (applicationServiceDTO && position) {
         this.logger.log(`Found application with id: ${applicationId}`);
         return this.toApplicationDetailDTO(applicationServiceDTO, position);
@@ -135,19 +128,14 @@ export class ApplicationsController {
     };
   }
 
-  private toApplicationDetailDTO(
-    applicationDTO: ServiceApplicationDTO,
-    positionDTO: PositionServiceDTO,
-  ): ApplicationDetailDTO {
+  private toApplicationDetailDTO(applicationDTO: ServiceApplicationDTO, positionDTO: PositionServiceDTO): ApplicationDetailDTO {
     const candidateDataDTO: CandidateDataDTO = {
       name: applicationDTO.candidate.name,
       email: applicationDTO.candidate.email,
-      phone: applicationDTO.candidate.phone,
-      tags: 'TBD, TBD',
-      totalExperience: 0,
-      currentRole: 'TBD',
-      summary: 'TBD',
+      phone: applicationDTO.candidate.phone
     };
+
+
 
     return {
       id: applicationDTO.applicationId,
@@ -160,9 +148,8 @@ export class ApplicationsController {
       candidate: candidateDataDTO,
       cvFile: applicationDTO.cvFile,
       creationDate: applicationDTO.creationDate,
-      matchingPercentage: 0,
-      questions: ['TBD', 'TBD'],
-      analysis: 'TBD',
+      analysis: applicationDTO.analysis ? applicationDTO.analysis : undefined,
+      scoring: applicationDTO.scoring ? applicationDTO.scoring : undefined,
     };
   }
 

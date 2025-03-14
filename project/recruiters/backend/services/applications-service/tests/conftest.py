@@ -52,6 +52,23 @@ def kafka_container(request):
     kafka = KafkaContainer("confluentinc/cp-kafka:latest")
     kafka.start()
     bootstrap_servers = kafka.get_bootstrap_server()
+    
+    # Esperar a que Kafka esté listo
+    from confluent_kafka.admin import AdminClient
+    retries = 10
+    while retries > 0:
+        try:
+            admin = AdminClient({'bootstrap.servers': bootstrap_servers})
+            cluster_metadata = admin.list_topics(timeout=10)
+            if cluster_metadata:
+                break
+        except Exception:
+            retries -= 1
+            time.sleep(2)
+    
+    if retries == 0:
+        raise Exception("Kafka no está disponible después de varios intentos")
+        
     logger.info(f"Kafka container started: {bootstrap_servers}")
 
     def remove_container():
@@ -123,25 +140,40 @@ def setup_producer(setup_config):
     yield producer
 
 @pytest.fixture(scope="module")
+def event_processor(db_session):
+    from tests.test_utils import TestEventProcessor
+    return TestEventProcessor(db_session)
+
+@pytest.fixture(scope="module")
 def wait_for_process_event(db_session):
+
+    import asyncio
 
     async def _wait_for_result(application_id, timeout=300):
         try:
-
             start_time = time.time()
             while time.time() - start_time < timeout:
+                # Hacer commit para asegurarnos de que estamos viendo los datos más recientes
+                db_session.commit()
+                
                 result = db_session.execute(
                     text('SELECT * FROM recruiters.resume_analysis WHERE application_id = :application_id'),
                     {"application_id": application_id}
                 )
-                if result is not None:
-                    rows = result.fetchall()
-                    if rows and len(rows) > 0:
-                        return rows
+                
+                rows = result.fetchall()
+                if rows and len(rows) > 0:
+                    return rows
 
-                time.sleep(2)
+                # Esperar un poco antes de volver a consultar
+                await asyncio.sleep(1)
+            
+            # Si llegamos aquí, significa que se agotó el tiempo de espera
+            logging.warning(f"Timeout waiting for application_id {application_id} to be processed")
+            return None
 
         except Exception as e:
+            logging.error(f"Error in wait_for_process_event: {str(e)}")
             raise e
 
     return _wait_for_result
@@ -149,6 +181,18 @@ def wait_for_process_event(db_session):
 
 @pytest.fixture(scope="module")
 def setup_e2e(setup_topics):
+    import socket
+    
+    def find_free_port():
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(('', 0))
+            s.listen(1)
+            port = s.getsockname()[1]
+        return port
+
+    # Configurar un puerto libre para uvicorn
+    os.environ["PORT"] = str(find_free_port())
+    
     app_thread = threading.Thread(target=main, daemon=True)
     app_thread.start()
 

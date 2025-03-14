@@ -4,6 +4,7 @@ services:
 
   postgresql:
     image: postgres:14
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
       - "5432:5432"
     environment:
@@ -11,7 +12,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=applications
     volumes:
-      - "./tests/sql/init.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -57,8 +59,6 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
-    volumes:
-      - ./jmx-exporter:/usr/share/jmx_exporter/
     healthcheck:
       test: [ "CMD", "nc", "-z", "localhost", "9092" ]
       interval: 30s
@@ -68,32 +68,54 @@ services:
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     ports:
-      - 8001:8001
+      - "8001:8001"
     depends_on:
       zookeeper:
         condition: service_healthy
       broker:
         condition: service_healthy
-
     environment:
       SERVER_PORT: 8001
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:29092"
       KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
       KAFKA_CLUSTERS_0_NAME: local
     healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "9081" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8001/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
+
+  kafka-init:
+    image: confluentinc/cp-server:7.5.0
+    depends_on:
+      broker:
+        condition: service_healthy
+    command: >
+      bash -c '
+        echo "Esperando a que Kafka esté listo..."
+        cub kafka-ready -b broker:29092 1 30
+        echo "Creando topic recruiters.applications-scored..."
+        kafka-topics --create --if-not-exists \
+          --bootstrap-server broker:29092 \
+          --partitions 1 \
+          --replication-factor 1 \
+          --config retention.ms=604800000 \
+          --topic recruiters.applications-scored
+        echo "Topic creado correctamente"
+      '
 
   recruitment-applications-service:
     image: "recruitment/applications-service:1.0.0"
     container_name: recruitment.applications-service
     ports:
-      - "8000:8000"
+      - "8000:${PORT:-8000}"
     depends_on:
-      - postgresql
-      - broker
+      postgresql:
+        condition: service_started
+      broker:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -103,3 +125,14 @@ services:
       - DB_SCHEMA=recruiters
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - KAFKA_INPUT_TOPIC=recruiters.applications-scored
+      - KAFKA_CONSUMER_GROUP=applications-service
+      - KAFKA_CONSUMER_OFFSET_RESET=earliest
+      - LOG_LEVEL=INFO
+      - PORT=8000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-8000}/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped

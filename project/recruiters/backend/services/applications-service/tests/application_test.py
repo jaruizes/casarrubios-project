@@ -3,6 +3,7 @@ import logging
 import uuid
 from datetime import datetime
 from uuid import UUID
+from sqlalchemy.sql import text
 
 import pytest
 from fastapi.testclient import TestClient
@@ -11,15 +12,9 @@ from src.adapters.db.models import Application
 from src.api.input.rest.dto.models import ApplicationDTO
 from src.infrastructure.app.app import app
 
-pytestmark = pytest.mark.asyncio
-
 client = TestClient(app)
 
 logger = logging.getLogger(__name__)
-
-# @pytest.fixture(scope="module", autouse=True)
-# def setup_db(test_db):
-#     app.dependency_overrides[get_db] = test_db
 
 def test_get_applications_empty(setup_config):
     response = client.get("/applications?positionId=1&pageSize=5&page=10")
@@ -42,19 +37,43 @@ def test_get_application_by_id_not_found():
     assert response.status_code == 404
 
 @pytest.mark.asyncio
-async def test_process_application_scored_event(db_session, setup_producer, setup_config, wait_for_process_event, setup_e2e):
+async def test_process_application_scored_event(db_session, setup_producer, setup_config, event_processor, setup_e2e):
+    # Obtener una aplicación existente
     application_stored: Application = db_session.query(Application).filter(Application.position_id == 1).first()
     application_id = application_stored.id
     position_id = application_stored.position_id
+    
+    # Verificar que no hay análisis previo
+    initial_check = db_session.execute(
+        text('SELECT * FROM recruiters.resume_analysis WHERE application_id = :application_id'),
+        {"application_id": application_id}
+    ).fetchall()
+    assert len(initial_check) == 0, "Should not have resume analysis before the test"
+    
+    # Crear el evento
     topic = setup_config.input_topic
-    application_scored_event = __publish_application_scored_event(setup_producer, topic, application_id, position_id)
-
-    result = await wait_for_process_event(application_id, timeout=20)
-    assert result is not None
-
+    application_scored_event = __build_applycation_scored_event(application_id, position_id)
+    
+    # Publicar y procesar el evento directamente
+    from tests.test_utils import publish_and_process_event
+    logging.info(f"Publishing and processing event for application_id {application_id}")
+    success = publish_and_process_event(
+        producer=setup_producer, 
+        topic=topic, 
+        event_data=application_scored_event,
+        processor=event_processor
+    )
+    assert success, "Failed to publish and process event"
+    
+    # Verificar que el evento fue procesado correctamente
+    processed = event_processor.check_application_processed(application_id)
+    assert processed, f"Event for application_id {application_id} was not processed"
+    
+    # Verificar que la aplicación se puede obtener a través de la API
     response = client.get("/applications/" + str(application_id))
     assert response.status_code == 200
-
+    
+    # Verificar que los datos de análisis y puntuación están presentes
     application_dto = ApplicationDTO(**response.json())
     __assert_basic_data(application_dto, application_stored)
     __assert_analysis_and_scoring_data(application_dto, application_scored_event)

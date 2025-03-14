@@ -15,6 +15,7 @@ class ApplicationScoredEventHandler():
         self.applications_service = applications_service
 
     def handle_application_scored_event(self, message: Any):
+        logger.info("Received application scored event....")
         try:
             application_analysed_event_dto = json.loads(message.value())
             application_id = application_analysed_event_dto["applicationId"]

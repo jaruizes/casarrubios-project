@@ -222,12 +222,18 @@ services:
     depends_on:
       - postgresql
     environment:
-      - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres
-      - DATABASE_NAME=applications
-      - DATABASE_HOST=postgresql
-      - DATABASE_PORT=5432
-      - DATABASE_SCHEMA=recruiters
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=applications
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - DB_SCHEMA=recruiters
+      - KAFKA_BOOTSTRAP_SERVERS=broker:29092
+      - KAFKA_INPUT_TOPIC=recruiters.applications-scored
+      - KAFKA_CONSUMER_GROUP=applications-service
+      - KAFKA_CONSUMER_OFFSET_RESET=earliest
+      - LOG_LEVEL=INFO
+      - PORT=9081
 
   recruitment-applications-analyzer-service:
     image: "recruitment/applications-analyzer-service:1.0.0"

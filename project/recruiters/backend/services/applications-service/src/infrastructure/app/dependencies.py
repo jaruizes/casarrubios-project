@@ -17,10 +17,8 @@ def get_db(config: ApplicationConfig = Depends(load_config)) -> Session:
     session_factory = db_connection.connect()
     return session_factory
 
-
 def get_applications_repository(db: Session = Depends(get_db)) -> ApplicationRepository:
     return ApplicationRepository(db)
 
 def get_application_service(application_respository: ApplicationRepository = Depends(get_applications_repository)) -> ApplicationService:
     return ApplicationService(application_respository)
-
