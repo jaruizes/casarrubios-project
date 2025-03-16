@@ -62,6 +62,7 @@ def build_application_dto(application: Application, is_detail: bool = False) -> 
     candidate: CandidateDTO = CandidateDTO(name=application.name, email=application.email, phone=application.phone)
     application_dto = ApplicationDTO(applicationId=application.id, candidate=candidate, positionId=application.position_id, cvFile=application.cv, creationDate=creation_date)
 
+    analysis: ResumeAnalysisDTO = None
     if is_detail and application.resume_analysis is not None:
         analysis: ResumeAnalysisDTO = ResumeAnalysisDTO(
             summary=application.resume_analysis.summary,
@@ -75,9 +76,23 @@ def build_application_dto(application: Application, is_detail: bool = False) -> 
             averagePermanency=application.resume_analysis.average_permanency,
             tags=[tag.tag for tag in application.tags]
         )
-        application_dto.add_analysis(analysis)
+    else:
+        analysis: ResumeAnalysisDTO = ResumeAnalysisDTO(
+            summary="",
+            strengths=[],
+            concerns=[],
+            hardSkills=[],
+            softSkills=[],
+            keyResponsibilities=[],
+            interviewQuestions=[],
+            totalYearsExperience=0,
+            averagePermanency=0,
+            tags=[tag.tag for tag in application.tags]
+        )
 
-    if is_detail and application.scoring is not None:
+    application_dto.add_analysis(analysis)
+
+    if application.scoring is not None:
         scoring: ScoringDTO = ScoringDTO(
             score=application.scoring.score,
             descScore=application.scoring.desc_score,

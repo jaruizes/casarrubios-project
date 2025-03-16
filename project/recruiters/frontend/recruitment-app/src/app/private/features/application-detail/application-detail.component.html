@@ -55,24 +55,24 @@
               </div>
             </div>
             <div class="d-flex align-items-center flex-row flex-wrap mt-2">
-              @for (tag of application.candidate.tags; track tag) {
-                <span class="badge bg-primary me-0.5 fs-14">{{ tag.name }}</span>
+              @for (tag of application.analysis.tags; track tag) {
+                <span class="badge bg-primary me-0.5 fs-14">{{ tag }}</span>
               }
             </div>
           </div>
           <div class="col-lg-7 ms-auto align-self-center">
             <div class="d-flex ">
-              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-1 text-center">
-                <p class="text-muted mb-0 fw-medium">Current Role</p>
-                <h5 class="fw-semibold fs-22 mt-1">{{ application.candidate.currentRole }}</h5>
+              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
+                <p class="text-muted mb-0 fw-medium">Experience</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ application.analysis.totalYearsExperience }} years</h5>
               </div>
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
-                <p class="text-muted mb-0 fw-medium">Experience (y)</p>
-                <h5 class="fw-semibold fs-22 mt-1">{{ application.candidate.totalExperience }}</h5>
+                <p class="text-muted mb-0 fw-medium">Average Permanency</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ application.analysis.averagePermanency }} years</h5>
               </div>
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
                 <p class="text-muted mb-0 fw-medium">Success</p>
-                <h5 class="fw-semibold fs-22 mt-1">{{ application.matchingPercentage }}%</h5>
+                <h5 class="fw-semibold fs-22 mt-1">{{ application.scoring.score }}%</h5>
               </div>
             </div>
           </div>
@@ -91,7 +91,7 @@
         <div class="row">
           <div class="col">
             <blockquote class="blockquote ps-4 ">
-              <p class="fs-14">{{ application.candidate.summary }}</p>
+              <p class="fs-14">{{ application.analysis.summary }}</p>
             </blockquote>
           </div>
         </div>
@@ -101,16 +101,104 @@
       <div class="card-header bg-blue-subtle">
         <div class="row align-items-center">
           <div class="col">
-            <h4 class="fw-semibold fs-18 mb-1">Analysis</h4>
+            <h4 class="fw-semibold fs-18 mb-1">Key Responsibilities (Last 5 years)</h4>
           </div>
         </div>
       </div>
       <div class="card-body">
         <div class="mb-3 row">
           <div class="col">
-            <blockquote class="blockquote ps-4 ">
-              <p class="fs-14">{{ application.candidate.summary }}</p>
-            </blockquote>
+            <ul>
+              @for (key of application.analysis.keyResponsibilities; track key) {
+                <li class="blockquote fs-14">
+                  {{ key }}
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h4 class="fw-semibold fs-18 mb-1">Strengths</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3 row">
+          <div class="col">
+            <ul>
+              @for (strength of application.analysis.strengths; track strength) {
+                <li class="blockquote fs-14">
+                  {{ strength }}
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h4 class="fw-semibold fs-18 mb-1">Concerns</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3 row">
+          <div class="col">
+            <ul>
+              @for (concern of application.analysis.concerns; track concern) {
+                <li class="blockquote fs-14">
+                  {{ concern }}
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h4 class="fw-semibold fs-18 mb-1">Skills</h4>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="mb-3 row">
+          <div class="col">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+              <tr class="me-2 ">
+                <th class="border-top-0 me-2">Hard Skills</th>
+                <th class="border-top-0 ">Soft Skills</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="align-top px-2">
+                  <ul>
+                    @for (skill of application.analysis.hardSkills; track skill) {
+                      <li>{{ skill.skill }} - {{ skill.level}}</li>
+                    }
+                  </ul>
+                </td>
+                <td class="align-top px-2">
+                  <ul>
+                    @for (skill of application.analysis.softSkills; track skill) {
+                      <li>{{ skill.skill }} - {{ skill.level}}</li>
+                    }
+                  </ul>
+                </td>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -127,7 +215,7 @@
         <div class="mb-3 row">
           <div class="col">
             <ul class="list-unstyled">
-              @for (question of application.questions; track question) {
+              @for (question of application.analysis.interviewQuestions; track question) {
                 <li class="blockquote ps-4 ">
                   <p class="text-dark mb-0 p-2 bg-light rounded ms-n2 bg-light-alt fs-15">{{ question }}</p>
                 </li>

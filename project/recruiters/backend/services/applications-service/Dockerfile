@@ -45,24 +45,6 @@ RUN useradd -m -u 1000 appuser
 COPY --chown=appuser:appuser ./src ./src
 COPY --chown=appuser:appuser ./tests/sql ./tests/sql
 
-# Variables de entorno por defecto
-ENV DB_HOST=localhost \
-    DB_PORT=5432 \
-    DB_USER=postgres \
-    DB_PASSWORD=postgres \
-    DB_NAME=applications \
-    DB_SCHEMA=recruiters \
-    KAFKA_BOOTSTRAP_SERVERS=localhost:9092 \
-    KAFKA_INPUT_TOPIC=recruiters.applications-scored \
-    KAFKA_CONSUMER_GROUP=applications-service \
-    KAFKA_CONSUMER_OFFSET_RESET=earliest \
-    LOG_LEVEL=INFO \
-    PORT=8000 \
-    PYTHONPATH=/app
-
-# Puerto para FastAPI
-EXPOSE 8000
-
 # Cambiar al usuario no root
 USER appuser
 

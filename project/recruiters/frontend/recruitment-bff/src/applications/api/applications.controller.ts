@@ -81,19 +81,11 @@ export class ApplicationsController {
     @Query('page') page: number = 0,
     @Query('pageSize') pageSize: number = 10,
   ): Promise<PaginatedApplicationsDTO> {
-    this.logger.log(
-      `Trying to fetch application with positionId: ${positionId}, page: ${page}, pageSize: ${pageSize}`,
-    );
+    this.logger.log(`Trying to fetch application with positionId: ${positionId}, page: ${page}, pageSize: ${pageSize}`);
 
     const paginatedPositions =
-      await this.applicationsService.getAllApplicationsByPositionId(
-        positionId,
-        page,
-        pageSize,
-      );
-    this.logger.log(
-      `Found ${paginatedPositions.totalElements} applications. Returning page ${paginatedPositions.number} of ${paginatedPositions.totalPages}`,
-    );
+      await this.applicationsService.getAllApplicationsByPositionId(positionId, page, pageSize);
+    this.logger.log(`Found ${paginatedPositions.totalElements} applications. Returning page ${paginatedPositions.number} of ${paginatedPositions.totalPages}`);
 
     return {
       applications: paginatedPositions.applications.map(
@@ -106,9 +98,7 @@ export class ApplicationsController {
     };
   }
 
-  private toApplicationDTO(
-    serviceApplicationDTO: ServiceApplicationDTO,
-  ): ApplicationDTO {
+  private toApplicationDTO(serviceApplicationDTO: ServiceApplicationDTO): ApplicationDTO {
     const positionsApplied: PositionAppliedDTO[] = [
       {
         id: serviceApplicationDTO.positionId,
@@ -122,9 +112,10 @@ export class ApplicationsController {
       positionId: serviceApplicationDTO.positionId,
       candidate: serviceApplicationDTO.candidate.name,
       cvFile: serviceApplicationDTO.cvFile,
-      tags: 'TBD, TBD, TBD, TBD',
       creationDate: serviceApplicationDTO.creationDate,
       positionsApplied: positionsApplied,
+      scoring: serviceApplicationDTO.scoring ? serviceApplicationDTO.scoring.score : undefined,
+      tags: serviceApplicationDTO.analysis ? serviceApplicationDTO.analysis.tags.join(', ') : ''
     };
   }
 

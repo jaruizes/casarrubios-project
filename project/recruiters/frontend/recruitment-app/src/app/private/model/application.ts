@@ -13,6 +13,7 @@ export interface Application {
   tags: string;
   cv: string;
   positionsApplied: PositionApplied[];
+  scoring: number
 }
 
 export interface  PaginatedApplications {
@@ -27,10 +28,6 @@ interface Candidate {
   name: string;
   email: string;
   phone: string;
-  tags: Tag[];
-  totalExperience: number;
-  currentRole: string;
-  summary: string;
 }
 
 interface Position {
@@ -45,8 +42,33 @@ export interface ApplicationDetail {
   position: Position;
   creationDate: string;
   candidate: Candidate;
-  matchingPercentage: number;
-  questions: string[];
-  analysis: string;
+  analysis: Analysis;
   cvFile: string;
+  scoring: Scoring;
+}
+
+interface Scoring {
+  score: number;
+  descScore: number;
+  requirementScore: number;
+  tasksScore: number;
+  timeSpent: number;
+}
+
+export interface Skill{
+  skill: string;
+  level: number;
+}
+
+interface Analysis {
+  summary: string;
+  strengths: string[];
+  concerns: string[];
+  hardSkills: Skill[];
+  softSkills: Skill[];
+  keyResponsibilities: string[];
+  interviewQuestions: string[];
+  totalYearsExperience: number
+  averagePermanency: number
+  tags: string[];
 }

@@ -18,10 +18,11 @@ export interface ApplicationDTO {
   shortId: string;
   positionId: number;
   candidate: string;
-  tags?: string;
   cvFile: string;
   creationDate: string;
   positionsApplied: PositionAppliedDTO[];
+  scoring?: number;
+  tags: string;
 }
 
 interface PositionDTO {

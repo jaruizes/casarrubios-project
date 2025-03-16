@@ -155,6 +155,74 @@ CREATE TABLE IF NOT EXISTS recruiters.applications (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS recruiters.scoring (
+    application_id UUID PRIMARY KEY REFERENCES recruiters.applications(id),
+    score FLOAT NOT NULL,
+    desc_score FLOAT NOT NULL,
+    requirement_score FLOAT NOT NULL,
+    tasks_score FLOAT NOT NULL,
+    time_spent FLOAT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.resume_analysis (
+    application_id UUID PRIMARY KEY REFERENCES recruiters.applications(id),
+    summary TEXT,
+    total_years_experience INT,
+    average_permanency FLOAT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.strengths (
+    id SERIAL PRIMARY KEY,
+    application_id UUID REFERENCES recruiters.applications(id),
+    strength TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.concerns (
+    id SERIAL PRIMARY KEY,
+    application_id UUID REFERENCES recruiters.applications(id),
+    concern TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.hard_skills (
+    id SERIAL PRIMARY KEY,
+    application_id UUID REFERENCES recruiters.applications(id),
+    skill VARCHAR(255) NOT NULL,
+    level VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.soft_skills (
+    id SERIAL PRIMARY KEY,
+    application_id UUID REFERENCES recruiters.applications(id),
+    skill VARCHAR(255) NOT NULL,
+    level VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.key_responsibilities (
+    id SERIAL PRIMARY KEY,
+    application_id UUID REFERENCES recruiters.applications(id),
+    responsibility TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.interview_questions (
+    id SERIAL PRIMARY KEY,
+    application_id UUID REFERENCES recruiters.applications(id),
+    question TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS recruiters.tags (
+    id SERIAL PRIMARY KEY,
+    application_id UUID REFERENCES recruiters.applications(id),
+    tag VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+ );
 
 -- Insert positions
 INSERT INTO RECRUITERS.positions (id, title, description, status, created_at, published_at, tags) VALUES

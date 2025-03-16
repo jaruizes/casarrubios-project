@@ -74,7 +74,7 @@
                       <span class="badge bg-primary me-0.5">{{ tag }}</span>
                     }
                   </td>
-                  <td class="text-center">{{ getMatchingPercentage(application.positionsApplied)}}</td>
+                  <td class="text-center">{{ application.scoring}}</td>
                 </tr>
                 <tr *ngIf="filteredResults.length === 0">
                   <td colspan="4" class="text-center">No results found</td>

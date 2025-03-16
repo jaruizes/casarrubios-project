@@ -25,6 +25,11 @@ services:
     ports:
       - 9000:9000
       - 9001:9001
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -92,8 +97,6 @@ services:
         condition: service_healthy
       broker:
         condition: service_healthy
-#      schema-registry:
-#        condition: service_healthy
     environment:
       SERVER_PORT: 8001
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "broker:29092"
@@ -130,7 +133,9 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_started
+
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
       - SPRING_DATASOURCE_USERNAME=postgres
@@ -143,8 +148,10 @@ services:
     ports:
       - "8090:8090"
     depends_on:
-      - postgresql
-      - minio
+      postgresql:
+        condition: service_started
+      minio:
+        condition: service_healthy
     environment:
       - SERVER_PORT=8090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
@@ -160,7 +167,8 @@ services:
     hostname: connect
     container_name: connect
     depends_on:
-      - broker
+      broker:
+        condition: service_healthy
     ports:
       - "8083:8083"
     environment:
@@ -207,20 +215,61 @@ services:
     ports:
       - "9080:9080"
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_started
     environment:
       - QUARKUS_HTTP_PORT=9080
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgresql:5432/applications
       - QUARKUS_DATASOURCE_USERNAME=postgres
       - QUARKUS_DATASOURCE_PASSWORD=postgres
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
+
+  kafka-init:
+    image: confluentinc/cp-server:7.5.0
+    depends_on:
+      broker:
+        condition: service_healthy
+    command: >
+      bash -c '
+        echo "Esperando a que Kafka esté listo..."
+        cub kafka-ready -b broker:29092 1 30
+        echo "Creando topic recruitment.applications-received..."
+        kafka-topics --create --if-not-exists \
+          --bootstrap-server broker:29092 \
+          --partitions 1 \
+          --replication-factor 1 \
+          --config retention.ms=604800000 \
+          --topic recruitment.applications-received
+        echo "Creando topic recruitment.applications-analyzed..."
+        kafka-topics --create --if-not-exists \
+          --bootstrap-server broker:29092 \
+          --partitions 1 \
+          --replication-factor 1 \
+          --config retention.ms=604800000 \
+          --topic recruitment.applications-analyzed
+        echo "Topic creado correctamente"
+        echo "Creando topic recruitment.applications-scored..."
+                kafka-topics --create --if-not-exists \
+                  --bootstrap-server broker:29092 \
+                  --partitions 1 \
+                  --replication-factor 1 \
+                  --config retention.ms=604800000 \
+                  --topic recruitment.applications-scored
+                echo "Topic creado correctamente"
+      '
+
   recruitment-applications-service:
     image: "recruitment/applications-service:1.0.0"
     container_name: recruitment.applications-service
     ports:
       - "9081:9081"
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_started
+      broker:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -229,11 +278,12 @@ services:
       - DB_PORT=5432
       - DB_SCHEMA=recruiters
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
-      - KAFKA_INPUT_TOPIC=recruiters.applications-scored
+      - KAFKA_INPUT_TOPIC=recruitment.applications-scored
       - KAFKA_CONSUMER_GROUP=applications-service
       - KAFKA_CONSUMER_OFFSET_RESET=earliest
       - LOG_LEVEL=INFO
       - PORT=9081
+    restart: unless-stopped
 
   recruitment-applications-analyzer-service:
     image: "recruitment/applications-analyzer-service:1.0.0"
@@ -241,8 +291,12 @@ services:
     ports:
       - "9082:9082"
     depends_on:
-      - postgresql
-      - broker
+      postgresql:
+        condition: service_started
+      broker:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     environment:
       - SERVER_PORT=9082
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
@@ -259,8 +313,12 @@ services:
     image: "recruitment/scoring-service:1.0.0"
     container_name: recruitment.scoring-service
     depends_on:
-      - postgresql
-      - broker
+      postgresql:
+        condition: service_started
+      broker:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres

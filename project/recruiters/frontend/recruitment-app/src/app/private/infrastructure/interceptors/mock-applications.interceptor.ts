@@ -5,7 +5,7 @@ import {Application, ApplicationDetail} from "../../model/application";
 
 @Injectable()
 export class MockApplicationsInterceptor implements HttpInterceptor {
-  private mockData: Application[] = [
+  private mockData = [
     {
       id: '1',
       shortId: '1',
@@ -17,7 +17,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
         { id: 1, matchingPercentage: 100 },
         { id: 2, matchingPercentage: 80 },
         { id: 3, matchingPercentage: 60 },
-      ]
+      ],
+      scoring: 78
     },
     {
       id: '1',
@@ -30,7 +31,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
         { id: 1, matchingPercentage: 100 },
         { id: 2, matchingPercentage: 90 },
         { id: 3, matchingPercentage: 70 },
-      ]
+      ],
+      scoring: 78
     },
     {
       id: '1',
@@ -43,7 +45,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
         { id: 1, matchingPercentage: 100 },
         { id: 2, matchingPercentage: 80 },
         { id: 3, matchingPercentage: 60 },
-      ]
+      ],
+      scoring: 78
     },
     {
       id: '1',
@@ -56,7 +59,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
         { id: 1, matchingPercentage: 100 },
         { id: 2, matchingPercentage: 90 },
         { id: 3, matchingPercentage: 70 },
-      ]
+      ],
+      scoring: 78
     },
     {
       id: '1',
@@ -69,7 +73,8 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
         { id: 1, matchingPercentage: 100 },
         { id: 2, matchingPercentage: 80 },
         { id: 3, matchingPercentage: 60 }
-      ]
+      ],
+      scoring: 78
     },
     {
       id: '1',
@@ -82,11 +87,12 @@ export class MockApplicationsInterceptor implements HttpInterceptor {
         { id: 1, matchingPercentage: 100 },
         { id: 2, matchingPercentage: 90 },
         { id: 3, matchingPercentage: 70 }
-      ]
+      ],
+      scoring: 78
     }
   ];
 
-  private mockApplicationDetailData: ApplicationDetail[] = [
+  private mockApplicationDetailData = [
     {
       id: '1',
       shortId: '1',
