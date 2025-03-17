@@ -6,8 +6,10 @@ import {
   Logger,
   NotFoundException,
   Param,
-  ParseIntPipe,
   Query,
+  ParseIntPipe,
+  Res,
+  StreamableFile,
 } from '@nestjs/common';
 import {
   ApplicationDetailDTO,
@@ -23,6 +25,7 @@ import { ServiceApplicationDTO } from '../adapters/services/applications-service
 import { PositionsService } from '../../positions/adapters/services/position-service/positions.service';
 import { PositionServiceDTO } from '../../positions/adapters/services/position-service/dto/service-positions.dto';
 import * as crypto from 'crypto';
+import { Response } from 'express';
 
 @Controller('applications')
 export class ApplicationsController {
@@ -71,6 +74,56 @@ export class ApplicationsController {
       this.logger.error(
         `Error fetching position with id ${applicationId}: ${error.message}`,
         error.stack,
+      );
+    }
+  }
+
+  @Get(':applicationId/cv')
+  async getApplicationCV(
+    @Param('applicationId') applicationId: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    this.logger.log(`Trying to fetch CV for application with id: ${applicationId}`);
+
+    try {
+      const cvResponse = await this.applicationsService.getApplicationCV(applicationId);
+      
+      // Set the appropriate headers
+      res.set({
+        'Content-Type': cvResponse.headers['content-type'] || 'application/pdf',
+        'Content-Disposition': cvResponse.headers['content-disposition'] || `attachment; filename="cv-${applicationId}.pdf"`,
+      });
+
+      // Return the file as a StreamableFile
+      return new StreamableFile(cvResponse.data);
+    } catch (error) {
+      if (error instanceof ApplicationsBackendNotAvailableException) {
+        this.logger.log(
+          `Error fetching CV for application with id (${applicationId}). Code: ${error.code}, Message: ${error.message}`,
+        );
+        throw new HttpException(
+          new ErrorDTO(error.code, error.message),
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
+      }
+
+      if (error instanceof NotFoundException) {
+        this.logger.log(
+          `Error fetching CV for application with id (${applicationId}). Message: ${error.message}`,
+        );
+        throw new HttpException(
+          new ErrorDTO(1002, error.message),
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      this.logger.error(
+        `Error fetching CV for application with id ${applicationId}: ${error.message}`,
+        error.stack,
+      );
+      throw new HttpException(
+        new ErrorDTO(1001, `Error fetching CV: ${error.message}`),
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

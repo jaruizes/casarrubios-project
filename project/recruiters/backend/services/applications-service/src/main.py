@@ -4,6 +4,7 @@ import signal
 import sys
 import threading
 
+from src.adapters.cvfiles.minio_cv_service import MinioCVService
 from src.adapters.db.repositories import ApplicationRepository
 from src.api.input.message.application_scored_event_handler import ApplicationScoredEventHandler
 from src.domain.services.application_service import ApplicationService
@@ -15,6 +16,8 @@ from fastapi import FastAPI
 from src.api.input.rest import applications_rest_api
 from fastapi.middleware.cors import CORSMiddleware
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+from src.infrastructure.minio.MinioClient import MinioClient
 
 
 def setup_logging(log_level: str):
@@ -66,6 +69,7 @@ def startup():
 
     config = load_config()
 
+    logger.info('Starting up database connection')
     db_connection = SQLAlchemyConnection(
         host=config.host,
         port=config.port,
@@ -75,7 +79,17 @@ def startup():
     )
     session_factory = db_connection.connect()
     application_repository = ApplicationRepository(session_factory)
-    application_service = ApplicationService(repository=application_repository)
+
+    logger.info('Starting up Minio client')
+    minio_client = MinioClient(
+        endpoint=config.minio_url,
+        access_key=config.minio_access_name,
+        secret_key=config.minio_access_secret
+    )
+    cv_service = MinioCVService(minio_client, config.minio_bucket_name)
+
+    logger.info('Starting up application service')
+    application_service = ApplicationService(repository=application_repository, cv_service=cv_service)
     application_scored_event_handler = ApplicationScoredEventHandler(
         applications_service=application_service
     )
@@ -86,8 +100,9 @@ def startup():
         group_id=config.consumer_group
     )
     
-    # Iniciar Kafka consumer en background
     consumer.start(application_scored_event_handler.handle_application_scored_event)
+
+    
 
     loop = asyncio.get_running_loop()
     for sig in (signal.SIGINT, signal.SIGTERM):

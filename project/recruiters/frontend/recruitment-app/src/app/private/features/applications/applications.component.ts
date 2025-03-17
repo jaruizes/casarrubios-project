@@ -62,7 +62,10 @@ export class ApplicationsComponent implements OnInit {
   }
 
   goToApplicationDetail(id: string) {
-    this.router.navigate(['private/application-detail', { id: id }]);
+    let applicationSelected = this.applications.filter((application: Application) => application.id === id)[0];
+    if (applicationSelected.scoring) {
+      this.router.navigate(['private/application-detail', {id: id}]);
+    }
   }
 
   pageChange(positionId: number,page: number) {

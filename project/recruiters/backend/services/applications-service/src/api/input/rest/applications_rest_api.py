@@ -1,11 +1,14 @@
 import logging
 from typing import List
 from uuid import UUID
-
+import io
 from fastapi import APIRouter, Depends, Query, HTTPException
+from starlette.responses import StreamingResponse
 
 from src.api.input.rest.dto.models import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO, ResumeAnalysisDTO, \
     SkillDTO, ScoringDTO
+from src.domain.exceptions.CVException import CVException
+from src.domain.exceptions.CVFileNotFoundException import CVFileNotFoundException
 from src.domain.services.application_service import ApplicationService
 from src.domain.models.paginated_result import PaginatedResult
 from src.adapters.db.models import Application, HardSkill
@@ -55,6 +58,28 @@ def get_application_by_id(application_id: UUID, application_service: Application
         raise HTTPException(status_code=404, detail=f"Application with ID {application_id} not found")
 
     return build_application_dto(application, True)
+
+
+@router.get('/applications/{application_id}/cv')
+def get_application_cv(application_id: UUID, application_service: ApplicationService = Depends(get_application_service)) -> StreamingResponse:
+    logger.info(f"Getting application CV by ID {application_id}")
+
+    try:
+        cv_file = application_service.get_cv_file(application_id)
+        return StreamingResponse(
+            content=io.BytesIO(cv_file), 
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f"attachment; filename=cv_{application_id}.pdf",
+                "Content-Length": str(len(cv_file))
+            }
+        )
+    except CVFileNotFoundException as e:
+        logger.error(f"CV file not found for application ID {application_id}: {e}")
+        raise HTTPException(status_code=404, detail=f"CV file not found for application ID {application_id}")
+    except CVException as e:
+        logger.error(f"Error getting cv file for application ID {application_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error getting cv for application ID {application_id}")
 
 
 def build_application_dto(application: Application, is_detail: bool = False) -> ApplicationDTO:

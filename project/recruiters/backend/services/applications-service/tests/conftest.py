@@ -7,14 +7,17 @@ import uuid
 from pathlib import Path
 
 from confluent_kafka import Producer
+from minio import Minio
 from sqlalchemy import text
 
 import pytest
-from src.main import main
+from testcontainers.core.container import DockerContainer
+from testcontainers.core.waiting_utils import wait_for_logs
 from testcontainers.postgres import PostgresContainer
 from testcontainers.kafka import KafkaContainer
 
 from src.infrastructure.core.config import load_config
+from src.main import main
 from src.infrastructure.db.sqlalchemy_connection import SQLAlchemyConnection
 
 logging.basicConfig(
@@ -28,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.fixture(scope="module")
 def postgres_container(request):
-    script = Path(__file__).parent / "sql" / "init.sql"
+    script = Path(__file__).parent.parent / "postgresql" / "inventory.sql"
     postgres = (PostgresContainer("postgres:14")
                 .with_env("POSTGRES_PORT", "5432")
                 .with_env("POSTGRES_USER", "test")
@@ -79,17 +82,54 @@ def kafka_container(request):
     kafka.stop()
     logger.info("Kafka container stopped")
 
+@pytest.fixture(scope="module")
+def minio_container():
+    class MinioContainer(DockerContainer):
+        def __init__(self, image="quay.io/minio/minio:RELEASE.2025-02-18T16-25-55Z", port=9000):
+            super(MinioContainer, self).__init__(image)
+            self.with_exposed_ports(port, 9001)
+            self.with_env("MINIO_ROOT_USER", "minioadmin")
+            self.with_env("MINIO_ROOT_PASSWORD", "minioadmin")
+            self.with_command("server /data --console-address \":9001\"")
+            self.port = port
+        
+        def get_connection_url(self):
+            host = self.get_container_host_ip()
+            port = self.get_exposed_port(self.port)
+            return f"{host}:{port}"
+    
+    minio = MinioContainer()
+    minio.start()
+    wait_for_logs(minio, "MinIO Object Storage Server")
+    yield minio
+    minio.stop()
 
 @pytest.fixture(scope="module")
-def setup_environment_variables(postgres_container, kafka_container):
+def minio_setup(minio_container):
+    endpoint = f"localhost:{minio_container.get_exposed_port(9000)}"
+    minio = Minio(
+            endpoint=endpoint,
+            access_key="minioadmin",
+            secret_key="minioadmin",
+            secure=False)
+
+    minio.make_bucket("test")
+    yield minio
+
+@pytest.fixture(scope="module")
+def setup_environment_variables(postgres_container, kafka_container, minio_container):
     import os
     os.environ["DB_HOST"] = postgres_container.get_container_host_ip()
     os.environ["DB_PORT"] = str(postgres_container.get_exposed_port(5432))
     os.environ["DB_USER"] = "test"
     os.environ["DB_PASSWORD"] = "test"
-    os.environ["DB_DATABASE"] = "test"
+    os.environ["DB_NAME"] = "test"
     os.environ["KAFKA_BOOTSTRAP_SERVERS"] = kafka_container
     os.environ["KAFKA_INPUT_TOPIC"] = "recruiters.applications.scored"
+    os.environ["MINIO_URL"] = f"localhost:{minio_container.get_exposed_port(9000)}"
+    os.environ["MINIO_ACCESS_NAME"] = "minioadmin"
+    os.environ["MINIO_ACCESS_SECRET"] = "minioadmin"
+    os.environ["MINIO_BUCKET_NAME"] = "test"
 
     yield
 

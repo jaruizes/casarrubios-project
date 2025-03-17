@@ -19,7 +19,7 @@ class ApplicationScoringPublisher():
         application_scored_event_dto = self.__map_to_dto(application_scoring)
         event_dict = asdict(application_scored_event_dto)
         self.kafka_producer.send(topic=self.output_topic, event=event_dict, key=application_scoring.application_id)
-        logger.info(f"[{application_scoring.application_id} //  {application_scoring.position_id}] Published applicationScoredEvent")
+        logger.info(f"[{application_scoring.application_id} //  {application_scoring.position_id}] Published applicationScoredEvent to topic {self.output_topic}")
 
     def __map_to_dto(self, application_scoring: ApplicationScoring) -> ApplicationScoredEventDTO:
         analysis: ResumeAnalysis = application_scoring.analysis

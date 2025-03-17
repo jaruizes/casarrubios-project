@@ -35,11 +35,15 @@ export class ApplicationDetailComponent implements OnInit {
   }
 
   downloadCV() {
-    const link = document.createElement('a');
-    link.href = this.application.cvFile;
-    link.download = this.application.id + '.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    this.applicationsService.getApplicationCV(this.applicationId).subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = this.applicationId;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    });
   }
 }

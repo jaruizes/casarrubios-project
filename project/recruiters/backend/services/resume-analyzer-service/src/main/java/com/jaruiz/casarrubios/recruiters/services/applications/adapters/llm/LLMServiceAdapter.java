@@ -44,6 +44,8 @@ public class LLMServiceAdapter implements LLMServicePort {
         try {
             return objectMapper.readValue(jsonResponse, ResumeAnalysis.class);
         } catch (JsonProcessingException e) {
+            logger.error(jsonResponse);
+            logger.error(e.getMessage());
             throw new AnalysingException("Error parsing LLM response", AnalysingException.CODE_LLM_RESPONSE_PARSING_ERROR);
         }
     }
@@ -66,10 +68,7 @@ public class LLMServiceAdapter implements LLMServicePort {
           - **5 = Expert** (Industry-level, capable of teaching, leading, and innovating).  
         - **Soft Skills & Proficiency Levels (Scale 1-5)**: Identify key soft skills and assign a level using the same scale.  
         - **Key Responsibilities (last 5 years, max 8 items)**: List major tasks and achievements.
-        - **Potential Interview Questions**:  
-          - **Technical** (e.g., architecture, cloud, microservices).  
-          - **Behavioral** (e.g., leadership, teamwork).  
-          - **Career-based** (e.g., job changes, professional goals).  
+        - **Potential Interview Questions**: according to the resume, propose max 10 questions about career, strengths, concerns, skills, responsibilities and experience. A flat list of questions is required (you must not group them by category).
         - **Total Years of Experience**.  
         - **Average Job Permanency (in years)**.  
         - **Relevant Tags**: Keywords that best describe the candidate.

@@ -15,6 +15,10 @@ class ApplicationConfig:
     offset_reset: str
     input_topic: str
     log_level: str
+    minio_url: str
+    minio_access_name: str
+    minio_access_secret: str
+    minio_bucket_name: str
 
 def load_config() -> ApplicationConfig:
     return ApplicationConfig(
@@ -28,5 +32,9 @@ def load_config() -> ApplicationConfig:
         consumer_group=os.getenv("KAFKA_CONSUMER_GROUP", "application-scoring-service"),
         offset_reset=os.getenv("KAFKA_CONSUMER_OFFSET_RESET", "earliest"),
         input_topic=os.getenv("KAFKA_INPUT_TOPIC", "recruiters.application-scored"),
-        log_level=os.getenv("LOG_LEVEL", "INFO")
+        log_level=os.getenv("LOG_LEVEL", "INFO"),
+        minio_url=os.getenv("MINIO_URL", "INFO"),
+        minio_access_name=os.getenv("MINIO_ACCESS_NAME", "minioadmin"),
+        minio_access_secret=os.getenv("MINIO_ACCESS_SECRET", "minioadmin"),
+        minio_bucket_name=os.getenv("MINIO_BUCKET_NAME", "files")
     )

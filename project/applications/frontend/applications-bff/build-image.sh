@@ -1,0 +1,1 @@
+docker build -t applications/applications-bff:1.0.0 .

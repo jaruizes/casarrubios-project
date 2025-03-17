@@ -65,7 +65,7 @@ class ApplicationsUpdateServiceTest {
             assertEquals(CDCEventsProducer.APPLICATION_PHONE, applicationEntity.getPhone());
             assertEquals(CDCEventsProducer.APPLICATION_CV, applicationEntity.getCv());
             assertEquals(CDCEventsProducer.APPLICATION_POSITION_ID, applicationEntity.getPositionId());
-            assertEquals(CDCEventsProducer.APPLICATION_CREATED_AT, applicationEntity.getCreatedAt().getTime());
+            assertEquals(CDCEventsProducer.APPLICATION_CREATED_AT, applicationEntity.getCreatedAt());
 
             return true;
         }

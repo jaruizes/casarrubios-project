@@ -67,4 +67,32 @@ export class ApplicationsService {
       throw new Error(`Error fetching applications: ${error.message}`);
     }
   }
+
+  async getApplicationCV(applicationId: string): Promise<{ data: any; headers: any }> {
+    const url = `${this.backendUrl}/applications/${applicationId}/cv`;
+    this.logger.debug(`[Applications Service] Trying to fetch CV from: ${url}`);
+
+    try {
+      const response = await firstValueFrom(
+        this.httpService.get(url, { responseType: 'arraybuffer' }),
+      );
+      this.logger.debug(`[Applications Service] Received CV file with content type: ${response.headers['content-type']}`);
+
+      return {
+        data: response.data,
+        headers: response.headers
+      };
+    } catch (error) {
+      if (error.isAxiosError && error.response?.status === 404) {
+        throw new NotFoundException(`CV for application with id ${applicationId} not found`);
+      }
+
+      if (error.isAxiosError && error.code === 'ECONNREFUSED') {
+        throw new ApplicationsBackendNotAvailableException();
+      }
+
+      this.logger.error(`Error fetching CV: ${error.message}`, error.stack);
+      throw new Error(`Error fetching CV: ${error.message}`);
+    }
+  }
 }

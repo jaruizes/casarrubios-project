@@ -57,24 +57,35 @@
               <table class="table table-hover mb-0">
                 <thead class="table-light">
                 <tr>
-                  <th class="border-top-0" style="width: 5%">Id</th>
-                  <th class="border-top-0">Candidate</th>
-                  <th class="border-top-0 ">Application Date</th>
-                  <th class="border-top-0 text-center">Tags</th>
-                  <th class="border-top-0 text-center">Matching (%)</th>
+                  <th class="border-top-0" style="width: 10%">Date</th>
+                  <th class="border-top-0" style="width: 25%">Candidate</th>
+                  <th class="border-top-0 text-center" style="width: 40%">Tags</th>
+                  <th class="border-top-0 text-center" style="width: 15%">Matching (%)</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let application of filteredResults" style="cursor: pointer" (click)="goToApplicationDetail(application.id)">
-                  <td class="">{{ application.shortId }}</td>
-                  <td class="">{{ application.candidate }}</td>
                   <td class="">{{ application.creationDate | date: 'dd-MM-yyyy'}}</td>
+                  <td class="">{{ application.candidate }}</td>
+
                   <td class="text-center">
-                    @for (tag of application.tags.split(','); track tag) {
-                      <span class="badge bg-primary me-0.5">{{ tag }}</span>
+                    <div class="d-flex flex-wrap justify-content-center">
+                    @if (application.tags) {
+                      @for (tag of application.tags.split(','); track tag) {
+                        <span class="badge bg-transparent border border-secondary text-secondary me-0.5" style="padding: 0.5em; margin: 0.2em">{{ tag }}</span>
+                      }
+                    } @else {
+                      Pending....
+                    }
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    @if (application.scoring) {
+                      {{ application.scoring}}
+                    } @else {
+                      Pending....
                     }
                   </td>
-                  <td class="text-center">{{ application.scoring}}</td>
                 </tr>
                 <tr *ngIf="filteredResults.length === 0">
                   <td colspan="4" class="text-center">No results found</td>
@@ -98,7 +109,3 @@
   </div>
   }
 </div>
-
-
-
-

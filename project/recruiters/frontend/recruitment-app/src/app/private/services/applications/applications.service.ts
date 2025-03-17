@@ -24,4 +24,10 @@ export class ApplicationsService {
   getApplicationDetail(id: string): Observable<ApplicationDetail> {
     return this.http.get<ApplicationDetail>(`${this.baseUrl}/${id}`);
   }
+
+  getApplicationCV(applicationId: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${applicationId}/cv`, {
+      responseType: 'blob'
+    });
+  }
 }

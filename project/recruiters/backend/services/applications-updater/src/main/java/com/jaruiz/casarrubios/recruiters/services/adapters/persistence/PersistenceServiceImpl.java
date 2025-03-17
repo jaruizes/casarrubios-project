@@ -1,6 +1,9 @@
 package com.jaruiz.casarrubios.recruiters.services.adapters.persistence;
 
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.ApplicationsRepository;
 import com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.entities.ApplicationEntity;
@@ -38,7 +41,20 @@ public class PersistenceServiceImpl implements PersistenceService {
         applicationEntity.setPhone(application.getPhone());
         applicationEntity.setCv(application.getCv());
         applicationEntity.setPositionId(application.getPositionId());
-        applicationEntity.setCreatedAt(new Timestamp(application.getCreatedAt()));
+        applicationEntity.setCreatedAt(getTimestamp(application.getCreatedAt()));
         return applicationEntity;
+    }
+
+    private static Timestamp getTimestamp(long epoch) {
+        int length = String.valueOf(epoch).length();
+        long epochMilis = epoch;
+
+        if (length <= 10) {
+            epochMilis = epoch * 1_000;
+        } else if (length >= 16) {
+            epochMilis = epoch / 1_000;
+        }
+
+        return new Timestamp(epochMilis);
     }
 }
