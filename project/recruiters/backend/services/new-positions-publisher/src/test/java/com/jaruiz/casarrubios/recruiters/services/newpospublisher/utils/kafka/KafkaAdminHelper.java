@@ -12,18 +12,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class KafkaAdminHelper {
     public static void createTopics(String bootstrapServers, List<String> topicNames) {
         try (AdminClient adminClient = AdminClient.create(Map.of(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers))) {
+            List<String> currentTopics = getTopics(bootstrapServers);
+
             List<NewTopic> newTopics = new ArrayList<>();
             for (String topicName : topicNames) {
-                newTopics.add(new NewTopic(topicName, 1, (short) 1));
+                if (!currentTopics.contains(topicName)) {
+                    newTopics.add(new NewTopic(topicName, 1, (short) 1));
+                }
             }
 
-            CreateTopicsResult result = adminClient.createTopics(newTopics);
-            result.all().get();
+            if (!newTopics.isEmpty()) {
+                CreateTopicsResult result = adminClient.createTopics(newTopics);
+                result.all().get();
 
-            List<String> topics = getTopics(bootstrapServers);
-            topicNames.forEach(topicToBeCreated -> {
-                assertTrue(topics.contains(topicToBeCreated));
-            });
+                List<String> topics = getTopics(bootstrapServers);
+                topicNames.forEach(topicToBeCreated -> {
+                    assertTrue(topics.contains(topicToBeCreated));
+                });
+            }
 
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException("Error creating Kafka topics", e);

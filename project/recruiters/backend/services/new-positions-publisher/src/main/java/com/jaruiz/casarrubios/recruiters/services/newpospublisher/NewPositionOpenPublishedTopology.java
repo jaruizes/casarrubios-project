@@ -76,7 +76,7 @@ public class NewPositionOpenPublishedTopology {
             .selectKey((k, v) -> k.key());;
 
 
-        KStream<Long, Position> positionJoined = positionsStream.join(aggregatedPositionRequirements,
+        positionsStream.join(aggregatedPositionRequirements,
             this::positionAndRequirementsJoiner,
             JoinWindows.ofTimeDifferenceWithNoGrace(TWO_SECONDS),
             StreamJoined.with(Serdes.Long(), positionSerde, positionSerde)
@@ -88,34 +88,28 @@ public class NewPositionOpenPublishedTopology {
            this::positionAndBenefitsJoiner,
            JoinWindows.ofTimeDifferenceWithNoGrace(TWO_SECONDS),
            StreamJoined.with(Serdes.Long(), positionSerde, positionSerde)
-        );
-
-        positionJoined
-            .filter((k, v) -> v.getRequirements() != null && v.getTasks() != null && v.getBenefits() != null)
-            .to(topologyConfig.getNewPositionsPublishedTopic(), Produced.with(Serdes.Long(), positionSerde));
-
-        positionJoined
-            .filterNot((k, v) -> v.getRequirements() != null && v.getTasks() != null && v.getBenefits() != null)
-            .to(topologyConfig.getNewPositionsPublishedDLQTopic(), Produced.with(Serdes.Long(), positionSerde));
-
+        )
+        .filter((k, v) -> v.getRequirements() != null && v.getTasks() != null && v.getBenefits() != null)
+        .peek((k, v) -> logger.info("Position complete with requirements, tasks or benefits: " + v.getId()))
+        .to(topologyConfig.getNewPositionsPublishedTopic(), Produced.with(Serdes.Long(), positionSerde));;
 
         return builder.build();
     }
 
     private Position positionRequirementsAggregator(Long key, PositionRequirement positionRequirement, Position aggregatedPositionRequirements) {
-        logger.info("Aggregated position requirements: " + positionRequirement.getId());
+        logger.info("Aggregated position requirements: " + positionRequirement.getId() + " for position: " + positionRequirement.getPositionId());
         aggregatedPositionRequirements.addRequirement(positionRequirement);
         return aggregatedPositionRequirements;
     }
 
     private Position positionTasksAggregator(Long key, PositionTask positionTask, Position aggregatedPositionTasks) {
-        logger.info("Aggregated position tasks: " + positionTask.getDescription());
+        logger.info("Aggregated position tasks: " + positionTask.getDescription()  + " for position: " + positionTask.getPositionId());
         aggregatedPositionTasks.addTask(positionTask);
         return aggregatedPositionTasks;
     }
 
     private Position positionBenefitsAggregator(Long key, PositionBenefit positionBenefit, Position aggregatedPositionBenefits) {
-        logger.info("Aggregated position benefits: " + positionBenefit.getDescription());
+        logger.info("Aggregated position benefits: " + positionBenefit.getDescription()  + " for position: " + positionBenefit.getPositionId());
         aggregatedPositionBenefits.addBenefit(positionBenefit);
         return aggregatedPositionBenefits;
     }

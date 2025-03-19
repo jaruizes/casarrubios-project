@@ -22,7 +22,4 @@ public class TopologyConfig {
 
     @ConfigProperty(name ="recruiters.new-positions-published.topic", defaultValue = "recruiters.new-positions-published")
     String newPositionsPublishedTopic;
-
-    @ConfigProperty(name ="recruiters.new-positions-published-dlq.topic", defaultValue = "recruiters.new-positions-published-dlq")
-    String newPositionsPublishedDLQTopic;
 }

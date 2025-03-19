@@ -20,4 +20,8 @@ public class PositionCompleteConsumer {
     public boolean isPositionCompletePublished() {
         return positionComplete != null;
     }
+
+    public void reset() {
+        positionComplete = null;
+    }
 }
