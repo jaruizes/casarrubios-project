@@ -1,6 +1,6 @@
 package com.jaruiz.casarrubios.candidates.services.positions.business.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Position {
@@ -9,21 +9,19 @@ public class Position {
     private final String title;
     private final String description;
     private final String tags;
-    private final Date createdAt;
-    private int applications;
+    private final LocalDateTime createdAt;
     private final List<Requirement> requirements;
-    private final List<Condition> conditions;
+    private final List<Benefits> benefits;
     private final List<Task> tasks;
 
-    public Position(long id, String title, String description, String tags, Date createdAt, int applications, List<Requirement> requirements, List<Condition> conditions, List<Task> tasks) {
+    public Position(long id, String title, String description, String tags, LocalDateTime createdAt, List<Requirement> requirements, List<Benefits> benefits, List<Task> tasks) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.tags = tags;
         this.createdAt = createdAt;
-        this.applications = applications;
         this.requirements = requirements;
-        this.conditions = conditions;
+        this.benefits = benefits;
         this.tasks = tasks;
     }
 
@@ -43,8 +41,8 @@ public class Position {
         return requirements;
     }
 
-    public List<Condition> getConditions() {
-        return conditions;
+    public List<Benefits> getConditions() {
+        return benefits;
     }
 
     public List<Task> getTasks() {
@@ -55,15 +53,7 @@ public class Position {
         return tags;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public int getApplications() {
-        return applications;
-    }
-
-    public void setApplications(int applications) {
-        this.applications = applications;
     }
 }

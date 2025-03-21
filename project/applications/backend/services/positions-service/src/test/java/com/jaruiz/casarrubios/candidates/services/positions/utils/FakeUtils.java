@@ -1,10 +1,10 @@
 package com.jaruiz.casarrubios.candidates.services.positions.utils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.ConditionEntity;
+import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.BenefitEntity;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.PositionEntity;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.RequirementEntity;
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities.TaskEntity;
@@ -17,15 +17,15 @@ public final class FakeUtils {
     }
 
     public static Position buildPositionFake(boolean withRequirementsAndConditions) {
-        final Requirement requirementFake = new Requirement("Key", "Value", "Description de prueba", true);
-        final Condition conditionFake = new Condition(1L, "Description de prueba");
+        final Requirement requirementFake = new Requirement(1, "Key", "Value", "Description de prueba", true);
+        final Benefits benefitsFake = new Benefits(1L, "Description de prueba");
         final Task taskFake = new Task(1L, "Description de prueba");
 
         if(withRequirementsAndConditions) {
-            return new Position(1L, "Title", "Description", "Java, Python", new Date(), 10, List.of(requirementFake), List.of(conditionFake), List.of(taskFake));
+            return new Position(1L, "Title", "Description", "Java, Python", LocalDateTime.now(), List.of(requirementFake), List.of(benefitsFake), List.of(taskFake));
         }
 
-        return new Position(1L, "Title", "Description", "Java, Python", new Date(), 10, null, null, null);
+        return new Position(1L, "Title", "Description", "Java, Python", LocalDateTime.now(), null, null, null);
     }
 
     public static PositionsList buildPositionsListFake(int page, int size, long total) {
@@ -58,7 +58,7 @@ public final class FakeUtils {
         requirementFake.setDescription("Description");
         requirementFake.setMandatory(true);
 
-        final ConditionEntity conditionFake = new ConditionEntity();
+        final BenefitEntity conditionFake = new BenefitEntity();
         conditionFake.setId(1L);
         conditionFake.setDescription("Description");
 
@@ -71,8 +71,7 @@ public final class FakeUtils {
         positionEntity.setTitle("Title");
         positionEntity.setDescription("Description");
         positionEntity.setTags("Java, Python");
-        positionEntity.setCreatedAt(new Date());
-        positionEntity.setApplications(0);
+        positionEntity.setCreatedAt(LocalDateTime.now());
         positionEntity.setRequirements(List.of(requirementFake));
         positionEntity.setConditions(List.of(conditionFake));
         positionEntity.setTasks(List.of(taskFake));

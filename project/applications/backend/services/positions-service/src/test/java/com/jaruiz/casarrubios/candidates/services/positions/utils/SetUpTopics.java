@@ -1,0 +1,46 @@
+package com.jaruiz.casarrubios.candidates.services.positions.utils;
+
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import static org.assertj.core.api.Assertions.fail;
+
+@Component
+public class SetUpTopics {
+    private static final Logger logger = LoggerFactory.getLogger(SetUpTopics.class);
+    public static final String NEW_POSITION_TOPIC = "recruiters.new-positions-published";
+
+    private static boolean created = false;
+
+    public static void createKafkaTopics(String bootstrapServers) {
+        Properties config = new Properties();
+        config.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+
+        try (AdminClient adminClient = AdminClient.create(config)) {
+            List<NewTopic> topics = List.of(
+                new NewTopic(NEW_POSITION_TOPIC, 1, (short) 1)
+            );
+
+            adminClient.createTopics(topics).all().whenComplete((v, e) -> {
+                if (e != null) {
+                    fail("Error creating topics", e);
+                }
+                logger.info("Topics created successfully!!!!!!!!!!!!!!!");
+                created = true;
+            });
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error creando los topics de Kafka", e);
+        }
+    }
+
+    public static boolean isCreated() {
+        return created;
+    }
+}

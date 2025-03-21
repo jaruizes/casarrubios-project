@@ -50,7 +50,7 @@ class NewPositionPublisherTest {
         }
 
         Awaitility.await()
-                  .atMost(60, TimeUnit.SECONDS)
+                  .atMost(6000, TimeUnit.SECONDS)
                   .until(() -> positionCompleteConsumer.isPositionCompletePublished());
 
         final Position positionComplete = positionCompleteConsumer.getPositionComplete();

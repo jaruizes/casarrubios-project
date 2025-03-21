@@ -1,6 +1,8 @@
 package com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 import com.jaruiz.casarrubios.candidates.services.positions.adapters.api.rest.dto.*;
@@ -66,7 +68,7 @@ public class PositionsRestController implements PositionsApi {
         positionDTO.setDescription(position.getDescription());
         positionDTO.setTags(position.getTags());
         positionDTO.setCreatedAt(toIso8601(position.getCreatedAt()));
-        positionDTO.setApplications(position.getApplications());
+        positionDTO.setApplications(0);
 
 
         return positionDTO;
@@ -79,7 +81,7 @@ public class PositionsRestController implements PositionsApi {
         positionDetailDTO.setDescription(position.getDescription());
         positionDetailDTO.setTags(position.getTags());
         positionDetailDTO.setCreatedAt(toIso8601(position.getCreatedAt()));
-        positionDetailDTO.setApplications(position.getApplications());
+        positionDetailDTO.setApplications(0);
 
         positionDetailDTO.setRequirements(position.getRequirements().stream().map(requirement -> {
             var requirementDTO = new RequirementDTO();
@@ -105,10 +107,9 @@ public class PositionsRestController implements PositionsApi {
         return positionDetailDTO;
     }
 
-    private static String toIso8601(Date date) {
+    private static String toIso8601(LocalDateTime localDateTime) {
+        Date date = Date.from(localDateTime.atOffset(ZoneOffset.UTC).toInstant());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.format(date);
     }
-
-
 }

@@ -1,6 +1,6 @@
 package com.jaruiz.casarrubios.candidates.services.positions.adapters.persistence.postgresql.entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -10,19 +10,17 @@ import jakarta.persistence.*;
 public class PositionEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
     private String description;
-    private int applications;
     private String tags;
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
     private List<RequirementEntity> requirements;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
-    private List<ConditionEntity> conditions;
+    private List<BenefitEntity> conditions;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "position", fetch = FetchType.LAZY)
     private List<TaskEntity> tasks;
@@ -59,11 +57,11 @@ public class PositionEntity {
         this.requirements = requirements;
     }
 
-    public List<ConditionEntity> getConditions() {
+    public List<BenefitEntity> getConditions() {
         return conditions;
     }
 
-    public void setConditions(List<ConditionEntity> conditions) {
+    public void setConditions(List<BenefitEntity> conditions) {
         this.conditions = conditions;
     }
 
@@ -83,19 +81,11 @@ public class PositionEntity {
         this.tags = tags;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public int getApplications() {
-        return applications;
-    }
-
-    public void setApplications(int applications) {
-        this.applications = applications;
     }
 }

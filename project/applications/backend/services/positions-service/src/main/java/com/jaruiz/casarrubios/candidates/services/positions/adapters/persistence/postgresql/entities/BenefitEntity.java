@@ -3,15 +3,13 @@ package com.jaruiz.casarrubios.candidates.services.positions.adapters.persistenc
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "CONDITIONS")
-public class ConditionEntity {
+@Table(name = "BENEFITS")
+public class BenefitEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name="position_id", nullable=false)
+    @ManyToOne @JoinColumn(name = "position_id")
     private PositionEntity position;
 
     private String description;

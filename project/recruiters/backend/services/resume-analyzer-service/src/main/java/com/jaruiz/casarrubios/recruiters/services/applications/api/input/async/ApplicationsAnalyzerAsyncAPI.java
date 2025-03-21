@@ -9,7 +9,6 @@ import com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.m
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ApplicationsAnalyzerService;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.ApplicationAnalyzerEventsPublisherPort;
-import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +24,13 @@ public class ApplicationsAnalyzerAsyncAPI {
     private final ApplicationMapper mapper;
     private final ApplicationsAnalyzerService applicationsAnalyzerService;
     private final ApplicationAnalyzerEventsPublisherPort eventPublisher;
-    private final Config config;
 
 
     public ApplicationsAnalyzerAsyncAPI(ApplicationMapper mapper, ApplicationsAnalyzerService applicationsAnalyzerService,
-        ApplicationAnalyzerEventsPublisherPort eventPublisher, Config config) {
+        ApplicationAnalyzerEventsPublisherPort eventPublisher) {
         this.mapper = mapper;
         this.applicationsAnalyzerService = applicationsAnalyzerService;
         this.eventPublisher = eventPublisher;
-        this.config = config;
     }
 
     @KafkaListener(id = "application-received-listener", topics = "#{config.applicationsReceivedTopic}", groupId = "analysing-services")

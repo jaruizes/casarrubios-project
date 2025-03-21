@@ -5,6 +5,7 @@ import com.jaruiz.casarrubios.candidates.services.positions.business.model.Posit
 import com.jaruiz.casarrubios.candidates.services.positions.business.model.PositionsList;
 import com.jaruiz.casarrubios.candidates.services.positions.business.ports.PersistencePort;
 import com.jaruiz.casarrubios.candidates.services.positions.business.ports.PositionServicePort;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,15 @@ public class PositionService implements PositionServicePort {
         logger.info("Getting all positions [page: {}, pageSize: {}]", page, pageSize);
 
         return this.persistencePort.getAllPositions(page, pageSize);
+    }
+
+    @Override
+    @Transactional
+    public void savePosition(Position position) {
+        logger.info("Saving position with id {}", position.getId());
+
+        this.persistencePort.savePosition(position);
+
+        logger.info("Position with id {} saved", position.getId());
     }
 }

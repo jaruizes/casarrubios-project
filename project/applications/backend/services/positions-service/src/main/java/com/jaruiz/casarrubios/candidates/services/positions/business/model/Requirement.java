@@ -1,12 +1,13 @@
 package com.jaruiz.casarrubios.candidates.services.positions.business.model;
 
 public class Requirement {
+    private long id;
     private final String key;
     private final String value;
     private final String description;
     private final Boolean isMandatory;
 
-    public Requirement(String key, String value, String description, Boolean isMandatory) {
+    public Requirement(long id, String key, String value, String description, Boolean isMandatory) {
         this.key = key;
         this.description = description;
         this.value = value;
@@ -27,5 +28,9 @@ public class Requirement {
 
     public Boolean getMandatory() {
         return isMandatory;
+    }
+
+    public long getId() {
+        return id;
     }
 }

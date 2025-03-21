@@ -8,4 +8,6 @@ public interface PositionServicePort {
 
     Position getPositionDetail(long positionId) throws PositionNotFoundException;
     PositionsList getPositions(int page, int pageSize);
+
+    void savePosition(Position position);
 }

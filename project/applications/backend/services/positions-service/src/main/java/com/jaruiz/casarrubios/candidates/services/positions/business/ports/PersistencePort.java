@@ -6,4 +6,5 @@ import com.jaruiz.casarrubios.candidates.services.positions.business.model.Posit
 public interface PersistencePort {
     Position getPositionById(long positionId);
     PositionsList getAllPositions(int page, int size);
+    void savePosition(Position position);
 }

@@ -6,11 +6,9 @@ import jakarta.persistence.*;
 @Table(name = "TASKS")
 public class TaskEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name="position_id", nullable=false)
+    @ManyToOne @JoinColumn(name = "position_id")
     private PositionEntity position;
     private String description;
 
