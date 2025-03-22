@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.jaruiz.casarrubios.recruiters.services.newpospublisher.config.TopologyConfig;
-import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.*;
-import com.jaruiz.casarrubios.recruiters.services.newpospublisher.utils.kafka.CDCDataProducer;
+import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.Position;
 import com.jaruiz.casarrubios.recruiters.services.newpospublisher.utils.containers.KafkaContainer;
+import com.jaruiz.casarrubios.recruiters.services.newpospublisher.utils.kafka.CDCDataProducer;
 import com.jaruiz.casarrubios.recruiters.services.newpospublisher.utils.kafka.KafkaAdminHelper;
 import com.jaruiz.casarrubios.recruiters.services.newpospublisher.utils.kafka.PositionCompleteConsumer;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,7 +50,7 @@ class NewPositionPublisherTest {
         }
 
         Awaitility.await()
-                  .atMost(6000, TimeUnit.SECONDS)
+                  .atMost(200, TimeUnit.SECONDS)
                   .until(() -> positionCompleteConsumer.isPositionCompletePublished());
 
         final Position positionComplete = positionCompleteConsumer.getPositionComplete();
