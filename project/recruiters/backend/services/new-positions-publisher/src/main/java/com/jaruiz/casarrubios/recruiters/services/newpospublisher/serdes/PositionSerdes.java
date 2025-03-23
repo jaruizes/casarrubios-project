@@ -13,5 +13,5 @@ public class PositionSerdes {
     public static final Serde<PositionBenefit> positionBenefitSerde = Serdes.serdeFrom(new ObjectMapperSerializer<>(), new ObjectMapperDeserializer<>(PositionBenefit.class));
     public static final Serde<PositionTask> positionTaskSerde = Serdes.serdeFrom(new ObjectMapperSerializer<>(), new ObjectMapperDeserializer<>(PositionTask.class));
     public static final Serde<PositionComplete> positionCompleteSerde = Serdes.serdeFrom(new ObjectMapperSerializer<>(), new ObjectMapperDeserializer<>(PositionComplete.class));
-    public static final Serde<PositionTransactionElement> positionTransactionElementSerde = Serdes.serdeFrom(new ObjectMapperSerializer<>(), new ObjectMapperDeserializer<>(PositionTransactionElement.class));
+    public static final Serde<PositionKey> positionKeySerde = Serdes.serdeFrom(new ObjectMapperSerializer<>(), new ObjectMapperDeserializer<>(PositionKey.class));
 }

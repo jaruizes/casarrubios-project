@@ -20,6 +20,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -35,14 +36,15 @@ public class NewPositionPublishedHandler {
         this.positionService = positionService;
     }
 
-    @KafkaListener(id = "application-received-listener", topics = "#{config.newPositionsPublishedTopic}", groupId = "position-service", concurrency = "1")
-    public void newPositionPublished(ConsumerRecord<Long, String> record) {
+    @KafkaListener(topics = "#{config.newPositionsPublishedTopic}")
+    public void newPositionPublished(ConsumerRecord<Long, String> record, Acknowledgment acknowledgment) {
         try {
             logger.info("New position received");
             NewPositionDTO newPositionDTO = objectMapper.readValue(record.value(), NewPositionDTO.class);
             Position position = newPositionDTOToPosition(newPositionDTO);
             positionService.savePosition(position);
             logger.info("New position saved [positionId = {}]", position.getId());
+            acknowledgment.acknowledge();
         } catch (Exception e) {
             logger.error("Error processing new position [key = {}, value = {}]", record.key(), record.value());
             logger.error(e.getMessage());

@@ -3,7 +3,7 @@ package com.jaruiz.casarrubios.candidates.services.positions.adapters.persistenc
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "TASKS")
+@Table(name = "POSITIONS_TASKS")
 public class TaskEntity {
     @Id
     private long id;

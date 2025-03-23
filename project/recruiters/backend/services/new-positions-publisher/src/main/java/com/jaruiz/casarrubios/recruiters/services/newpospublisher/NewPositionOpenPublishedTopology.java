@@ -46,22 +46,22 @@ public class NewPositionOpenPublishedTopology {
         );
 
         // Streams de entrada
-        KStream<Long, PositionTransactionElement> positionStream = builder.stream(topologyConfig.getCdcPositionsTopic(), Consumed.with(Serdes.Long(), positionSerde))
+        KStream<Long, PositionTransactionElement> positionStream = builder.stream(topologyConfig.getCdcPositionsTopic(), Consumed.with(positionKeySerde, positionSerde))
             .selectKey((k, v) -> v.getId())
             .peek((k, v) -> { logger.info("Received new position: " + k.toString());})
             .mapValues((k, v) -> new PositionTransactionElement(v));
 
-        KStream<Long, PositionTransactionElement> requirementStream = builder.stream(topologyConfig.getCdcPositionsRequirementsTopic(), Consumed.with(Serdes.Long(), positionRequirementSerde))
+        KStream<Long, PositionTransactionElement> requirementStream = builder.stream(topologyConfig.getCdcPositionsRequirementsTopic(), Consumed.with(positionKeySerde, positionRequirementSerde))
             .selectKey((k, v) -> v.getPositionId())
             .peek((k, v) -> { logger.info("Received new requirement: " + k.toString());})
             .mapValues((k, v) -> new PositionTransactionElement(v));
 
-        KStream<Long, PositionTransactionElement> taskStream = builder.stream(topologyConfig.getCdcPositionsTaskTopic(), Consumed.with(Serdes.Long(), positionTaskSerde))
+        KStream<Long, PositionTransactionElement> taskStream = builder.stream(topologyConfig.getCdcPositionsTaskTopic(), Consumed.with(positionKeySerde, positionTaskSerde))
             .selectKey((k, v) -> v.getPositionId())
             .peek((k, v) -> { logger.info("Received new task: " + k.toString());})
             .mapValues((k, v) -> new PositionTransactionElement(v));
 
-        KStream<Long, PositionTransactionElement> benefitStream = builder.stream(topologyConfig.getCdcPositionsBenefitsTopic(), Consumed.with(Serdes.Long(), positionBenefitSerde))
+        KStream<Long, PositionTransactionElement> benefitStream = builder.stream(topologyConfig.getCdcPositionsBenefitsTopic(), Consumed.with(positionKeySerde, positionBenefitSerde))
             .selectKey((k, v) -> v.getPositionId())
             .peek((k, v) -> { logger.info("Received new benefit: " + k.toString());})
             .mapValues((k, v) -> new PositionTransactionElement(v));

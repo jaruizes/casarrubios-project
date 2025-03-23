@@ -11,9 +11,11 @@ import org.apache.kafka.streams.processor.api.ProcessorContext;
 import org.apache.kafka.streams.processor.api.Record;
 import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.jboss.logging.Logger;
 import static com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.PositionTransactionElement.*;
 
 public class TimedPositionAggregatorProcessor implements Processor<Long, PositionTransactionElement, Long, PositionComplete> {
+    private static final Logger logger = Logger.getLogger(TimedPositionAggregatorProcessor.class);
 
     public static final String POSITION_COMPLETE_STORE = "position-complete-store";
     public static final String POSITION_COMPLETE_TIMESTAMPS = "position-complete-timestamps";
@@ -66,6 +68,7 @@ public class TimedPositionAggregatorProcessor implements Processor<Long, Positio
                 Long firstSeen = timestampStore.get(key);
                 if (firstSeen != null && isComplete(value) && isTimeToForward(firstSeen, timestamp)) {
                     context.forward(new Record<>(key, value, timestamp));
+                    logger.info("Position completed and published [positionId = " + key + "]");
                     stateStore.delete(key);
                     timestampStore.delete(key);
                 }

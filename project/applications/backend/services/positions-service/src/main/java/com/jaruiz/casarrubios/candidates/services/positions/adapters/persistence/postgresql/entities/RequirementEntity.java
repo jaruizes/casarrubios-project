@@ -3,7 +3,7 @@ package com.jaruiz.casarrubios.candidates.services.positions.adapters.persistenc
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "REQUIREMENTS")
+@Table(name = "POSITIONS_REQUIREMENTS")
 public class RequirementEntity {
 
     @Id

@@ -13,7 +13,7 @@ CREATE TABLE APPLICATIONS.POSITIONS
 );
 
 -- Tabla para los requisitos de cada posición
-CREATE TABLE APPLICATIONS.REQUIREMENTS
+CREATE TABLE APPLICATIONS.POSITIONS_REQUIREMENTS
 (
     id          SERIAL PRIMARY KEY,
     position_id INT  NOT NULL REFERENCES APPLICATIONS.POSITIONS (id) ON DELETE CASCADE,
@@ -24,14 +24,14 @@ CREATE TABLE APPLICATIONS.REQUIREMENTS
 );
 
 -- Tabla para las condiciones de cada posición
-CREATE TABLE APPLICATIONS.CONDITIONS
+CREATE TABLE APPLICATIONS.POSITIONS_BENEFITS
 (
     id          SERIAL PRIMARY KEY,
     position_id INT  NOT NULL REFERENCES APPLICATIONS.POSITIONS (id) ON DELETE CASCADE,
     description TEXT NOT NULL
 );
 
-CREATE TABLE APPLICATIONS.TASKS
+CREATE TABLE APPLICATIONS.POSITIONS_TASKS
 (
     id          SERIAL PRIMARY KEY,
     position_id INT  NOT NULL REFERENCES APPLICATIONS.positions (id) ON DELETE CASCADE,
@@ -50,7 +50,7 @@ CREATE TABLE APPLICATIONS.APPLICATIONS
 );
 
 
-INSERT INTO APPLICATIONS.POSITIONS (title, description, tags)
+/*INSERT INTO APPLICATIONS.POSITIONS (title, description, tags)
 VALUES
     ('Software Engineer', 'Desarrollo y mantenimiento de aplicaciones web.', 'Java, Spring, Angular'),
     ('Data Scientist', 'Análisis de datos y modelos de Machine Learning.', 'Python, TensorFlow, SQL'),
@@ -105,7 +105,7 @@ UNION ALL
 SELECT id, 'Optimización de código existente' FROM APPLICATIONS.POSITIONS
 UNION ALL
 SELECT id, 'Colaboración con equipos multidisciplinarios' FROM APPLICATIONS.POSITIONS;
-
+*/
 -----------------------------------------------------------------------------------------------------------------------
 --- RECRUITERS ---
 

@@ -1,7 +1,10 @@
 package com.jaruiz.casarrubios.candidates.services.positions.adapters.api.async.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PositionBenefitDTO {
     private long id;
+    @JsonProperty("position_id")
     private long positionId;
     private String description;
 

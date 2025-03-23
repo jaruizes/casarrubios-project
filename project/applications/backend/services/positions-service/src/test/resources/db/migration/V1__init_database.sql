@@ -11,7 +11,7 @@ CREATE TABLE APPLICATIONS.positions
     tags         TEXT
 );
 
-CREATE TABLE APPLICATIONS.requirements
+CREATE TABLE APPLICATIONS.positions_requirements
 (
     id          SERIAL PRIMARY KEY,
     position_id INT  NOT NULL REFERENCES APPLICATIONS.positions (id) ON DELETE CASCADE,
@@ -21,14 +21,14 @@ CREATE TABLE APPLICATIONS.requirements
     mandatory BOOLEAN NOT NULL
 );
 
-CREATE TABLE APPLICATIONS.tasks
+CREATE TABLE APPLICATIONS.positions_tasks
 (
     id          SERIAL PRIMARY KEY,
     position_id INT  NOT NULL REFERENCES APPLICATIONS.positions (id) ON DELETE CASCADE,
     description TEXT NOT NULL
 );
 
-CREATE TABLE APPLICATIONS.benefits
+CREATE TABLE APPLICATIONS.positions_benefits
 (
     id          SERIAL PRIMARY KEY,
     position_id INT  NOT NULL REFERENCES APPLICATIONS.positions (id) ON DELETE CASCADE,

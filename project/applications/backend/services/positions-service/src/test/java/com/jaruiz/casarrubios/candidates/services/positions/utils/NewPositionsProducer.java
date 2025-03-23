@@ -53,7 +53,7 @@ public class NewPositionsProducer {
 
     private void waitTillListenersReady() {
         await().atMost(10, TimeUnit.SECONDS)
-               .until(() -> Objects.requireNonNull(kafkaListenerEndpointRegistry.getListenerContainer("application-received-listener")).isRunning());
+               .until(() -> kafkaListenerEndpointRegistry.getAllListenerContainers().stream().toList().getFirst().isRunning());
     }
 
     private String buildNewPositionEvent(long positionId) {
@@ -74,7 +74,7 @@ public class NewPositionsProducer {
     private String addRequirement(long positionId) {
         return "    {\n" +
             "      \"id\": " + requirementsIndex++ +",\n" +
-            "      \"positionId\": " + positionId + ",\n" +
+            "      \"position_id\": " + positionId + ",\n" +
             "      \"key\": \"Key\",\n" +
             "      \"value\": \"Value\",\n" +
             "      \"description\": \"Description\",\n" +
@@ -85,7 +85,7 @@ public class NewPositionsProducer {
     private String addTask(long positionId) {
         return "    {\n" +
             "      \"id\": " + tasksIndex++ +",\n" +
-            "      \"positionId\": " + positionId + ",\n" +
+            "      \"position_id\": " + positionId + ",\n" +
             "      \"description\": \"Description\"\n" +
             "    }\n";
     }
@@ -93,7 +93,7 @@ public class NewPositionsProducer {
     private String addBenefit(long positionId) {
         return "    {\n" +
             "      \"id\": " + benefitsIndex++ +",\n" +
-            "      \"positionId\": " + positionId + ",\n" +
+            "      \"position_id\": " + positionId + ",\n" +
             "      \"description\": \"Description\"\n" +
             "    }\n";
     }

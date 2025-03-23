@@ -1,13 +1,12 @@
 package com.jaruiz.casarrubios.recruiters.services.newpospublisher.utils.kafka;
 
-import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.Position;
-import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.PositionBenefit;
-import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.PositionRequirement;
-import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.PositionTask;
+import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.*;
+import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Message;
 
 @ApplicationScoped
 public class CDCDataProducer {
@@ -35,7 +34,9 @@ public class CDCDataProducer {
         position.setPublishedAt(System.currentTimeMillis());
         position.setTags("Tag1, Tag2");
 
-        positionCDCEmitter.send(position);
+        Message<Position> message = Message.of(position)
+                                           .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(id)));
+        positionCDCEmitter.send(message);
     }
 
     public void publishRequirement(long positionId, long requirementId) {
@@ -47,7 +48,9 @@ public class CDCDataProducer {
         requirement.setId(requirementId);
         requirement.setMandatory(true);
 
-        positionRequirementsCDCEmitter.send(requirement);
+        Message<PositionRequirement> message = Message.of(requirement)
+                                           .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(positionId)));
+        positionRequirementsCDCEmitter.send(message);
     }
 
     public void publishTask(long positionId, long taskId) {
@@ -56,7 +59,9 @@ public class CDCDataProducer {
         task.setDescription("Description");
         task.setId(taskId);
 
-        positionTasksCDCEmitter.send(task);
+        Message<PositionTask> message = Message.of(task)
+                                                      .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(positionId)));
+        positionTasksCDCEmitter.send(message);
     }
 
     public void publishBenefit(long positionId, long benefitId) {
@@ -65,7 +70,15 @@ public class CDCDataProducer {
         benefit.setDescription("Description");
         benefit.setId(benefitId);
 
-        positionBenefitCDCEmitter.send(benefit);
+        Message<PositionBenefit> message = Message.of(benefit)
+                                               .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(positionId)));
+        positionBenefitCDCEmitter.send(message);
+    }
+
+    private PositionKey buildPositionKey(long id) {
+        PositionKey key = new PositionKey();
+        key.setId(id);
+        return key;
     }
 
 }
