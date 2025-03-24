@@ -11,6 +11,7 @@ class Scoring:
     requirement_score: float
     tasks_score: float
     time_spent: float
+    explanation: str
 
     def __getitem__(self, item):
         return self[item]
@@ -21,7 +22,6 @@ class ApplicationScoring:
     position_id: int
     analysis: ResumeAnalysis
     scoring: Scoring
-    explanation: str
 
     def __getitem__(self, item):
         return self[item]

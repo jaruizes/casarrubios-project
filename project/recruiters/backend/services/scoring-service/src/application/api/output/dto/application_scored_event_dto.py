@@ -9,6 +9,7 @@ class ScoringDTO:
     requirementScore: float
     tasksScore: float
     timeSpent: float
+    explanation: str
 
     def __getitem__(self, item):
         return self[item]
@@ -19,7 +20,6 @@ class ApplicationScoredEventDTO:
     positionId: int
     analysis: ResumeAnalysisDTO
     scoring: ScoringDTO
-    explanation: str
 
     def __getitem__(self, item):
         return self[item]

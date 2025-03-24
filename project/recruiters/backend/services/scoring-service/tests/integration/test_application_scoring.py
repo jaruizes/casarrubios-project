@@ -37,7 +37,6 @@ def __assert_event_received(message: Any):
     assert application_scored_event.positionId is not None
     assert application_scored_event.analysis is not None
     assert application_scored_event.scoring is not None
-    assert application_scored_event.explanation is not None
 
     scoring = application_scored_event.scoring
 
@@ -46,6 +45,7 @@ def __assert_event_received(message: Any):
     assert scoring['requirementScore'] >= 0.0
     assert scoring['descScore'] >= 0.0
     assert scoring['timeSpent'] >= 0.0
+    assert scoring['explanation'] is not None
 
     logger.info(f"Time spent: {scoring['timeSpent']}")
     logger.info(f"Score: {scoring['score']}")

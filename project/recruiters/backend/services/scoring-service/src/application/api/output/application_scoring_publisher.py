@@ -43,14 +43,13 @@ class ApplicationScoringPublisher():
             descScore=scoring.desc_score,
             requirementScore=scoring.requirement_score,
             tasksScore=scoring.tasks_score,
-            timeSpent=scoring.time_spent
+            timeSpent=scoring.time_spent,
+            explanation=scoring.explanation
         )
-
 
         return ApplicationScoredEventDTO(
             applicationId=application_scoring.application_id,
             positionId=application_scoring.position_id,
             analysis=analysis_dto,
-            scoring=scoring_dto,
-            explanation=application_scoring.explanation
+            scoring=scoring_dto
         )

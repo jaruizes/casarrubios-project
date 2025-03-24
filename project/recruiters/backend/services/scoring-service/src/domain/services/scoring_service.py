@@ -33,6 +33,8 @@ class ScoringService:
         task_score = round(self.__score_tasks(position.tasks, analysis.key_responsibilities), 2)
         final_score = round((0.1 * desc_score) + (0.6 * requirement_score) + (0.3 * task_score), 2)
 
+        explanation = self.__generate_explanation(final_score, desc_score, requirement_score, task_score, position, analysis)
+
         time_spent = round(time.time() - start_time, 2)
 
         logger.info(f"Score computed for position {position.id} and application {application_analysis.application_id}")
@@ -48,17 +50,17 @@ class ScoringService:
             desc_score=desc_score,
             requirement_score=requirement_score,
             tasks_score=task_score,
-            time_spent=time_spent
+            time_spent=time_spent,
+            explanation=explanation
         )
 
-        explanation = self.__generate_explanation(scoring, position, analysis)
+
 
         application_scoring = ApplicationScoring(
             application_id=application_analysis.application_id,
             position_id=application_analysis.position_id,
             analysis=analysis,
-            scoring=scoring,
-            explanation=explanation
+            scoring=scoring
         )
 
         logger.info(f"Scoring computed for position {position.id} and application {application_analysis.application_id}: {final_score}")
@@ -133,7 +135,7 @@ class ScoringService:
 
         return total_score / len(tasks)
 
-    def __generate_explanation(self, scoring: Scoring, position: Position, candidate: ResumeAnalysis) -> str:
+    def __generate_explanation(self, score, desc_score, requirement_score, tasks_score, position: Position, candidate: ResumeAnalysis) -> str:
         prompt = (
             f"The CV of a candidate has been evaluated for the position '{position.title}'.\n\n"
             f"Position Details:\n"
@@ -147,10 +149,10 @@ class ScoringService:
             f"- Soft Skills: {candidate.get_soft_skills_summary()}\n"
             f"- Tags: {', '.join(candidate.tags)}\n"
             f"Scoring Results:\n"
-            f"- Position description score: {scoring.desc_score}\n"
-            f"- Requirements score: {scoring.requirement_score}\n"
-            f"- Tasks score: {scoring.tasks_score}\n"
-            f"- Final score: {scoring.score}\n"
+            f"- Position description score: {desc_score}\n"
+            f"- Requirements score: {requirement_score}\n"
+            f"- Tasks score: {tasks_score}\n"
+            f"- Final score: {score}\n"
             "Please generate a detailed explanation in natural language addressing the following:\n"
             "1. How the candidate's profile relates to the position's description and requirements.\n"
             "2. Which aspects of the CV strongly match the position's tasks and responsibilities.\n"
