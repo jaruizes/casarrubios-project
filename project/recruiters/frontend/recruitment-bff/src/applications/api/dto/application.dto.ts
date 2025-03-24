@@ -37,6 +37,7 @@ interface ScoringDTO {
   requirementScore: number;
   tasksScore: number;
   timeSpent: number;
+  explanation: string;
 }
 
 export interface SkillDTO {

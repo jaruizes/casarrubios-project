@@ -87,6 +87,7 @@ class ApplicationRepository:
                 desc_score=scoring.desc_score,
                 requirement_score=scoring.requirement_score,
                 tasks_score=scoring.tasks_score,
+                explanation=scoring.explanation,
                 time_spent=scoring.time_spent
             )
             self.db.add(scoring_db)

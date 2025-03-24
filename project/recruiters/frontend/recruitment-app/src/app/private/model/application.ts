@@ -53,6 +53,7 @@ interface Scoring {
   requirementScore: number;
   tasksScore: number;
   timeSpent: number;
+  explanation: string;
 }
 
 export interface Skill{

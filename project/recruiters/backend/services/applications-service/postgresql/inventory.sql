@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS recruiters.scoring (
     requirement_score FLOAT NOT NULL,
     tasks_score FLOAT NOT NULL,
     time_spent FLOAT NOT NULL,
+    explanation TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -17,8 +17,6 @@ from src.api.input.message.application_scored_event_handler import ApplicationSc
 logger = logging.getLogger(__name__)
 
 class TestEventProcessor:
-    """Clase auxiliar para procesar eventos de Kafka en tests"""
-    
     def __init__(self, db_session: Session):
         self.db_session = db_session
         self.application_repository = ApplicationRepository(lambda: db_session)
@@ -26,7 +24,6 @@ class TestEventProcessor:
         self.event_handler = ApplicationScoredEventHandler(applications_service=self.application_service)
         
     def process_event(self, message_value: bytes):
-        """Procesa un evento directamente sin pasar por Kafka"""
         class MockMessage:
             def __init__(self, value_bytes):
                 self._value = value_bytes
@@ -41,7 +38,6 @@ class TestEventProcessor:
         self.event_handler.handle_application_scored_event(mock_message)
         
     def check_application_processed(self, application_id: UUID) -> bool:
-        """Verifica si una aplicación ha sido procesada"""
         result = self.db_session.execute(
             text('SELECT * FROM recruiters.resume_analysis WHERE application_id = :application_id'),
             {"application_id": application_id}

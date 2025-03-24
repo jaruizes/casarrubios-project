@@ -55,6 +55,7 @@ class Scoring(Base):
     desc_score = Column(Float, nullable=False)
     requirement_score = Column(Float, nullable=False)
     tasks_score = Column(Float, nullable=False)
+    explanation = Column(Text, nullable=False)
     time_spent = Column(Float, nullable=False)
     created_at = Column(DateTime, default=func.now())
 

@@ -35,6 +35,7 @@ class Scoring:
     requirement_score: float
     tasks_score: float
     time_spent: float
+    explanation: str
 
     def __getitem__(self, item):
         return self[item]

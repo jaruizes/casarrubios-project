@@ -19,7 +19,6 @@ class ApplicationScoredEventHandler():
         try:
             application_analysed_event_dto = json.loads(message.value())
             application_id = application_analysed_event_dto["applicationId"]
-            # application_analysed_event_dto = ApplicationScoredEventDTO(**event_json)
 
             logger.info(f"Processing application {application_id}")
             application_scoring = self.__map_to_application_scoring(application_analysed_event_dto)
@@ -39,7 +38,8 @@ class ApplicationScoredEventHandler():
             desc_score=scoring_dto["descScore"],
             requirement_score=scoring_dto["requirementScore"],
             tasks_score=scoring_dto["tasksScore"],
-            time_spent=scoring_dto["timeSpent"]
+            time_spent=scoring_dto["timeSpent"],
+            explanation=scoring_dto["explanation"]
         )
 
         analysis = ResumeAnalysis(

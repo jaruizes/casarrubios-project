@@ -17,7 +17,7 @@ from testcontainers.postgres import PostgresContainer
 from testcontainers.kafka import KafkaContainer
 
 from src.infrastructure.core.config import load_config
-from src.main import main
+from src.main import main, startup
 from src.infrastructure.db.sqlalchemy_connection import SQLAlchemyConnection
 
 logging.basicConfig(
@@ -233,7 +233,7 @@ def setup_e2e(setup_topics):
     # Configurar un puerto libre para uvicorn
     os.environ["PORT"] = str(find_free_port())
     
-    app_thread = threading.Thread(target=main, daemon=True)
+    app_thread = threading.Thread(target=startup, daemon=True)
     app_thread.start()
 
     time.sleep(5)

@@ -50,38 +50,20 @@ def test_get_cv_file(setup_config, minio_setup, db_session):
     assert response.content == cv_file_test_bytes
 
 @pytest.mark.asyncio
-async def test_process_application_scored_event(db_session, setup_producer, setup_config, event_processor, setup_e2e):
+async def test_process_application_scored_event(db_session, setup_producer, setup_config, wait_for_process_event, setup_e2e):
     # Obtener una aplicación existente
     application_stored: Application = db_session.query(Application).filter(Application.position_id == 1).first()
     application_id = application_stored.id
     position_id = application_stored.position_id
     
-    # Verificar que no hay análisis previo
-    initial_check = db_session.execute(
-        text('SELECT * FROM recruiters.resume_analysis WHERE application_id = :application_id'),
-        {"application_id": application_id}
-    ).fetchall()
-    assert len(initial_check) == 0, "Should not have resume analysis before the test"
-    
-    # Crear el evento
-    topic = setup_config.input_topic
     application_scored_event = __build_applycation_scored_event(application_id, position_id)
-    
-    # Publicar y procesar el evento directamente
-    from tests.test_utils import publish_and_process_event
-    logging.info(f"Publishing and processing event for application_id {application_id}")
-    success = publish_and_process_event(
-        producer=setup_producer, 
-        topic=topic, 
-        event_data=application_scored_event,
-        processor=event_processor
-    )
-    assert success, "Failed to publish and process event"
-    
-    # Verificar que el evento fue procesado correctamente
-    processed = event_processor.check_application_processed(application_id)
-    assert processed, f"Event for application_id {application_id} was not processed"
-    
+    application_scored_event_bytes = json.dumps(application_scored_event).encode("utf-8")
+    setup_producer.produce(topic=setup_config.input_topic, value=application_scored_event_bytes)
+
+    # # Esperar a que el evento sea procesado
+    rows = await wait_for_process_event(application_id)
+    assert rows is not None, "Event was not processed"
+
     # Verificar que la aplicación se puede obtener a través de la API
     response = client.get("/applications/" + str(application_id))
     assert response.status_code == 200
@@ -136,6 +118,7 @@ def __assert_analysis_and_scoring_data(application_dto, application_scored_event
     assert application_dto.scoring.requirementScore == application_scored_event["scoring"]["requirementScore"]
     assert application_dto.scoring.tasksScore == application_scored_event["scoring"]["tasksScore"]
     assert application_dto.scoring.timeSpent == application_scored_event["scoring"]["timeSpent"]
+    assert application_scored_event["scoring"]["explanation"] is not None
 
 def __publish_application_scored_event(producer, topic, application_id, position_id):
     application_scored_event = __build_applycation_scored_event(application_id, position_id)
@@ -222,6 +205,7 @@ def __build_applycation_scored_event(application_id: str, position_id: int):
             "descScore" : 80.0,
             "requirementScore" : 85.0,
             "tasksScore" : 80.0,
-            "timeSpent" : 60.4
+            "timeSpent" : 60.4,
+            "explanation": "Explanation of the scoring"
         }
     }

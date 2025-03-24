@@ -85,7 +85,11 @@ def get_application_cv(application_id: UUID, application_service: ApplicationSer
 def build_application_dto(application: Application, is_detail: bool = False) -> ApplicationDTO:
     creation_date = application.created_at.isoformat()
     candidate: CandidateDTO = CandidateDTO(name=application.name, email=application.email, phone=application.phone)
-    application_dto = ApplicationDTO(applicationId=application.id, candidate=candidate, positionId=application.position_id, cvFile=application.cv, creationDate=creation_date)
+    application_dto = ApplicationDTO(applicationId=application.id,
+                                     candidate=candidate,
+                                     positionId=application.position_id,
+                                     cvFile=application.cv,
+                                     creationDate=creation_date)
 
     analysis: ResumeAnalysisDTO = None
     if is_detail and application.resume_analysis is not None:
@@ -123,7 +127,8 @@ def build_application_dto(application: Application, is_detail: bool = False) -> 
             descScore=application.scoring.desc_score,
             requirementScore=application.scoring.requirement_score,
             tasksScore=application.scoring.tasks_score,
-            timeSpent=application.scoring.time_spent
+            timeSpent=application.scoring.time_spent,
+            explanation=application.scoring.explanation
         )
         application_dto.add_scoring(scoring)
 

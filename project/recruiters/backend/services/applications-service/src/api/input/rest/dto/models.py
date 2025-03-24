@@ -31,6 +31,7 @@ class ScoringDTO(BaseModel):
     requirementScore: float
     tasksScore: float
     timeSpent: float
+    explanation: str
 
 class CandidateDTO(BaseModel):
     name: str
