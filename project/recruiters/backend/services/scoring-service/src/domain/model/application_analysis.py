@@ -23,6 +23,13 @@ class ResumeAnalysis:
     average_permanency: float
     tags: List[str]
 
+    def get_hard_skills_summary(self):
+        return "\n".join([f"\t- Skill: {skill.skill} / Level: {skill.level}"
+                          for skill in self.hard_skills])
+    def get_soft_skills_summary(self):
+        return "\n".join([f"\t- Skill: {skill.skill} / Level: {skill.level}"
+                          for skill in self.soft_skills])
+
     def __getitem__(self, item):
         return self[item]
 

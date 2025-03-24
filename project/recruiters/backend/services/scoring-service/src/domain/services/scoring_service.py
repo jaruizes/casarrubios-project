@@ -7,8 +7,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from src.application.adapters.db.sqlalchemy_repository import PositionRepository
 from src.application.api.output.application_scoring_publisher import ApplicationScoringPublisher
-from src.domain.model.application_analysis import ApplicationAnalysis
+from src.domain.model.application_analysis import ApplicationAnalysis, ResumeAnalysis
 from src.domain.model.application_scoring import Scoring, ApplicationScoring
+from src.domain.model.position import Position
 from src.infrastructure.kafka.kafka_producer import KafkaProducer
 
 logger = logging.getLogger(__name__)
@@ -50,11 +51,14 @@ class ScoringService:
             time_spent=time_spent
         )
 
+        explanation = self.__generate_explanation(scoring, position, analysis)
+
         application_scoring = ApplicationScoring(
             application_id=application_analysis.application_id,
             position_id=application_analysis.position_id,
             analysis=analysis,
-            scoring=scoring
+            scoring=scoring,
+            explanation=explanation
         )
 
         logger.info(f"Scoring computed for position {position.id} and application {application_analysis.application_id}: {final_score}")
@@ -128,3 +132,48 @@ class ScoringService:
             total_score += best_match
 
         return total_score / len(tasks)
+
+    def __generate_explanation(self, scoring: Scoring, position: Position, candidate: ResumeAnalysis) -> str:
+        prompt = (
+            f"The CV of a candidate has been evaluated for the position '{position.title}'.\n\n"
+            f"Position Details:\n"
+            f"- Description: {position.description}\n"
+            f"- Requirements: {position.get_requirements_summary()}\n"
+            f"- Main Tasks: {position.get_tasks_summary()}\n\n"
+            f"Candidate Profile:\n"
+            f"- Strengths: {candidate.strengths}, "
+            f"- Concerns: {candidate.concerns}, "
+            f"- Hard Skills: {candidate.get_hard_skills_summary()}\n"
+            f"- Soft Skills: {candidate.get_soft_skills_summary()}\n"
+            f"- Tags: {', '.join(candidate.tags)}\n"
+            f"Scoring Results:\n"
+            f"- Position description score: {scoring.desc_score}\n"
+            f"- Requirements score: {scoring.requirement_score}\n"
+            f"- Tasks score: {scoring.tasks_score}\n"
+            f"- Final score: {scoring.score}\n"
+            "Please generate a detailed explanation in natural language addressing the following:\n"
+            "1. How the candidate's profile relates to the position's description and requirements.\n"
+            "2. Which aspects of the CV strongly match the position's tasks and responsibilities.\n"
+            "3. Areas of opportunity or discrepancies between the candidate's profile and the role's expectations.\n"
+            "4. How each of these elements contributed to the final score.\n\n"
+            "The explanation should highlight both the strengths and the areas for improvement and it must have 750 words max long and it must be in spanish."
+        )
+
+        try:
+            response = openai.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant and expert recruiter that explains scoring results."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0.7,
+                top_p=1,
+                n=1
+            )
+            explanation_text = response.choices[0].message.content.strip()
+            logger.info("Explanation generated successfully.")
+            return explanation_text
+        except Exception as e:
+            logger.error("Error generating explanation using the LLM.")
+            logger.error(str(e))
+            return "Could not generate a detailed explanation for the scoring."

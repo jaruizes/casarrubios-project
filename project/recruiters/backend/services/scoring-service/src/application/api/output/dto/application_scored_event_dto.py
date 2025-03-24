@@ -19,6 +19,7 @@ class ApplicationScoredEventDTO:
     positionId: int
     analysis: ResumeAnalysisDTO
     scoring: ScoringDTO
+    explanation: str
 
     def __getitem__(self, item):
         return self[item]

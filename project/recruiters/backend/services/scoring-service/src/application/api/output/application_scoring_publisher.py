@@ -51,5 +51,6 @@ class ApplicationScoringPublisher():
             applicationId=application_scoring.application_id,
             positionId=application_scoring.position_id,
             analysis=analysis_dto,
-            scoring=scoring_dto
+            scoring=scoring_dto,
+            explanation=application_scoring.explanation
         )

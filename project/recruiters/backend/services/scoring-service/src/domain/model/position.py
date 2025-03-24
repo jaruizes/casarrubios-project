@@ -35,3 +35,11 @@ class Position:
     requirements: List[Requirement] = field(default_factory=list)
     tasks: List[Task] = field(default_factory=list)
     benefits: List[Benefit] = field(default_factory=list)
+
+    def get_requirements_summary(self):
+        ## - Requirement: {key} / Level: {value} / Mandatory: {mandatory}
+        return "\n".join([f"\t- Requirement: {req.key} / Level: {req.value} / Mandatory: {req.mandatory}"
+                          for req in self.requirements])
+
+    def get_tasks_summary(self):
+        return "\n".join([f"\t- Task: {task.description}" for task in self.tasks])

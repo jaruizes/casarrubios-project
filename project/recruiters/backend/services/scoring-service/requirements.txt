@@ -1,10 +1,11 @@
 asyncpg==0.28.0
 kafka-python
-opentelemetry-api
-opentelemetry-sdk
-opentelemetry-instrumentation-asyncpg
-opentelemetry-instrumentation-logging
-opentelemetry-exporter-otlp
+opentelemetry-api==1.31.1
+opentelemetry-sdk==1.31.1
+opentelemetry-instrumentation-asyncpg==0.52b1
+opentelemetry-instrumentation-logging==0.52b1
+opentelemetry-exporter-otlp==1.31.1
+opentelemetry-semantic-conventions==0.52b1
 pydantic
 confluent-kafka
 openai

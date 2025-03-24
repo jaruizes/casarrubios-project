@@ -37,6 +37,7 @@ def __assert_event_received(message: Any):
     assert application_scored_event.positionId is not None
     assert application_scored_event.analysis is not None
     assert application_scored_event.scoring is not None
+    assert application_scored_event.explanation is not None
 
     scoring = application_scored_event.scoring
 
