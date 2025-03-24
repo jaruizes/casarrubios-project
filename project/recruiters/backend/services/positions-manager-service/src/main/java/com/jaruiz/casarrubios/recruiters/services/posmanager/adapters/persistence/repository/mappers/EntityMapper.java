@@ -64,7 +64,7 @@ public class EntityMapper {
         requirementEntity.description = requirement.getDescription();
         requirementEntity.position = positionEntity;
         requirementEntity.key = requirement.getKey();
-        requirementEntity.value = requirement.getValue();
+        requirementEntity.value = Integer.parseInt(requirement.getValue());
         requirementEntity.mandatory = requirement.isMandatory();
 
         return requirementEntity;
@@ -104,7 +104,7 @@ public class EntityMapper {
     }
 
     private static Requirement buildRequirement(RequirementEntity requirementEntity) {
-        return new Requirement(requirementEntity.key, requirementEntity.value, requirementEntity.description, requirementEntity.mandatory);
+        return new Requirement(requirementEntity.key, String.valueOf(requirementEntity.value), requirementEntity.description, requirementEntity.mandatory);
     }
 
     private static Benefit buildBenefit(BenefitEntity benefitEntity) {

@@ -1,4 +1,4 @@
-## Refactor database schema
+## TODOs
 For instance RECRUITERS.REQUIREMENTS -> RECRUITERS.POSITIONS_REQUIREMENTS
 Review topics nomenclature (for instance: cdc.recruiters --> recruiters.cdc, recruiters.events, etc...)
-Avro schema for events
+Avro, schema registry and AsyncAPI / EvenCatalog for events

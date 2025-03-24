@@ -17,6 +17,6 @@ public class RequirementEntity extends PanacheEntityBase {
 
     public String key;
     public String description;
-    public String value;
+    public Integer value;
     public Boolean mandatory;
 }

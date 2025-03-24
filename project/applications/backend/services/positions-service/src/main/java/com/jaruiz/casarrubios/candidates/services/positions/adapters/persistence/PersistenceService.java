@@ -56,7 +56,9 @@ public class PersistenceService implements PersistencePort {
     @Transactional
     public void savePosition(Position position) {
         logger.debug("Saving position with id {}", position.getId());
-        this.postgresRepository.save(positionToPositionEntity(position));
+        PositionEntity newPositionEntity = positionToPositionEntity(position);
+        this.postgresRepository.save(newPositionEntity);
+        logger.debug("Position with id {} saved in database", position.getId());
     }
 
     private Position positionEntityToPosition(PositionEntity positionEntity) {
@@ -97,6 +99,7 @@ public class PersistenceService implements PersistencePort {
 
     private RequirementEntity requirementsEntityToRequirementsEntity(Requirement requirement, PositionEntity positionEntity) {
         RequirementEntity requirementEntity = new RequirementEntity();
+        requirementEntity.setId(requirement.getId());
         requirementEntity.setKey(requirement.getKey());
         requirementEntity.setValue(requirement.getValue());
         requirementEntity.setDescription(requirement.getDescription());

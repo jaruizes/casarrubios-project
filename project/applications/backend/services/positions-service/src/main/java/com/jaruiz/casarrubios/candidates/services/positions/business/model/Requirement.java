@@ -8,6 +8,7 @@ public class Requirement {
     private final Boolean isMandatory;
 
     public Requirement(long id, String key, String value, String description, Boolean isMandatory) {
+        this.id = id;
         this.key = key;
         this.description = description;
         this.value = value;

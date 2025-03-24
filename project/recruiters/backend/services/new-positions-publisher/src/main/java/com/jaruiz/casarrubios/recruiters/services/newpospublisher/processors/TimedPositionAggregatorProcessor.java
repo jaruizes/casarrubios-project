@@ -38,6 +38,7 @@ public class TimedPositionAggregatorProcessor implements Processor<Long, Positio
     public void process(Record<Long, PositionTransactionElement> record) {
         Long key = record.key();
         PositionTransactionElement element = record.value();
+        logger.info("Processing record: " + key + " - " + element.getType());
 
         PositionComplete current = stateStore.get(key);
         if (current == null) {

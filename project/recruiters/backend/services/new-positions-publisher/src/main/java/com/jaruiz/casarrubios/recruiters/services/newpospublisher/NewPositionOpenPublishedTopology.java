@@ -75,6 +75,7 @@ public class NewPositionOpenPublishedTopology {
        mergedStream.process(TimedPositionAggregatorProcessor::new,
            Named.as("position-aggregator"),
            POSITION_COMPLETE_STORE, POSITION_COMPLETE_TIMESTAMPS)
+       .peek((k, v) -> { logger.info("Prepared to publish new position with key: " + k.toString());})
        .to(topologyConfig.getNewPositionsPublishedTopic(), Produced.with(Serdes.Long(), positionCompleteSerde));
 
         return builder.build();

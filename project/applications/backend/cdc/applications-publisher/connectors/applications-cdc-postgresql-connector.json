@@ -14,7 +14,7 @@
     "key.converter.schemas.enable": "false",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
-    "slot.name": "debezium",
+    "slot.name": "applications",
     "table.include.list": "APPLICATIONS.APPLICATIONS",
     "topic.creation.enable": "true",
     "topic.creation.default.replication.factor": "1",
