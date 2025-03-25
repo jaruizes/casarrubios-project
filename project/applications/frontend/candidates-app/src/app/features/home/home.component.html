@@ -2,7 +2,7 @@
   <div class="card-header mb-2 bg-blue-subtle">
     <div class="row align-items-center">
       <div class="col">
-        <h2 class="card-title">Open positions</h2>
+        <h2 class="card-title">Lista de posiciones</h2>
       </div>
     </div>
   </div>
@@ -13,7 +13,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Search..."
+          placeholder="Buscar..."
           [(ngModel)]="searchTerm"/>
       </div>
     </div>
@@ -25,11 +25,10 @@
             <thead class="table-light">
               <tr>
                 <th class="border-top-0 col-1">Id</th>
-                <th class="border-top-0 col-2">Title</th>
-                <th class="border-top-0 col-4">Description</th>
-                <th class="border-top-0 col-2 text-center">Creation Date</th>
+                <th class="border-top-0 col-2">Título</th>
+                <th class="border-top-0 col-4">Descripción</th>
+                <th class="border-top-0 col-2 text-center">Fecha de creación</th>
                 <th class="border-top-0 col-2 text-center">Tags</th>
-                <th class="border-top-0 col-2 text-center">Applications</th>
               </tr>
             </thead>
             <tbody>
@@ -43,10 +42,9 @@
                     <span class="badge bg-primary me-0.5">{{ tag.name }}</span>
                   }
                 </td>
-                <td class="text-center">{{ item.applications }}</td>
               </tr>
               <tr *ngIf="filteredResults.length === 0">
-                <td colspan="4" class="text-center">No results found</td>
+                <td colspan="4" class="text-center">No hay posiciones</td>
               </tr>
             </tbody>
           </table>

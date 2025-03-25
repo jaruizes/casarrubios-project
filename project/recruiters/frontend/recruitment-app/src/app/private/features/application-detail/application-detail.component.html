@@ -5,7 +5,7 @@
         <div class="d-flex align-items-center flex-row flex-wrap">
           <div class="">
             <h5 class="fw-semibold fs-22 mb-1">{{ application.position.title }} ({{ application.position.id }})</h5>
-            <p class="mb-0 text-muted fw-medium">Created: {{ application.position.createdAt | date: 'dd-MM-yyyy' }}</p>
+            <p class="mb-0 text-muted fw-medium">Fecha de creación: {{ application.position.createdAt | date: 'dd-MM-yyyy' }}</p>
           </div>
         </div>
       </div>
@@ -13,7 +13,7 @@
         <div class="text-end flex-row flex-wrap">
           <div class="pb-2">
             <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
-              <i class="fa fa-home"></i> Back
+              <i class="fa fa-home"></i> Volver
             </button>
           </div>
         </div>
@@ -29,15 +29,15 @@
               <h4 class="fw-semibold fs-22 mb-1">{{ application.candidate.name}}</h4>
             </div>
             <div>
-              <p class="mb-0 text-muted fw-medium">Application ID: {{ application.id }}</p>
-              <p class="mb-0 text-muted fw-medium">Application Date: {{ application.creationDate | date: 'dd-MM-yyyy'  }}</p>
+              <p class="mb-0 text-muted fw-medium">ID: {{ application.id }}</p>
+              <p class="mb-0 text-muted fw-medium">Fecha de aplicación: {{ application.creationDate | date: 'dd-MM-yyyy'  }}</p>
             </div>
           </div>
           <div class="col-lg-4 align-self-center mb-3 mb-lg-0">
             <div class="text-end flex-row flex-wrap">
               <div class="pb-2">
                 <button type="button" class="btn rounded-pill btn-success me-0.5" (click)="downloadCV()">
-                  <i class="fa fa-file-pdf"></i> Download CV
+                  <i class="fa fa-file-pdf"></i> Descargar CV
                 </button>
               </div>
             </div>
@@ -51,7 +51,7 @@
             <div class="d-flex align-items-center flex-row flex-wrap">
               <div class="">
                 <p class="mb-0 fw-medium">Email: {{ application.candidate.email }}</p>
-                <p class="mb-0 fw-medium">Telf: {{ application.candidate.phone }}</p>
+                <p class="mb-0 fw-medium">Télf: {{ application.candidate.phone }}</p>
               </div>
             </div>
             <div class="d-flex align-items-center flex-row flex-wrap mt-2">
@@ -92,7 +92,7 @@
                       <div class="card-header bg-blue-subtle">
                         <div class="row align-items-center">
                           <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Scoring Detail</h4>
+                            <h4 class="fw-semibold fs-18 mb-1">Scoring (Explicación)</h4>
                           </div>
                         </div>
                       </div>
@@ -110,14 +110,14 @@
                 </ng-template>
               </ng-container>
               <ng-container ngbNavItem>
-                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-summary-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Análisis Candidatura</a>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-summary-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Resumen</a>
                 <ng-template ngbNavContent>
                   <div class="tab-pane fade show" id="v-pills-candidate-summary" role="tabpanel" aria-labelledby="v-pills-home-tab">
                     <div class="card border border-secondary">
                       <div class="card-header bg-blue-subtle">
                         <div class="row align-items-center">
                           <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Summary</h4>
+                            <h4 class="fw-semibold fs-18 mb-1">Resumen</h4>
                           </div>
                         </div>
                       </div>
@@ -135,7 +135,7 @@
                       <div class="card-header bg-blue-subtle">
                         <div class="row align-items-center">
                           <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Strengths</h4>
+                            <h4 class="fw-semibold fs-18 mb-1">Puntos fuertes</h4>
                           </div>
                         </div>
                       </div>
@@ -157,7 +157,7 @@
                       <div class="card-header bg-blue-subtle">
                         <div class="row align-items-center">
                           <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Concerns</h4>
+                            <h4 class="fw-semibold fs-18 mb-1">Puntos a revisar</h4>
                           </div>
                         </div>
                       </div>
@@ -179,14 +179,72 @@
                 </ng-template>
               </ng-container>
               <ng-container ngbNavItem>
-                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-tasks-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Responsabilidades (últimos años)</a>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-strengths-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Puntos fuertes</a>
+                <ng-template ngbNavContent>
+                  <div class="tab-pane fade show" id="v-pills-candidate-strengths" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Puntos fuertes</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-3 row">
+                          <div class="col">
+                            <ul>
+                              @for (strength of application.analysis.strengths; track strength) {
+                                <li class="blockquote fs-14">
+                                  {{ strength }}
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-concerns-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Puntos a revisar</a>
+                <ng-template ngbNavContent>
+                  <div class="tab-pane fade show" id="v-pills-concerns-summary" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Puntos a revisar</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-3 row">
+                          <div class="col">
+                            <ul>
+                              @for (concern of application.analysis.concerns; track concern) {
+                                <li class="blockquote fs-14">
+                                  {{ concern }}
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-tasks-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Responsabilidades clave (últimos años)</a>
                 <ng-template ngbNavContent>
                   <div class="tab-pane fade show" id="v-pills-candidate-tasks" role="tabpanel" aria-labelledby="v-pills-home-tab">
                     <div class="card border border-secondary">
                       <div class="card-header bg-blue-subtle">
                         <div class="row align-items-center">
                           <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Key Responsibilities (Last 5 years)</h4>
+                            <h4 class="fw-semibold fs-18 mb-1">Responsabilidades clave (Últimos años)</h4>
                           </div>
                         </div>
                       </div>
@@ -262,7 +320,7 @@
                       <div class="card-header bg-blue-subtle">
                         <div class="row align-items-center">
                           <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Possible questions</h4>
+                            <h4 class="fw-semibold fs-18 mb-1">Posibles preguntas</h4>
                           </div>
                         </div>
                       </div>

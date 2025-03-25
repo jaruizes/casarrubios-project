@@ -5,9 +5,8 @@
         <div class="d-flex align-items-center flex-row flex-wrap">
           <div class="">
             <h5 class="fw-semibold fs-22 mb-1">{{ position.title }}</h5>
-            <p class="mb-0 text-muted fw-medium">Internal Id: {{position.id}}</p>
-            <p class="mb-0 text-muted fw-medium">Applications received: {{position.applications}}</p>
-            <p class="mb-0 text-muted fw-medium">Created at: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
+            <p class="mb-0 text-muted fw-medium">Id: {{position.id}}</p>
+            <p class="mb-0 text-muted fw-medium">Fecha de creación: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
           </div>
         </div>
       </div>
@@ -15,7 +14,7 @@
         <div class="text-end flex-row flex-wrap">
           <div class="pb-2">
             <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
-              <i class="fa fa-home"></i> Back
+              <i class="fa fa-home"></i> Volver
             </button>
           </div>
         </div>
@@ -34,7 +33,7 @@
       <div class="card-header mb-2 bg-blue-subtle">
         <div class="row align-items-center">
           <div class="col">
-            <h2 class="fw-semibold  fs-20">Applications list</h2>
+            <h2 class="fw-semibold  fs-20">Lista de candidaturas a la posición</h2>
           </div>
         </div>
       </div>
@@ -45,7 +44,7 @@
             <input
               type="text"
               class="form-control"
-              placeholder="Search..."
+              placeholder="Buscar..."
               [(ngModel)]="searchTerm"/>
           </div>
         </div>
@@ -56,10 +55,10 @@
               <table class="table table-hover mb-0">
                 <thead class="table-light">
                 <tr>
-                  <th class="border-top-0" style="width: 10%">Date</th>
-                  <th class="border-top-0" style="width: 25%">Candidate</th>
+                  <th class="border-top-0" style="width: 10%">Fecha</th>
+                  <th class="border-top-0" style="width: 25%">Candidatura</th>
                   <th class="border-top-0 text-center" style="width: 40%">Tags</th>
-                  <th class="border-top-0 text-center" style="width: 15%">Matching (%)</th>
+                  <th class="border-top-0 text-center" style="width: 15%">Score (%)</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -68,28 +67,23 @@
                     <td class="">{{ application.creationDate | date: 'dd-MM-yyyy'}}</td>
                     <td class="">{{ application.candidate }}</td>
 
-                    <td class="text-center">
-                      <div class="d-flex flex-wrap justify-content-center">
-                      @if (application.tags) {
+                    @if(application.scoring && application.tags) {
+                      <td class="text-center">
+                        <div class="d-flex flex-wrap justify-content-center">
                         @for (tag of application.tags.split(','); track tag) {
                           <span class="badge bg-transparent border border-secondary text-secondary me-0.5" style="padding: 0.5em; margin: 0.2em">{{ tag }}</span>
                         }
-                      } @else {
-                        Pending....
-                      }
-                      </div>
-                    </td>
-                    <td class="text-center">
-                      @if (application.scoring) {
-                        {{ application.scoring}}
-                      } @else {
-                        Pending....
-                      }
-                    </td>
+                        </div>
+                      </td>
+                    } @else {
+                      <td class="text-center" colspan="2">
+                        <div class="d-flex flex-wrap justify-content-center">Procesando....</div>
+                      </td>
+                    }
                   </tr>
                 } @else {
                   <tr>
-                    <td colspan="4" class="text-center">No applications found</td>
+                    <td colspan="4" class="text-center">No hay candidatos todavía</td>
                   </tr>
                 }
                 </tbody>

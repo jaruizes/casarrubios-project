@@ -15,6 +15,7 @@ services:
     volumes:
       - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
       - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
+
   minio:
     image: quay.io/minio/minio
     container_name: infrastructure.minio
@@ -141,48 +142,28 @@ services:
       timeout: 10s
       retries: 5
 
+  cdc-service-init:
+    image: curlimages/curl:latest
+    container_name: infrastructure.cdc-service-init
+    depends_on:
+      cdc-service:
+        condition: service_healthy
+    volumes:
+      - ../../project/applications/cdc/connectors/applications-cdc-postgresql-connector.json:/connectors/applications-cdc-postgresql-connector.json
+      - ../../project/recruiters/cdc/connectors/recruiters-positions-cdc-connector.json:/connectors/recruiters-positions-cdc-connector.json
+      - ./cdc/register-connectors.sh:/register-connectors.sh
+    entrypoint: [ "sh", "/register-connectors.sh" ]
+
   kafka-init:
     image: confluentinc/cp-server:7.5.0
     container_name: infrastructure.kafka-init
     depends_on:
       broker:
         condition: service_healthy
-    command: >
-      bash -c '
-        echo "Esperando a que Kafka esté listo..."
-        cub kafka-ready -b broker:29092 1 30
-        echo "Creando topic recruitment.applications-received..."
-        kafka-topics --create --if-not-exists \
-          --bootstrap-server broker:29092 \
-          --partitions 1 \
-          --replication-factor 1 \
-          --config retention.ms=604800000 \
-          --topic recruitment.applications-received
-        echo "Creando topic recruitment.applications-analyzed..."
-        kafka-topics --create --if-not-exists \
-          --bootstrap-server broker:29092 \
-          --partitions 1 \
-          --replication-factor 1 \
-          --config retention.ms=604800000 \
-          --topic recruitment.applications-analyzed
-        echo "Topic creado correctamente"
-        echo "Creando topic recruitment.applications-scored..."
-                kafka-topics --create --if-not-exists \
-                  --bootstrap-server broker:29092 \
-                  --partitions 1 \
-                  --replication-factor 1 \
-                  --config retention.ms=604800000 \
-                  --topic recruitment.applications-scored
-                echo "Topic creado correctamente"
-        echo "Creando topic recruiters.new-positions-published..."
-                kafka-topics --create --if-not-exists \
-                  --bootstrap-server broker:29092 \
-                  --partitions 1 \
-                  --replication-factor 1 \
-                  --config retention.ms=604800000 \
-                  --topic recruiters.new-positions-published
-                echo "Topic creado correctamente"
-      '
+    volumes:
+      - ./kafka/init-topics.sh:/init-topics.sh
+      - ./kafka/topics-to-create.txt:/topics-to-create.txt
+    command: bash /init-topics.sh
 
 
   ### -------------------------------------------------------------- ###
@@ -192,28 +173,15 @@ services:
     container_name: applications.applications-app
     ports:
       - "8081:8081"
-    depends_on:
-      applications-applications-bff:
-        condition: service_healthy
 
   applications-applications-bff:
     image: "applications/applications-bff:1.0.0"
     container_name: applications.applications-bff
     ports:
       - "3000:3000"
-    depends_on:
-      applications-positions-service:
-        condition: service_healthy
-      applications-manager-service:
-        condition: service_healthy
     environment:
       - BACKEND_URL=http://applications-positions-service:8080
       - APPLICATIONS_BACKEND_URL=http://applications-manager-service:8090
-    healthcheck:
-      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:3000/positions', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   applications-positions-service:
     image: "applications/positions-service:1.0.0"
@@ -233,11 +201,6 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - NEW-POSITIONS-PUBLISHED_TOPIC=recruiters.new-positions-published
       - SPRING_KAFKA_CONSUMER_GROUP-ID=positions-service
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "8080" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
 
   applications-manager-service:
@@ -259,11 +222,6 @@ services:
       - MINIO_URL=http://minio:9000
       - MINIO_ACCESS_NAME=minioadmin
       - MINIO_ACCESS_SECRET=minioadmin
-    healthcheck:
-      test: [ "CMD", "nc", "-z", "localhost", "8090" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
 ### -------------------------------------------------------------- ###
 ### "RECRUITERS SIDE" SERVICES ###
@@ -282,11 +240,6 @@ services:
       - POSITIONS_SERVICE_URL=http://recruitment-positions-service:9080
       - APPLICATIONS_SERVICE_URL=http://recruitment-applications-service:9081
       - PORT=4000
-    healthcheck:
-      test: [ "CMD", "node", "-e", "require('http').get('http://localhost:4000/positions', res => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   recruitment-positions-service:
     image: "recruitment/positions-manager-service:1.0.0"
@@ -309,6 +262,8 @@ services:
     depends_on:
       broker:
         condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     environment:
       - QUARKUS_KAFKA-STREAMS_BOOTSTRAP-SERVERS=broker:29092
       - CDC_RECRUITERS_POSITIONS_TOPIC=cdc.recruiters.positions
