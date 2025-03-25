@@ -53,7 +53,7 @@ export class NewApplicationComponent {
     if (this.applicationForm.valid && this.uploadedFile) {
       this.applicationService.applyToPosition(this.buildApplicationData(), this.uploadedFile).subscribe({
           next: (response) => {
-            Swal.fire('Application submitted successfully!', 'We will contact you soon.', 'success').then(() => {
+            Swal.fire('¡CV enviado correctamente!', 'Nos pondremos en contacto contigo próximamente', 'success').then(() => {
               this.applicationFinished.emit();
             });
 
@@ -62,7 +62,7 @@ export class NewApplicationComponent {
             Swal.fire({
               icon: 'error',
               title: 'Oops...',
-              text: 'Something went wrong!',
+              text: 'No se pudo enviar tu CV. Por favor, inténtalo de nuevo más tarde.',
             })
           }
         }
