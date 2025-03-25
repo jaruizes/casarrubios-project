@@ -63,15 +63,15 @@
           <div class="col-lg-7 ms-auto align-self-center">
             <div class="d-flex ">
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
-                <p class="text-muted mb-0 fw-medium">Experience</p>
+                <p class="text-muted mb-0 fw-medium">Experiencia</p>
                 <h5 class="fw-semibold fs-22 mt-1">{{ application.analysis.totalYearsExperience }} years</h5>
               </div>
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
-                <p class="text-muted mb-0 fw-medium">Average Permanency</p>
+                <p class="text-muted mb-0 fw-medium">Permanencia media</p>
                 <h5 class="fw-semibold fs-22 mt-1">{{ application.analysis.averagePermanency }} years</h5>
               </div>
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
-                <p class="text-muted mb-0 fw-medium">Success</p>
+                <p class="text-muted mb-0 fw-medium">Scoring</p>
                 <h5 class="fw-semibold fs-22 mt-1">{{ application.scoring.score }}%</h5>
               </div>
             </div>
@@ -127,50 +127,6 @@
                             <blockquote class="blockquote ps-4 ">
                               <p class="fs-14">{{ application.analysis.summary }}</p>
                             </blockquote>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card border border-secondary">
-                      <div class="card-header bg-blue-subtle">
-                        <div class="row align-items-center">
-                          <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Puntos fuertes</h4>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-3 row">
-                          <div class="col">
-                            <ul>
-                              @for (strength of application.analysis.strengths; track strength) {
-                                <li class="blockquote fs-14">
-                                  {{ strength }}
-                                </li>
-                              }
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="card border border-secondary">
-                      <div class="card-header bg-blue-subtle">
-                        <div class="row align-items-center">
-                          <div class="col">
-                            <h4 class="fw-semibold fs-18 mb-1">Puntos a revisar</h4>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <div class="mb-3 row">
-                          <div class="col">
-                            <ul>
-                              @for (concern of application.analysis.concerns; track concern) {
-                                <li class="blockquote fs-14">
-                                  {{ concern }}
-                                </li>
-                              }
-                            </ul>
                           </div>
                         </div>
                       </div>
