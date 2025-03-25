@@ -109,6 +109,7 @@ export class PositionDetailComponent implements OnInit {
   }
 
   saveChanges() {
+    this.position.status = 0; // TODO: temporal
     if (this.isEditing) {
       this.positionService.updatePosition(this.positionId, this.position).subscribe((position) => {
         this.position = position;

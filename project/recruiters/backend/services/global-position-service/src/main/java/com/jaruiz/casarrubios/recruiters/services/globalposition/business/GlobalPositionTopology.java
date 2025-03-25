@@ -26,9 +26,9 @@ public class GlobalPositionTopology {
     public Topology buildTopology() {
         StreamsBuilder builder = new StreamsBuilder();
 
-        builder.addStateStore(Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore(POSITIONS_STORE), Serdes.String(), Serdes.Long()));
-        builder.addStateStore(Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore(APPLICATIONS_STORE), Serdes.String(), Serdes.Long()));
-        builder.addStateStore(Stores.keyValueStoreBuilder(Stores.persistentKeyValueStore(SCORING_STORE), Serdes.String(), Serdes.Double()));
+        builder.addStateStore(Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(POSITIONS_STORE), Serdes.String(), Serdes.Long()));
+        builder.addStateStore(Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(APPLICATIONS_STORE), Serdes.String(), Serdes.Long()));
+        builder.addStateStore(Stores.keyValueStoreBuilder(Stores.inMemoryKeyValueStore(SCORING_STORE), Serdes.String(), Serdes.Double()));
 
         KStream<String, String> positionsStream = builder.stream(config.getNewPositionsTopic());
         positionsStream.process(() -> new IncrementProcessor(POSITIONS_STORE), POSITIONS_STORE);

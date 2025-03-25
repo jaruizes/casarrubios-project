@@ -5,6 +5,7 @@ import {ApplicationDetail} from "../../model/application";
 import {Position} from "../../model/position";
 import {ApplicationsService} from "../../services/applications/applications.service";
 import {NgbNav, NgbNavContent, NgbNavItem, NgbNavLink, NgbNavOutlet} from "@ng-bootstrap/ng-bootstrap";
+import {ReqAndSkillsPipe} from "../../infrastructure/pipes/requirements-and-skills-pipe.pipe";
 
 @Component({
   selector: 'app-application-detail',
@@ -17,6 +18,7 @@ import {NgbNav, NgbNavContent, NgbNavItem, NgbNavLink, NgbNavOutlet} from "@ng-b
     NgbNav,
     NgbNavContent,
     NgbNavOutlet,
+    ReqAndSkillsPipe,
   ],
   styleUrls: ['./application-detail.component.scss']
 })

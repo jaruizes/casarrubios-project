@@ -1,0 +1,105 @@
+{
+	"id": 1,
+	"title": "Software Engineer",
+	"description": "Desarrollo y mantenimiento de aplicaciones de software.",
+	"status": "1",
+	"createdAt": 0,
+	"publishedAt": 0,
+	"tags": "software, engineering",
+	"requirements": [
+		{
+			"id": 1,
+			"key": "Requisito 1",
+			"value": "2",
+			"description": "Experiencia mínima de 2 años en desarrollo de software.",
+			"mandatory": true,
+			"position_id": 1
+		},
+		{
+			"id": 2,
+			"key": "Requisito 2",
+			"value": "3",
+			"description": "Conocimiento avanzado en programación orientada a objetos.",
+			"mandatory": true,
+			"position_id": 1
+		},
+		{
+			"id": 3,
+			"key": "Requisito 3",
+			"value": "1",
+			"description": "Capacidad para trabajar en equipo.",
+			"mandatory": true,
+			"position_id": 1
+		},
+		{
+			"id": 4,
+			"key": "Requisito 4",
+			"value": "2",
+			"description": "Conocimiento intermedio de bases de datos relacionales.",
+			"mandatory": false,
+			"position_id": 1
+		},
+		{
+			"id": 5,
+			"key": "Requisito 5",
+			"value": "1",
+			"description": "Habilidad para resolver problemas de forma creativa.",
+			"mandatory": true,
+			"position_id": 1
+		}
+	],
+	"benefits": [
+		{
+			"id": 1,
+			"description": "Salario competitivo acorde al mercado.",
+			"position_id": 1
+		},
+		{
+			"id": 2,
+			"description": "Plan de salud integral.",
+			"position_id": 1
+		},
+		{
+			"id": 3,
+			"description": "Bonificaciones por desempeño.",
+			"position_id": 1
+		},
+		{
+			"id": 4,
+			"description": "Oportunidades de formación y desarrollo profesional.",
+			"position_id": 1
+		},
+		{
+			"id": 5,
+			"description": "Ambiente de trabajo flexible y colaborativo.",
+			"position_id": 1
+		}
+	],
+	"tasks": [
+		{
+			"id": 1,
+			"description": "Desarrollar nuevas funcionalidades según requerimientos.",
+			"position_id": 1
+		},
+		{
+			"id": 2,
+			"description": "Realizar mantenimiento y mejoras en el código existente.",
+			"position_id": 1
+		},
+		{
+			"id": 3,
+			"description": "Colaborar con el equipo de diseño y producto.",
+			"position_id": 1
+		},
+		{
+			"id": 4,
+			"description": "Participar en revisiones de código y asegurar buenas prácticas.",
+			"position_id": 1
+		},
+		{
+			"id": 5,
+			"description": "Realizar pruebas unitarias y de integración.",
+			"position_id": 1
+		}
+	]
+}
