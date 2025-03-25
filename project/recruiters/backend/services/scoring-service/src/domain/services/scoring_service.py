@@ -65,7 +65,6 @@ class ScoringService:
 
         logger.info(f"Scoring computed for position {position.id} and application {application_analysis.application_id}: {final_score}")
 
-        # self.producer.send(self.output_topic, application_scoring.__dict__, application_analysis.application_id)
         self.applicationScoringPublisher.publish_application_scored_event(application_scoring)
 
 
@@ -149,16 +148,19 @@ class ScoringService:
             f"- Soft Skills: {candidate.get_soft_skills_summary()}\n"
             f"- Tags: {', '.join(candidate.tags)}\n"
             f"Scoring Results:\n"
-            f"- Position description score: {desc_score}\n"
-            f"- Requirements score: {requirement_score}\n"
-            f"- Tasks score: {tasks_score}\n"
-            f"- Final score: {score}\n"
+            f"- Position description score ('desc_score'): {desc_score}\n"
+            f"- Requirements score ('requirement_score'): {requirement_score}\n"
+            f"- Tasks score ('task_score'): {tasks_score}\n"
+            f"- Final score ('score'): {score}\n"
+            f"- Score formula: 'score = round((0.1 * desc_score) + (0.6 * requirement_score) + (0.3 * task_score), 2)'\n"
             "Please generate a detailed explanation in natural language addressing the following:\n"
             "1. How the candidate's profile relates to the position's description and requirements.\n"
             "2. Which aspects of the CV strongly match the position's tasks and responsibilities.\n"
             "3. Areas of opportunity or discrepancies between the candidate's profile and the role's expectations.\n"
-            "4. How each of these elements contributed to the final score.\n\n"
-            "The explanation should highlight both the strengths and the areas for improvement and it must have 750 words max long and it must be in spanish."
+            "4. How each of these elements contributed to the final score. \n\n"
+            "The explanation should be clear and concise and highlights both the strengths and the areas for improvement."
+            "It must be written in Spanish, no more than 750 words long. "
+            "The output must be valid HTML, using only semantic tags like <div>, <ul>, <ol>, <li>, <p>, <strong>, etc., without any CSS or inline styles."
         )
 
         try:

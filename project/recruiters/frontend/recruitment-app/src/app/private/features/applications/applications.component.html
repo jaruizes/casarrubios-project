@@ -29,8 +29,7 @@
       </div>
     </div>
   </div>
-  @if (applications.length > 0) {
-    <div class="card-body">
+  <div class="card-body">
     <div class="card border-dashed">
       <div class="card-header mb-2 bg-blue-subtle">
         <div class="row align-items-center">
@@ -64,32 +63,35 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let application of filteredResults" style="cursor: pointer" (click)="goToApplicationDetail(application.id)">
-                  <td class="">{{ application.creationDate | date: 'dd-MM-yyyy'}}</td>
-                  <td class="">{{ application.candidate }}</td>
+                @if (applications.length > 0) {
+                  <tr *ngFor="let application of filteredResults" style="cursor: pointer" (click)="goToApplicationDetail(application.id)">
+                    <td class="">{{ application.creationDate | date: 'dd-MM-yyyy'}}</td>
+                    <td class="">{{ application.candidate }}</td>
 
-                  <td class="text-center">
-                    <div class="d-flex flex-wrap justify-content-center">
-                    @if (application.tags) {
-                      @for (tag of application.tags.split(','); track tag) {
-                        <span class="badge bg-transparent border border-secondary text-secondary me-0.5" style="padding: 0.5em; margin: 0.2em">{{ tag }}</span>
+                    <td class="text-center">
+                      <div class="d-flex flex-wrap justify-content-center">
+                      @if (application.tags) {
+                        @for (tag of application.tags.split(','); track tag) {
+                          <span class="badge bg-transparent border border-secondary text-secondary me-0.5" style="padding: 0.5em; margin: 0.2em">{{ tag }}</span>
+                        }
+                      } @else {
+                        Pending....
                       }
-                    } @else {
-                      Pending....
-                    }
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    @if (application.scoring) {
-                      {{ application.scoring}}
-                    } @else {
-                      Pending....
-                    }
-                  </td>
-                </tr>
-                <tr *ngIf="filteredResults.length === 0">
-                  <td colspan="4" class="text-center">No results found</td>
-                </tr>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      @if (application.scoring) {
+                        {{ application.scoring}}
+                      } @else {
+                        Pending....
+                      }
+                    </td>
+                  </tr>
+                } @else {
+                  <tr>
+                    <td colspan="4" class="text-center">No applications found</td>
+                  </tr>
+                }
                 </tbody>
               </table>
             </div>
@@ -107,5 +109,4 @@
       </div>
     </div>
   </div>
-  }
 </div>

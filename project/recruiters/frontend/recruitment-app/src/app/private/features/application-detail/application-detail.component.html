@@ -80,156 +80,216 @@
       </div>
     </div>
     <div class="card border border-secondary">
-      <div class="card-header bg-blue-subtle">
-        <div class="row align-items-center">
-          <div class="col">
-            <h4 class="fw-semibold fs-18 mb-1">Summary</h4>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
+      <div class="card-body p-1 pt-2">
         <div class="row">
-          <div class="col">
-            <blockquote class="blockquote ps-4 ">
-              <p class="fs-14">{{ application.analysis.summary }}</p>
-            </blockquote>
+          <div class="col-lg-3 col-sm-4">
+            <div ngbNav #verticalNav="ngbNav" class="nav flex-column nav-pills text-center border-dashed border-primary" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <ng-container ngbNavItem>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-scoring-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Scoring</a>
+                <ng-template ngbNavContent>
+                  <div class="tab-pane fade show" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-scoring-tab">
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Scoring Detail</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <blockquote class="blockquote ps-4 ">
+                              <div class="fs-14" [innerHTML]="application.scoring.explanation"></div>
+                            </blockquote>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-summary-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Análisis Candidatura</a>
+                <ng-template ngbNavContent>
+                  <div class="tab-pane fade show" id="v-pills-candidate-summary" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Summary</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="col">
+                            <blockquote class="blockquote ps-4 ">
+                              <p class="fs-14">{{ application.analysis.summary }}</p>
+                            </blockquote>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Strengths</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-3 row">
+                          <div class="col">
+                            <ul>
+                              @for (strength of application.analysis.strengths; track strength) {
+                                <li class="blockquote fs-14">
+                                  {{ strength }}
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Concerns</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-3 row">
+                          <div class="col">
+                            <ul>
+                              @for (concern of application.analysis.concerns; track concern) {
+                                <li class="blockquote fs-14">
+                                  {{ concern }}
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-tasks-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Responsabilidades (últimos años)</a>
+                <ng-template ngbNavContent>
+                  <div class="tab-pane fade show" id="v-pills-candidate-tasks" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Key Responsibilities (Last 5 years)</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-3 row">
+                          <div class="col">
+                            <ul>
+                              @for (key of application.analysis.keyResponsibilities; track key) {
+                                <li class="blockquote fs-14">
+                                  {{ key }}
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-candidate-skills-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Skills</a>
+                <ng-template ngbNavContent>
+                  <div class="tab-pane fade show" id="v-pills-candidate-skills" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Skills</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-3 row">
+                          <div class="col">
+                            <table class="table table-hover mb-0">
+                              <thead class="table-light">
+                              <tr class="me-2 ">
+                                <th class="border-top-0 me-2">Hard Skills</th>
+                                <th class="border-top-0 ">Soft Skills</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr>
+                                <td class="align-top px-2">
+                                  <ul>
+                                    @for (skill of application.analysis.hardSkills; track skill) {
+                                      <li>{{ skill.skill }} - {{ skill.level}}</li>
+                                    }
+                                  </ul>
+                                </td>
+                                <td class="align-top px-2">
+                                  <ul>
+                                    @for (skill of application.analysis.softSkills; track skill) {
+                                      <li>{{ skill.skill }} - {{ skill.level}}</li>
+                                    }
+                                  </ul>
+                                </td>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+              <ng-container ngbNavItem>
+                <a ngbNavLink class="nav-link waves-effect waves-light" id="v-pills-interview-tab" data-bs-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Preguntas</a>
+                <ng-template ngbNavContent>
+                  <div class="tab-pane fade show" id="v-pills-interview" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div class="card border border-secondary">
+                      <div class="card-header bg-blue-subtle">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <h4 class="fw-semibold fs-18 mb-1">Possible questions</h4>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body">
+                        <div class="mb-3 row">
+                          <div class="col">
+                            <ul class="list-unstyled">
+                              @for (question of application.analysis.interviewQuestions; track question) {
+                                <li class="blockquote ps-4 ">
+                                  <p class="text-dark mb-0 p-2 bg-light rounded ms-n2 bg-light-alt fs-15">{{ question }}</p>
+                                </li>
+                              }
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="card border border-secondary">
-      <div class="card-header bg-blue-subtle">
-        <div class="row align-items-center">
-          <div class="col">
-            <h4 class="fw-semibold fs-18 mb-1">Key Responsibilities (Last 5 years)</h4>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="mb-3 row">
-          <div class="col">
-            <ul>
-              @for (key of application.analysis.keyResponsibilities; track key) {
-                <li class="blockquote fs-14">
-                  {{ key }}
-                </li>
-              }
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card border border-secondary">
-      <div class="card-header bg-blue-subtle">
-        <div class="row align-items-center">
-          <div class="col">
-            <h4 class="fw-semibold fs-18 mb-1">Strengths</h4>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="mb-3 row">
-          <div class="col">
-            <ul>
-              @for (strength of application.analysis.strengths; track strength) {
-                <li class="blockquote fs-14">
-                  {{ strength }}
-                </li>
-              }
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card border border-secondary">
-      <div class="card-header bg-blue-subtle">
-        <div class="row align-items-center">
-          <div class="col">
-            <h4 class="fw-semibold fs-18 mb-1">Concerns</h4>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="mb-3 row">
-          <div class="col">
-            <ul>
-              @for (concern of application.analysis.concerns; track concern) {
-                <li class="blockquote fs-14">
-                  {{ concern }}
-                </li>
-              }
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card border border-secondary">
-      <div class="card-header bg-blue-subtle">
-        <div class="row align-items-center">
-          <div class="col">
-            <h4 class="fw-semibold fs-18 mb-1">Skills</h4>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="mb-3 row">
-          <div class="col">
-            <table class="table table-hover mb-0">
-              <thead class="table-light">
-              <tr class="me-2 ">
-                <th class="border-top-0 me-2">Hard Skills</th>
-                <th class="border-top-0 ">Soft Skills</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td class="align-top px-2">
-                  <ul>
-                    @for (skill of application.analysis.hardSkills; track skill) {
-                      <li>{{ skill.skill }} - {{ skill.level}}</li>
-                    }
-                  </ul>
-                </td>
-                <td class="align-top px-2">
-                  <ul>
-                    @for (skill of application.analysis.softSkills; track skill) {
-                      <li>{{ skill.skill }} - {{ skill.level}}</li>
-                    }
-                  </ul>
-                </td>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card border border-secondary">
-      <div class="card-header bg-blue-subtle">
-        <div class="row align-items-center">
-          <div class="col">
-            <h4 class="fw-semibold fs-18 mb-1">Possible questions</h4>
-          </div>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="mb-3 row">
-          <div class="col">
-            <ul class="list-unstyled">
-              @for (question of application.analysis.interviewQuestions; track question) {
-                <li class="blockquote ps-4 ">
-                  <p class="text-dark mb-0 p-2 bg-light rounded ms-n2 bg-light-alt fs-15">{{ question }}</p>
-                </li>
-              }
-
-
-            </ul>
+          <div class="col-lg-9 col-sm-8">
+            <div [ngbNavOutlet]="verticalNav" class="tab-content mo-mt-2" id="v-pills-tabContent"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-
-
-
 </div>

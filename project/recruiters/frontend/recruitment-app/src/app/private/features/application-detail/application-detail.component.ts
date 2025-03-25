@@ -4,6 +4,7 @@ import {DatePipe, Location} from "@angular/common";
 import {ApplicationDetail} from "../../model/application";
 import {Position} from "../../model/position";
 import {ApplicationsService} from "../../services/applications/applications.service";
+import {NgbNav, NgbNavContent, NgbNavItem, NgbNavLink, NgbNavOutlet} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-application-detail',
@@ -11,6 +12,11 @@ import {ApplicationsService} from "../../services/applications/applications.serv
   standalone: true,
   imports: [
     DatePipe,
+    NgbNavLink,
+    NgbNavItem,
+    NgbNav,
+    NgbNavContent,
+    NgbNavOutlet,
   ],
   styleUrls: ['./application-detail.component.scss']
 })
@@ -27,6 +33,7 @@ export class ApplicationDetailComponent implements OnInit {
     this.applicationId = this.route.snapshot.paramMap.get('id') || '';
     this.applicationsService.getApplicationDetail(this.applicationId).subscribe((application: ApplicationDetail) => {
       this.application = application;
+      // this.application.scoring.explanation = this.test;
     });
   }
 

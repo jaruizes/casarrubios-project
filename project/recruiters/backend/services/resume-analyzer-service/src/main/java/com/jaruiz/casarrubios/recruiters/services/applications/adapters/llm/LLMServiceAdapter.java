@@ -54,25 +54,24 @@ public class LLMServiceAdapter implements LLMServicePort {
     private String buildPrompt(String resumeText) {
         return """
         You are a technology recruiter. Analyze the following resume and extract structured information in JSON format.
+        Response must be written in Spanish
         Use the following rules:
 
         - **Summary (max 400 words)**: A concise description of the candidate's expertise, experience, and unique value.
         - **Strengths & Concerns**:  
           - **Strengths**: Key differentiators of the candidate’s profile.  
           - **Concerns**: Areas that might raise questions for recruiters (e.g., job transitions, skills gaps, business alignment).
-        - **Hard Skills & Proficiency Levels (Scale 1-5)**: Evaluate technical skills and assign a level:  
+        - **Hard Skills & Proficiency Levels (Scale 1-3)**: Evaluate technical skills and assign a level:  
           - **1 = Basic** (Familiarity but limited hands-on experience).  
           - **2 = Intermediate** (Able to use in projects but not deeply specialized).  
-          - **3 = Advanced** (Strong practical knowledge).  
-          - **4 = Highly Advanced** (Deep expertise, frequently optimizes solutions).  
-          - **5 = Expert** (Industry-level, capable of teaching, leading, and innovating).  
-        - **Soft Skills & Proficiency Levels (Scale 1-5)**: Identify key soft skills and assign a level using the same scale.  
+          - **3 = Advanced** (Strong practical knowledge. Capable of teaching, leading, and innovating).
+        - **Soft Skills & Proficiency Levels (Scale 1-3)**: Identify key soft skills and assign a level using the same scale.  
         - **Key Responsibilities (last 5 years, max 8 items)**: List major tasks and achievements.
         - **Potential Interview Questions**: according to the resume, propose max 10 questions about career, strengths, concerns, skills, responsibilities and experience. A flat list of questions is required (you must not group them by category).
         - **Total Years of Experience**.  
         - **Average Job Permanency (in years)**.  
         - **Relevant Tags**: Keywords that best describe the candidate.
-
+        
         **Resume Data:**
         ```text
         %s
