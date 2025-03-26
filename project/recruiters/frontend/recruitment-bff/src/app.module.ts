@@ -3,12 +3,14 @@ import { PositionsModule } from './positions/positions.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { ConfigModule } from '@nestjs/config';
 import { SharedModule } from './shared/shared.module';
+import { GlobalPositionModule } from './global-position/global-position.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PositionsModule,
     ApplicationsModule,
+    GlobalPositionModule,
     SharedModule,
   ],
 })

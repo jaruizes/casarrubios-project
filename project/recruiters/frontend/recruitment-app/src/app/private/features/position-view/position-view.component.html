@@ -1,63 +1,64 @@
-
-<div class="card border border-2 border-secondary ">
-  <div class="card-header bg-light-subtle">
-    <div class="row">
-      <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
-        <div class="d-flex align-items-center flex-row flex-wrap">
-          <div class="">
-            <h1 class="fw-semibold mb-1">{{ position.title }}</h1>
-            <p class="mb-0 text-muted fw-medium">Fecha de creación: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
+@if (position) {
+  <div class="card border border-2 border-secondary ">
+    <div class="card-header bg-light-subtle">
+      <div class="row">
+        <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
+          <div class="d-flex align-items-center flex-row flex-wrap">
+            <div class="">
+              <h1 class="fw-semibold mb-1">{{ position.title }}</h1>
+              <p class="mb-0 text-muted fw-medium">Fecha de creación: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 align-top mb-3 mb-lg-0">
+          <div class="text-end flex-row flex-wrap">
+            <span *ngFor="let tag of position.tags" class="badge bg-success me-2 fs-16">{{ tag.name }}</span>
           </div>
         </div>
       </div>
-      <div class="col-lg-4 align-top mb-3 mb-lg-0">
-        <div class="text-end flex-row flex-wrap">
-          <span *ngFor="let tag of position.tags" class="badge bg-success me-2 fs-16">{{ tag.name }}</span>
+    </div>
+    <div class="card-body">
+      <div class="card border-dashed">
+        <div class="card-header bg-blue-subtle">
+          <h4 class="fw-semibold mb-1">¿Qué estamos buscando?</h4>
+        </div>
+        <div class="card-body">
+          <p class="lead">{{ position.description }}</p>
+        </div>
+      </div>
+      <div class="card border-dashed">
+        <div class="card-header bg-blue-subtle">
+          <h4 class="fw-semibold mb-1">¿Qué esperamos de ti?</h4>
+        </div>
+        <div class="card-body">
+          <ul class="pt-2">
+            <li *ngFor="let req of position.requirements" class="lead">
+              <strong>{{ req.key }}</strong> (nivel: {{ Number(req.value) | reqAndSkillsPipe}}): {{ req.description }}
+              <span *ngIf="req.mandatory" class="text-danger">(Obligatorio)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card border-dashed">
+        <div class="card-header bg-blue-subtle">
+          <h4 class="fw-semibold mb-1">¿Cuáles serán tus responsabilidades y tareas principales?</h4>
+        </div>
+        <div class="card-body">
+          <ul class="pt-2">
+            <li *ngFor="let task of position.tasks" class="lead">{{ task.description }}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card border-dashed">
+        <div class="card-header bg-blue-subtle">
+          <h4 class="fw-semibold mb-1">¿Por qué trabajar con nosotros?</h4>
+        </div>
+        <div class="card-body">
+          <ul class="pt-2">
+            <li *ngFor="let benefit of position.benefits" class="lead">{{ benefit.description }}</li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
-  <div class="card-body">
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
-        <h4 class="fw-semibold mb-1">¿Qué estamos buscando?</h4>
-      </div>
-      <div class="card-body">
-        <p class="lead">{{ position.description }}</p>
-      </div>
-    </div>
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
-        <h4 class="fw-semibold mb-1">¿Qué esperamos de ti?</h4>
-      </div>
-      <div class="card-body">
-        <ul class="pt-2">
-          <li *ngFor="let req of position.requirements" class="lead">
-            <strong>{{ req.key }}:</strong> {{ req.value }} - {{ req.description }}
-            <span *ngIf="req.mandatory" class="text-danger">(Obligatorio)</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
-        <h4 class="fw-semibold mb-1">¿Cuáles serán tus responsabilidades y tareas principales?</h4>
-      </div>
-      <div class="card-body">
-        <ul class="pt-2">
-          <li *ngFor="let task of position.tasks" class="lead">{{ task.description }}</li>
-        </ul>
-      </div>
-    </div>
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
-        <h4 class="fw-semibold mb-1">¿Por qué trabajar con nosotros?</h4>
-      </div>
-      <div class="card-body">
-        <ul class="pt-2">
-          <li *ngFor="let benefit of position.benefits" class="lead">{{ benefit.description }}</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
+}

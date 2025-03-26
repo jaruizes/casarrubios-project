@@ -9,7 +9,7 @@ import {
   PositionServiceDTO,
 } from '../adapters/services/position-service/dto/service-positions.dto';
 import { PositionNotFoundException } from '../model/exceptions/position-not-found.exception';
-import { ErrorDTO } from './dto/error.dto';
+import { ErrorDTO } from '../../shared/api/dto/error.dto';
 import { PositionsBackendNotAvailableException } from '../model/exceptions/positions-backend-not-available.exception';
 
 const mockData: PositionServiceDTO[] = [

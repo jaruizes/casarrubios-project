@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {PositionsService} from "../../services/positions.service";
+import {PositionsService} from "../../services/positions/positions.service";
 import {ActivatedRoute} from "@angular/router";
 import {Position} from "../../model/position";
 import {DatePipe, NgForOf, NgIf} from "@angular/common";
+import {ReqAndSkillsPipe} from "../../infrastructure/pipes/requirements-and-skills-pipe.pipe";
 
 @Component({
   selector: 'app-position-view',
@@ -10,7 +11,8 @@ import {DatePipe, NgForOf, NgIf} from "@angular/common";
   imports: [
     DatePipe,
     NgForOf,
-    NgIf
+    NgIf,
+    ReqAndSkillsPipe
   ],
   templateUrl: './position-view.component.html',
   styleUrl: './position-view.component.scss'
@@ -31,4 +33,6 @@ export class PositionViewComponent implements OnInit {
       });
     }
   }
+
+  protected readonly Number = Number;
 }

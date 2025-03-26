@@ -16,13 +16,13 @@ import { PositionDTO, PositionsDTO } from './dto/positions.dto';
 import { PositionDetailDTO, TagDTO } from './dto/position-detail.dto';
 import { PositionServiceDTO } from '../adapters/services/position-service/dto/service-positions.dto';
 import { PositionsBackendNotAvailableException } from '../model/exceptions/positions-backend-not-available.exception';
-import { ErrorDTO } from './dto/error.dto';
+import { ErrorDTO } from '../../shared/api/dto/error.dto';
 import { PositionNotFoundException } from '../model/exceptions/position-not-found.exception';
 import { NewPositionDTO } from './dto/new-position.dto';
 
 @Controller('positions')
 export class PositionsController {
-  private readonly logger = new Logger(PositionsService.name);
+  private readonly logger = new Logger(PositionsController.name);
 
   constructor(private readonly positionsService: PositionsService) {}
 

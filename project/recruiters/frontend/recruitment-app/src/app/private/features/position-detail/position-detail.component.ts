@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DatePipe, NgForOf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
-import {PositionsService} from "../../services/positions.service";
+import {PositionsService} from "../../services/positions/positions.service";
 import {Benefit, Position, Requirement, Task} from "../../model/position";
 import {FormsModule} from "@angular/forms";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";

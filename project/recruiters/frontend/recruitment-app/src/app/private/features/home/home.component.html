@@ -1,33 +1,35 @@
 <div class="card  bg-transparent">
-  <div class="card border border-secondary">
-    <div class="card-header bg-blue-subtle">
-      <div class="row align-items-center">
-        <div class="col">
-          <h2 class="card-title">Datos destacados</h2>
+  @if (globalPosition) {
+    <div class="card border border-secondary">
+      <div class="card-header bg-blue-subtle">
+        <div class="row align-items-center">
+          <div class="col">
+            <h2 class="card-title">Datos destacados</h2>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="card-body">
-      <div class="row">
-        <div class="col ms-auto align-self-center">
-          <div class="d-flex ">
-            <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-1 text-center">
-              <p class="text-muted mb-0 fw-medium">Posiciones totales</p>
-              <h5 class="fw-semibold fs-22 mt-1">(TBD)</h5>
-            </div>
-            <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
-              <p class="text-muted mb-0 fw-medium">Candidaturas recibidas</p>
-              <h5 class="fw-semibold fs-22 mt-1">(TBD)</h5>
-            </div>
-            <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
-              <p class="text-muted mb-0 fw-medium">Scoring medio</p>
-              <h5 class="fw-semibold fs-22 mt-1">(TBD)</h5>
+      <div class="card-body">
+        <div class="row">
+          <div class="col ms-auto align-self-center">
+            <div class="d-flex ">
+              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-1 text-center">
+                <p class="text-muted mb-0 fw-medium">Posiciones totales</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ globalPosition.totalPositions }}</h5>
+              </div>
+              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
+                <p class="text-muted mb-0 fw-medium">Candidaturas / Posición</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ globalPosition.averageApplications }}</h5>
+              </div>
+              <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
+                <p class="text-muted mb-0 fw-medium">Scoring medio</p>
+                <h5 class="fw-semibold fs-22 mt-1">{{ globalPosition.averageApplications }}</h5>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  }
 
   <div class="card border border-secondary">
     <div class="card-header  bg-blue-subtle mb-2">

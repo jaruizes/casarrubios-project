@@ -7,7 +7,6 @@ import {
   NotFoundException,
   Param,
   Query,
-  ParseIntPipe,
   Res,
   StreamableFile,
 } from '@nestjs/common';
@@ -19,7 +18,7 @@ import {
   PositionAppliedDTO,
 } from './dto/application.dto';
 import { ApplicationsService } from '../adapters/services/applications-service/applications.service';
-import { ErrorDTO } from '../../positions/api/dto/error.dto';
+import { ErrorDTO } from '../../shared/api/dto/error.dto';
 import { ApplicationsBackendNotAvailableException } from '../exceptions/applications-backend-not-available.exception';
 import { ServiceApplicationDTO } from '../adapters/services/applications-service/dto/application.dto';
 import { PositionsService } from '../../positions/adapters/services/position-service/positions.service';
@@ -37,12 +36,20 @@ export class ApplicationsController {
   ) {}
 
   @Get(':applicationId')
-  async getApplicationById(@Param('applicationId') applicationId: string): Promise<ApplicationDetailDTO | undefined> {
-    this.logger.log(`Trying to fetch application detail with id: ${applicationId}`);
+  async getApplicationById(
+    @Param('applicationId') applicationId: string,
+  ): Promise<ApplicationDetailDTO | undefined> {
+    this.logger.log(
+      `Trying to fetch application detail with id: ${applicationId}`,
+    );
 
     try {
-      const applicationServiceDTO: ServiceApplicationDTO | undefined = await this.applicationsService.getApplicationById(applicationId);
-      const position: PositionServiceDTO = await this.positionsService.getPositionById(applicationServiceDTO.positionId);
+      const applicationServiceDTO: ServiceApplicationDTO | undefined =
+        await this.applicationsService.getApplicationById(applicationId);
+      const position: PositionServiceDTO =
+        await this.positionsService.getPositionById(
+          applicationServiceDTO.positionId,
+        );
 
       if (applicationServiceDTO && position) {
         this.logger.log(`Found application with id: ${applicationId}`);
@@ -83,15 +90,20 @@ export class ApplicationsController {
     @Param('applicationId') applicationId: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    this.logger.log(`Trying to fetch CV for application with id: ${applicationId}`);
+    this.logger.log(
+      `Trying to fetch CV for application with id: ${applicationId}`,
+    );
 
     try {
-      const cvResponse = await this.applicationsService.getApplicationCV(applicationId);
-      
+      const cvResponse =
+        await this.applicationsService.getApplicationCV(applicationId);
+
       // Set the appropriate headers
       res.set({
         'Content-Type': cvResponse.headers['content-type'] || 'application/pdf',
-        'Content-Disposition': cvResponse.headers['content-disposition'] || `attachment; filename="cv-${applicationId}.pdf"`,
+        'Content-Disposition':
+          cvResponse.headers['content-disposition'] ||
+          `attachment; filename="cv-${applicationId}.pdf"`,
       });
 
       // Return the file as a StreamableFile
@@ -134,11 +146,19 @@ export class ApplicationsController {
     @Query('page') page: number = 0,
     @Query('pageSize') pageSize: number = 10,
   ): Promise<PaginatedApplicationsDTO> {
-    this.logger.log(`Trying to fetch application with positionId: ${positionId}, page: ${page}, pageSize: ${pageSize}`);
+    this.logger.log(
+      `Trying to fetch application with positionId: ${positionId}, page: ${page}, pageSize: ${pageSize}`,
+    );
 
     const paginatedPositions =
-      await this.applicationsService.getAllApplicationsByPositionId(positionId, page, pageSize);
-    this.logger.log(`Found ${paginatedPositions.totalElements} applications. Returning page ${paginatedPositions.number} of ${paginatedPositions.totalPages}`);
+      await this.applicationsService.getAllApplicationsByPositionId(
+        positionId,
+        page,
+        pageSize,
+      );
+    this.logger.log(
+      `Found ${paginatedPositions.totalElements} applications. Returning page ${paginatedPositions.number} of ${paginatedPositions.totalPages}`,
+    );
 
     return {
       applications: paginatedPositions.applications.map(
@@ -151,7 +171,9 @@ export class ApplicationsController {
     };
   }
 
-  private toApplicationDTO(serviceApplicationDTO: ServiceApplicationDTO): ApplicationDTO {
+  private toApplicationDTO(
+    serviceApplicationDTO: ServiceApplicationDTO,
+  ): ApplicationDTO {
     const positionsApplied: PositionAppliedDTO[] = [
       {
         id: serviceApplicationDTO.positionId,
@@ -167,19 +189,24 @@ export class ApplicationsController {
       cvFile: serviceApplicationDTO.cvFile,
       creationDate: serviceApplicationDTO.creationDate,
       positionsApplied: positionsApplied,
-      scoring: serviceApplicationDTO.scoring ? serviceApplicationDTO.scoring.score : undefined,
-      tags: serviceApplicationDTO.analysis ? serviceApplicationDTO.analysis.tags.join(', ') : ''
+      scoring: serviceApplicationDTO.scoring
+        ? serviceApplicationDTO.scoring.score
+        : undefined,
+      tags: serviceApplicationDTO.analysis
+        ? serviceApplicationDTO.analysis.tags.join(', ')
+        : '',
     };
   }
 
-  private toApplicationDetailDTO(applicationDTO: ServiceApplicationDTO, positionDTO: PositionServiceDTO): ApplicationDetailDTO {
+  private toApplicationDetailDTO(
+    applicationDTO: ServiceApplicationDTO,
+    positionDTO: PositionServiceDTO,
+  ): ApplicationDetailDTO {
     const candidateDataDTO: CandidateDataDTO = {
       name: applicationDTO.candidate.name,
       email: applicationDTO.candidate.email,
-      phone: applicationDTO.candidate.phone
+      phone: applicationDTO.candidate.phone,
     };
-
-
 
     return {
       id: applicationDTO.applicationId,

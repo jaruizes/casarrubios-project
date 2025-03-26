@@ -238,6 +238,7 @@ services:
       - "4000:4000"
     environment:
       - POSITIONS_SERVICE_URL=http://recruitment-positions-service:9080
+      - GLOBAL_POSITION_SERVICE_URL=http://recruitment-global-position-service:9090
       - APPLICATIONS_SERVICE_URL=http://recruitment-applications-service:9081
       - PORT=4000
 
@@ -272,7 +273,7 @@ services:
       - CDC_RECRUITERS_POSITIONS-TASK_TOPIC=cdc.recruiters.tasks
       - RECRUITERS_NEW-POSITIONS-PUBLISHED_TOPIC=recruiters.new-positions-published
       - QUARKUS.KAFKA-STREAMS.TOPICS=cdc.recruiters.positions,cdc.recruiters.requirements,cdc.recruiters.benefits,cdc.recruiters.tasks
-      - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=quarkus-kafka-streams2
+      - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-positions-publisher-service
 
   recruitment-applications-updater-service:
     image: "recruitment/applications-updater-service:1.0.0"
@@ -367,6 +368,25 @@ services:
       - KAFKA_INPUT_TOPIC=recruitment.applications-analyzed
       - KAFKA_OUTPUT_TOPIC=recruitment.applications-scored
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+
+  recruitment-global-position-service:
+    image: "recruitment/global-position-service:1.0.0"
+    container_name: recruitment.global-position-service
+    ports:
+      - "9090:9090"
+    depends_on:
+      broker:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=broker:29092
+      - QUARKUS.KAFKA-STREAMS.TOPICS=recruiters.new-positions-published,recruitment.applications-received,recruitment.applications-scored
+      - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-global-position-service
+      - NEW-POSITIONS_TOPIC=recruiters.new-positions-published
+      - NEW-APPLICATIONS_TOPIC=recruitment.applications-received
+      - SCORING_TOPIC=recruitment.applications-scored
+      - QUARKUS_HTTP_PORT=9090
 
 volumes:
   minio_data:

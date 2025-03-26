@@ -3,9 +3,11 @@ import {NgbHighlight, NgbModal, NgbModalRef, NgbPagination} from "@ng-bootstrap/
 import {AsyncPipe, CommonModule, DecimalPipe, NgIf} from "@angular/common";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
-import {PositionsService} from "../../services/positions.service";
+import {PositionsService} from "../../services/positions/positions.service";
 import {Position} from "../../model/position";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
+import {GlobalPositionsService} from "../../services/global-position/global-position.service";
+import {GlobalPosition} from "../../model/global-position";
 
 
 @Component({
@@ -23,15 +25,17 @@ export class HomeComponent implements OnInit {
   page: number = 1;
   positions: Position[] = [];
   positionToDelete?: Position;
+  globalPosition?: GlobalPosition;
 
   @ViewChild('deletePositionModal')
   deletePositionModal!: TemplateRef<HTMLElement>;
 
   private deletePositionModalRef!: NgbModalRef;
 
-  constructor(private router: Router, private positionService: PositionsService, private modalService: NgbModal) {
+  constructor(private router: Router, private positionService: PositionsService, private globalPositionService: GlobalPositionsService, private modalService: NgbModal) {
     this.router = router;
     this.positionService = positionService;
+    this.globalPositionService = globalPositionService;
     this.modalService = modalService;
   }
 
@@ -82,6 +86,10 @@ export class HomeComponent implements OnInit {
       this.positions = paginatedPosition.positions;
       this.total = paginatedPosition.totalElements;
       this.pageSize = paginatedPosition.size;
+    });
+
+    this.globalPositionService.getGlobalPosition().subscribe((globalPosition) => {
+      this.globalPosition = globalPosition;
     });
   }
 }

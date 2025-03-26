@@ -1,0 +1,110 @@
+{
+	"applicationId": "da3ad6a7-51c5-464e-a67f-557964dbf889",
+	"positionId": 10,
+	"analysis": {
+		"summary": "summary",
+		"strengths": [
+			"Amplia experiencia en roles técnicos y de gestión",
+			"Capacidad de liderazgo y gestión de equipos",
+			"Experiencia en preventa y desarrollo de arquitectura end-to-end",
+			"Orientación hacia la modernización y transformación digital",
+			"Contribuciones significativas a la comunidad tecnológica a través de publicaciones y charlas"
+		],
+		"concerns": [
+			"Transiciones frecuentes entre roles y empresas",
+			"Puede haber una curva de adaptación en nuevos entornos o tecnologías",
+			"Dependencia de certificaciones para validar habilidades técnicas"
+		],
+		"hardSkills": [
+			{
+				"skill": "Java (Spring, Quarkus)",
+				"level": 3
+			},
+			{
+				"skill": "Node.js",
+				"level": 2
+			},
+			{
+				"skill": "Python",
+				"level": 2
+			},
+			{
+				"skill": "Angular",
+				"level": 3
+			},
+			{
+				"skill": "AWS",
+				"level": 3
+			},
+			{
+				"skill": "Kubernetes",
+				"level": 3
+			},
+			{
+				"skill": "Terraform",
+				"level": 3
+			},
+			{
+				"skill": "Kafka",
+				"level": 2
+			}
+		],
+		"softSkills": [
+			{
+				"skill": "Liderazgo",
+				"level": 3
+			},
+			{
+				"skill": "Comunicación",
+				"level": 3
+			},
+			{
+				"skill": "Gestión de proyectos",
+				"level": 3
+			},
+			{
+				"skill": "Mentoring",
+				"level": 3
+			}
+		],
+		"keyResponsibilities": [
+			"Diseño y desarrollo de soluciones de arquitectura end-to-end",
+			"Participación en preventa y assessments técnicos",
+			"Estandarización de buenas prácticas y metodologías de desarrollo",
+			"Gestión de equipos de arquitectura y desarrollo",
+			"Desarrollo de PoCs para validar nuevas tecnologías",
+			"Elaboración de artículos y participación en eventos técnicos",
+			"Liderazgo en proyectos de transformación digital",
+			"Definición e implementación de arquitecturas escalables"
+		],
+		"interviewQuestions": [
+			"¿Cómo ha manejado la transición entre diferentes roles en su carrera?",
+			"¿Puede compartir un ejemplo de un proyecto complejo que haya liderado?",
+			"¿Qué considera que es lo más importante al diseñar una arquitectura escalable?",
+			"¿Cómo se mantiene actualizado con las nuevas tecnologías y tendencias del sector?",
+			"¿Qué desafíos ha enfrentado en roles de gestión y cómo los ha superado?",
+			"¿Cómo integra las prácticas de preventa en su trabajo diario?",
+			"¿Cuál ha sido su experiencia más gratificante en el mentoring de otros profesionales?",
+			"¿Qué herramientas y metodologías prefiere utilizar en la gestión de proyectos?",
+			"¿Cómo ha contribuido a la estandarización de prácticas dentro de su organización?",
+			"¿Qué proyectos futuros le gustaría explorar en su carrera?"
+		],
+		"totalYearsExperience": 20,
+		"averagePermanency": 3.75,
+		"tags": [
+			"Arquitectura de Software",
+			"Transformación Digital",
+			"Liderazgo Técnico",
+			"Metodologías Ágiles",
+			"Desarrollo de Software"
+		]
+	},
+	"scoring": {
+		"score": 0.45,
+		"descScore": 0.41,
+		"requirementScore": 0.5,
+		"tasksScore": 0.53,
+		"timeSpent": 154.8,
+		"explanation": "<div>\n    <p><strong>Análisis de Resultados de Evaluación para el Puesto de Cloud Architect:</strong></p>\n    <ol>\n        <li>\n            <strong>Relación del Perfil del Candidato con la Descripción y Requisitos del Puesto:</strong>\n            <p>El perfil del candidato presenta una sólida alineación con la descripción y los requisitos del puesto de Cloud Architect. Sus fortalezas en liderazgo, gestión de equipos y experiencia en arquitectura end-to-end se correlacionan directamente con la necesidad de diseñar y administrar infraestructuras en la nube. Asimismo, su orientación hacia la modernización y transformación digital se ajusta perfectamente a la naturaleza innovadora del puesto.</p>\n        </li>\n        <li>\n            <strong>Aspectos del CV que se Ajustan Fuertemente a las Tareas y Responsabilidades del Puesto:</strong>\n            <p>Las habilidades técnicas del candidato en Java, Angular, AWS, Kubernetes y Terraform cumplen con los requisitos técnicos para diseñar arquitecturas cloud eficientes, implementar soluciones de alta disponibilidad y monitorear el rendimiento de los servicios cloud. Su experiencia en preventa y colaboración en proyectos de migración a la nube respaldan la capacidad de colaborar en proyectos de migración a la nube y garantizar la seguridad y cumplimiento de normativas.</p>\n        </li>\n        <li>\n            <strong>Áreas de Oportunidad o Discrepancias entre el Perfil del Candidato y las Expectativas del Rol:</strong>\n            <p>Las transiciones frecuentes entre roles y empresas, así como la dependencia de certificaciones para validar habilidades técnicas, podrían plantear preocupaciones en cuanto a la posible curva de adaptación en nuevos entornos o tecnologías. Aunque el candidato posee las habilidades técnicas necesarias, es importante considerar su capacidad de adaptación a entornos cambiantes de manera eficaz y eficiente.</p>\n        </li>\n        <li>\n            <strong>Contribución de Cada Elemento al Puntaje Final:</strong>\n            <p>El puntaje final se compone de la evaluación de la descripción del puesto, los requisitos y las tareas asociadas. El candidato obtuvo un puntaje equilibrado, donde su alineación con los requisitos técnicos fue destacada, pero aspectos como la posible curva de adaptación y las transiciones entre roles y empresas influyeron en el puntaje final. Es importante considerar cómo la combinación de fortalezas y áreas de oportunidad impactaron en la evaluación global del candidato para el puesto de Cloud Architect.</p>\n        </li>\n    </ol>\n</div>"
+	}
+}
