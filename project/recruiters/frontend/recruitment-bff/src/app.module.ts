@@ -4,6 +4,7 @@ import { ApplicationsModule } from './applications/applications.module';
 import { ConfigModule } from '@nestjs/config';
 import { SharedModule } from './shared/shared.module';
 import { GlobalPositionModule } from './global-position/global-position.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { GlobalPositionModule } from './global-position/global-position.module';
     PositionsModule,
     ApplicationsModule,
     GlobalPositionModule,
-    SharedModule,
+    NotificationsModule,
+    SharedModule
   ],
 })
 export class AppModule {}

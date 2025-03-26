@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConsoleLogger } from '@nestjs/common';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -9,6 +10,23 @@ async function bootstrap() {
       prefix: 'Recruitment-BFF',
     }),
   });
-  await app.listen(process.env.PORT ?? 3000);
+
+  const brokers = (process.env.KAFKA_BROKERS ?? 'localhost:9092').split(',');
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'recruitment-bff',
+        brokers: brokers,
+      },
+      consumer: {
+        groupId: 'recruitment-group',
+      },
+    },
+  });
+  await app.startAllMicroservices();
+  await app.listen(process.env.PORT ?? 4000);
 }
+
 bootstrap();

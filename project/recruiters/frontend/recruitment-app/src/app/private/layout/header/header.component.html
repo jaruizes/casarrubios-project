@@ -21,10 +21,91 @@
             href="javascript:void(0);"
             role="button"
             aria-haspopup="false"
-            aria-expanded="false">
+            aria-expanded="false" (click)="resetNotificationsBadge()">
               <i class="icofont-bell-alt"></i>
-              <span class="alert-badge"></span>
+            @if (newNotification) {
+                <span class="alert-badge"></span>
+                <span class="position-absolute start-100 translate-middle bg-danger border border-light rounded-circle">
+                    <small class="thumb-xs"></small>
+                </span>
+            }
+
           </a>
+          <div
+            class="dropdown-menu stop dropdown-menu-end dropdown-lg py-0" ngbDropdownMenu>
+            <h5 class="dropdown-item-text m-0 py-3 d-flex justify-content-between align-items-center">
+              Notificaciones
+              <a href="javascript:void(0);" class="badge text-body-tertiary badge-pill">
+                <i class="iconoir-plus-circle fs-4"></i>
+              </a>
+            </h5>
+<!--            <ul ngbNav #nav="ngbNav" class="nav nav-tabs nav-tabs-custom nav-success nav-justified mb-1" role="tablist">-->
+<!--              @for (tab of tabItems; track $index) {-->
+<!--                <li class="nav-item" role="presentation" ngbNavItem>-->
+<!--                  <a-->
+<!--                    class="nav-link mx-0"-->
+<!--                    ngbNavLink-->
+<!--                    data-bs-toggle="tab"-->
+<!--                    href="javascript:void(0);"-->
+<!--                    role="tab"-->
+<!--                  >-->
+<!--                    {{ tab.tabName }}-->
+<!--                    @if ($index == 0) {-->
+<!--                      <span-->
+<!--                        class="badge bg-primary-subtle text-primary badge-pill ms-1"-->
+<!--                      >-->
+<!--                        24-->
+<!--                      </span>-->
+<!--                    }-->
+<!--                  </a>-->
+<!--                  <ng-template ngbNavContent>-->
+<!--                    <div class="tab-pane fade show active" role="tabpanel">-->
+<!--                      @for (item of tab.tabContent; track $index) {-->
+<!--                        <a-->
+<!--                          href="javascript:void(0);"-->
+<!--                          class="dropdown-item py-3"-->
+<!--                        >-->
+<!--                          <small class="float-end text-muted ps-2">{{-->
+<!--                              item.time-->
+<!--                            }}</small>-->
+<!--                          <div class="d-flex align-items-center">-->
+<!--                            <div-->
+<!--                              class="flex-shrink-0 bg-primary-subtle text-primary thumb-md rounded-circle"-->
+<!--                            >-->
+<!--                              <i [class]="item.iconClass + ' fs-4'"></i>-->
+<!--                            </div>-->
+<!--                            <div class="flex-grow-1 ms-2 text-truncate">-->
+<!--                              <h6 class="my-0 fw-normal text-dark fs-13">-->
+<!--                                {{ item.title }}-->
+<!--                              </h6>-->
+<!--                              <small class="text-muted mb-0">{{-->
+<!--                                  item.description-->
+<!--                                }}</small>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </a>-->
+<!--                      }-->
+<!--                    </div>-->
+<!--                  </ng-template>-->
+<!--                </li>-->
+<!--              }-->
+<!--            </ul>-->
+<!--            <ngx-simplebar class="ms-0" style="max-height: 230px">-->
+<!--              <div-->
+<!--                class="tab-content"-->
+<!--                id="myTabContent"-->
+<!--                [ngbNavOutlet]="nav"-->
+<!--              ></div>-->
+<!--            </ngx-simplebar>-->
+<!--            <a-->
+<!--              routerLink="/pages/notifications"-->
+<!--              class="dropdown-item text-center text-dark fs-13 py-2"-->
+<!--            >-->
+<!--              View All <i class="fi-arrow-right"></i>-->
+<!--            </a>-->
+          </div>
+
+
         </li>
       </ul>
     </nav>

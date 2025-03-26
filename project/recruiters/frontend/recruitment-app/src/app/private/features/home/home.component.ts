@@ -27,12 +27,15 @@ export class HomeComponent implements OnInit {
   positionToDelete?: Position;
   globalPosition?: GlobalPosition;
 
+
   @ViewChild('deletePositionModal')
   deletePositionModal!: TemplateRef<HTMLElement>;
 
   private deletePositionModalRef!: NgbModalRef;
 
-  constructor(private router: Router, private positionService: PositionsService, private globalPositionService: GlobalPositionsService, private modalService: NgbModal) {
+  constructor(private router: Router, private positionService: PositionsService,
+              private globalPositionService: GlobalPositionsService,
+              private modalService: NgbModal) {
     this.router = router;
     this.positionService = positionService;
     this.globalPositionService = globalPositionService;
@@ -40,7 +43,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadData(0)
+    this.loadData(0);
   }
 
   get filteredResults() {
