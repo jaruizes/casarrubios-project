@@ -1,7 +1,8 @@
 recruitment.applications-received
 recruitment.applications-analyzed
 recruitment.applications-scored
-recruiters.new-positions-published
+recruitment.new-positions-published
+recruitment.notifications
 cdc.recruiters.positions
 cdc.recruiters.requirements
 cdc.recruiters.benefits

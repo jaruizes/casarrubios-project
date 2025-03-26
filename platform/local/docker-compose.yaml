@@ -173,6 +173,9 @@ services:
     container_name: applications.applications-app
     ports:
       - "8081:8081"
+    environment:
+      - POSITIONS=http://localhost:3000/positions,
+      - APPLICATIONS=http://localhost:3000/applications
 
   applications-applications-bff:
     image: "applications/applications-bff:1.0.0"
@@ -199,7 +202,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=postgres
       - SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA=applications
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
-      - NEW-POSITIONS-PUBLISHED_TOPIC=recruiters.new-positions-published
+      - NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - SPRING_KAFKA_CONSUMER_GROUP-ID=positions-service
 
 
@@ -230,6 +233,11 @@ services:
     container_name: recruitment.recruitment-app
     ports:
       - "9070:9070"
+    environment:
+      - NOTIFICATIONS=http://localhost:4000
+      - APPLICATIONS=http://localhost:4000/applications
+      - POSITIONS=http://localhost:4000/positions
+      - GLOBAL_POSITION=http://localhost:4000/global-position
 
   recruitment-recruitment-bff:
     image: "recruitment/recruitment-bff:1.0.0"
@@ -241,6 +249,8 @@ services:
       - GLOBAL_POSITION_SERVICE_URL=http://recruitment-global-position-service:9090
       - APPLICATIONS_SERVICE_URL=http://recruitment-applications-service:9081
       - PORT=4000
+      - KAFKA_BROKERS=broker:29092
+      - KAFKA_NOTIFICATION_TOPIC=recruitment.notifications
 
   recruitment-positions-service:
     image: "recruitment/positions-manager-service:1.0.0"
@@ -271,7 +281,7 @@ services:
       - CDC_RECRUITERS_POSITIONS-REQUIREMENTS_TOPIC=cdc.recruiters.requirements
       - CDC_RECRUITERS_POSITIONS-BENEFITS_TOPIC=cdc.recruiters.benefits
       - CDC_RECRUITERS_POSITIONS-TASK_TOPIC=cdc.recruiters.tasks
-      - RECRUITERS_NEW-POSITIONS-PUBLISHED_TOPIC=recruiters.new-positions-published
+      - RECRUITERS_NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - QUARKUS.KAFKA-STREAMS.TOPICS=cdc.recruiters.positions,cdc.recruiters.requirements,cdc.recruiters.benefits,cdc.recruiters.tasks
       - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-positions-publisher-service
 
@@ -381,12 +391,26 @@ services:
         condition: service_completed_successfully
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
-      - QUARKUS.KAFKA-STREAMS.TOPICS=recruiters.new-positions-published,recruitment.applications-received,recruitment.applications-scored
+      - QUARKUS.KAFKA-STREAMS.TOPICS=recruitment.new-positions-published,recruitment.applications-received,recruitment.applications-scored
       - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-global-position-service
-      - NEW-POSITIONS_TOPIC=recruiters.new-positions-published
+      - NEW-POSITIONS_TOPIC=recruitment.new-positions-published
       - NEW-APPLICATIONS_TOPIC=recruitment.applications-received
       - SCORING_TOPIC=recruitment.applications-scored
       - QUARKUS_HTTP_PORT=9090
+
+  recruitment-notifications-manager-service:
+    image: "recruitment/notifications-manager-service:1.0.0"
+    container_name: recruitment.notifications-manager-service
+    depends_on:
+      broker:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=broker:29092
+      - MP_MESSAGING_OUTGOING_NOTIFICATIONS-PUBLISHER_TOPIC=recruitment.notifications
+      - MP_MESSAGING_INCOMING_APPLICATION-SCORED_TOPIC=recruitment.applications-scored
+      - MP_MESSAGING_INCOMING_APPLICATION-SCORED_GROUP_ID=notifications-manager-service
 
 volumes:
   minio_data:
