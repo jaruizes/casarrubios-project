@@ -1,7 +1,6 @@
 package com.jaruiz.casarrubios.candidates.services.applications.adapters.filestorage;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;

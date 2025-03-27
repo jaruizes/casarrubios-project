@@ -6,9 +6,9 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationErrorDTO;
 import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationIncompleteException;
 import com.jaruiz.casarrubios.candidates.services.applications.business.exceptions.ApplicationsGeneralException;
-import com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.ApplicationErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 import org.slf4j.Logger;
