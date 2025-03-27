@@ -1,0 +1,26 @@
+name: Build Spring
+
+on:
+  push:
+    paths:
+      - 'project/applications/backend/services/applications-manager-service/**'
+  pull_request:
+    paths:
+      - 'project/applications/backend/services/applications-manager-service/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: project/spring-service
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+
+      - run: ./mvnw clean install
