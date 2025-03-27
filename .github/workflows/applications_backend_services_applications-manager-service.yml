@@ -1,6 +1,7 @@
 name: Build Applications Manager Service
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'project/applications/backend/services/applications-manager-service/**'
