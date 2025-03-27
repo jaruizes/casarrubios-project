@@ -1,4 +1,4 @@
-name: (Applications) Positions Service
+name: (Recruitment) Positions Manager Service
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   build:
-    uses: ./.github/workflows/spring-service.yml
+    uses: ./.github/workflows/quarkus-service.yml
     with:
-      image-name: applications/positions-service
-      service-path: project/applications/backend/services/positions-service
+      image-name: recruitment/positions-manager-service
+      service-path: project/recruiters/backend/services/positions-manager-service
