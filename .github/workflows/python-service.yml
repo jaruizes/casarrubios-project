@@ -1,0 +1,60 @@
+name: (Base) Python Services
+
+on:
+  workflow_call:
+    inputs:
+      service-path:
+        required: true
+        type: string
+      image-name:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ inputs.service-path }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install system dependencies
+        run: |
+          apt-get update && apt-get install -y curl jq
+
+      - name: Install Poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+
+      - name: Extract version from pyproject.toml
+        id: extract_version
+        run: |
+          VERSION=$(poetry version -s)
+          echo "VERSION=$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: poetry install --no-root --only main
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ steps.extract_version.outputs.VERSION }} .
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ steps.extract_version.outputs.VERSION }}
