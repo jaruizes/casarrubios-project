@@ -1,4 +1,4 @@
-name: Build Applications Manager Service
+name: [Applications] Applications Manager Service
 
 on:
   workflow_dispatch:
