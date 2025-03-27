@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.jaruiz.casarrubios.recruiters.services</groupId>
     <artifactId>analyzer-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>analyzer-service</name>
     <description>analyzer-service</description>
     <properties>
@@ -149,46 +149,27 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-<!--            <plugin>-->
-<!--                &lt;!&ndash; TODO: Review this plugin configuration &ndash;&gt;-->
-<!--                <groupId>org.pitest</groupId>-->
-<!--                <artifactId>pitest-maven</artifactId>-->
-<!--                <version>1.17.1</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>pitest</id>-->
-<!--                        <phase>test</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>mutationCoverage</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.pitest</groupId>-->
-<!--                        <artifactId>pitest-junit5-plugin</artifactId>-->
-<!--                        <version>1.2.1</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
-<!--                <configuration>-->
-<!--                    <timeoutConstant>15000</timeoutConstant>-->
-<!--                    <verbose>true</verbose>-->
-<!--                    <targetClasses>-->
-<!--                        <param>com.jaruiz.casarrubios.recruiters.services.applications.*</param>-->
-<!--                    </targetClasses>-->
-<!--                    <targetTests>-->
-<!--                        <param>com.jaruiz.casarrubios.recruiters.services.applications.*</param>-->
-<!--                    </targetTests>-->
-<!--                    <features>-->
-<!--                        <feature>+auto_threads</feature>-->
-<!--                    </features>-->
-<!--&lt;!&ndash;                    <excludedClasses>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <param>com.jaruiz.casarrubios.candidates.services.applications.adapters.api.rest.dto.*</param>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <param>com.jaruiz.casarrubios.candidates.services.applications.adapters.persistence.postgresql.entities.*</param>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <param>com.jaruiz.casarrubios.candidates.services.applications.infrastructure.config.*</param>&ndash;&gt;-->
-<!--&lt;!&ndash;                    </excludedClasses>&ndash;&gt;-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.36</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.6.2</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
