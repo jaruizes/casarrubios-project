@@ -12,4 +12,5 @@ jobs:
   build:
     uses: ./.github/workflows/spring-service.yml
     with:
+      image-name: applications/applications-manager-service
       service-path: project/applications/backend/services/applications-manager-service
