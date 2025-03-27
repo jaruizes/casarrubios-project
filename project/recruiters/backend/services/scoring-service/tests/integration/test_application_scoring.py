@@ -21,7 +21,7 @@ async def test_score(setup_e2e, kafka_container, setup_topics, wait_for_result_i
     producer.send(input_topic, application_analysed_event, application_analysed_event['applicationId'])
 
     result_topic = os.getenv("KAFKA_OUTPUT_TOPIC")
-    result = await wait_for_result_in_kafka(result_topic, timeout=300)
+    result = await wait_for_result_in_kafka(result_topic, timeout=20)
     assert result is not None
     __assert_event_received(result)
 

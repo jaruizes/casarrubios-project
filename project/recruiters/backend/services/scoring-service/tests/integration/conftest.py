@@ -9,6 +9,8 @@ import pytest
 from confluent_kafka import Consumer, KafkaException
 from testcontainers.kafka import KafkaContainer
 from testcontainers.postgres import PostgresContainer
+from unittest.mock import patch, MagicMock
+import pytest
 
 from src.main import main
 
@@ -133,116 +135,31 @@ def wait_for_result_in_kafka(kafka_container):
 
     return _wait_for_result
 
+@pytest.fixture(autouse=True, scope="module")
+def mock_openai_embeddings():
+    def fake_create_embedding(input, model):
+        if isinstance(input, list):
+            inputs = input
+        else:
+            inputs = [input]
 
-# @pytest.mark.asyncio
-# async def test_full_scoring_flow(setup_e2e, kafka_container, wait_for_result_in_kafka):
-#     """Test the full scoring flow from input event to output event"""
-#     # Create a Kafka producer
-#     producer = AIOKafkaProducer(
-#         bootstrap_servers=kafka_container,
-#         value_serializer=lambda v: json.dumps(v).encode('utf-8')
-#     )
-#     await producer.start()
-#
-#     # Create a test message
-#     test_message = {
-#         "id": "test-app-123",
-#         "positionId": "pos-123",
-#         "application": {
-#             "id": "app-123",
-#             "candidateId": "cand-123",
-#             "description": "Experienced software developer with Python skills",
-#             "skills": ["Python", "SQL", "Docker", "Kubernetes"],
-#             "experiences": [
-#                 {"tasks": ["Developed web applications", "Designed database schemas"]}
-#             ]
-#         }
-#     }
-#
-#     # Send the message to the input topic
-#     try:
-#         await producer.send_and_wait("application-analysed-events", test_message)
-#         print("Test message sent to Kafka")
-#
-#         # Wait for the result in the output topic
-#         result = await wait_for_result_in_kafka("application-scored-events", timeout=30)
-#
-#         # Verify the result
-#         assert result is not None, "No result received from application"
-#         assert result.get("id") is not None
-#         assert result.get("applicationId") == "app-123"
-#         assert result.get("positionId") == "pos-123"
-#         assert "score" in result
-#         assert "descScore" in result
-#         assert "requirementScore" in result
-#         assert "taskScore" in result
-#         assert "timeSpent" in result
-#
-#     finally:
-#         await producer.stop()
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# @pytest.fixture(scope="session")
-# def db_engine(postgres_container):
-#     connection_url = postgres_container.get_connection_url()
-#     engine = create_engine(connection_url)
-#
-#     yield engine
-#
-# @pytest.fixture(scope="session")
-# def db_session_factory(db_engine):
-#     """Crea una factory de sesiones para las pruebas"""
-#     return sessionmaker(bind=db_engine, expire_on_commit=False)
-#
-#
-# @pytest.fixture(scope="module")
-# def db_session(db_session_factory):
-#     """Crea una sesión de base de datos para cada test"""
-#     session = db_session_factory()
-#     yield session
-#     session.close()
-#
-#
-# @pytest.fixture(scope="module")
-# def position_repository(db_session_factory):
-#     """Crea un repositorio de posiciones para pruebas"""
-#     return PositionRepository(db_session_factory)
-#
-#
-# @pytest.fixture(scope="module")
-# def kafka_producer(kafka_container):
-#     """Crea un productor de Kafka para pruebas"""
-#     producer = KafkaProducer(kafka_container)
-#     producer.initialize()
-#     yield producer
-#     producer.close()
-#
-#
+        embeddings = []
+        for text in inputs:
+            # Simula un embedding "determinista" basado en el texto
+            vector = [(ord(c) % 10) / 10.0 for c in text][:10]
+            padded = vector + [0.0] * (1536 - len(vector))
+            embeddings.append(MagicMock(embedding=padded))
 
-#
-#
-# @pytest.fixture(scope="module")
-# def scoring_service():
-#     """Crea un servicio de puntuación para pruebas"""
-#     return ScoringService()
-#
-#
-# @pytest.fixture(scope="module")
-# def process_application_use_case(position_repository, kafka_producer, scoring_service):
-#     use_case = ScoreApplicationUseCase(
-#         position_repository=position_repository,
-#         event_producer=kafka_producer,
-#         scoring_service=scoring_service
-#     )
-#     return use_case
-#
-#
+        return MagicMock(data=embeddings)
+
+    def fake_chat_completion_create(model, messages, temperature, top_p, n):
+        user_prompt = next((msg["content"] for msg in messages if msg["role"] == "user"), "")
+        fake_response = MagicMock()
+        fake_choice = MagicMock()
+        fake_choice.message.content = f"Fake explanation for: {user_prompt}"
+        fake_response.choices = [fake_choice]
+        return fake_response
+
+    with patch("src.domain.services.scoring_service.openai.embeddings.create", side_effect=fake_create_embedding), \
+         patch("src.domain.services.scoring_service.openai.chat.completions.create", side_effect=fake_chat_completion_create):
+        yield
