@@ -18,6 +18,8 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+    env:
+      SPRING_AI_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     defaults:
       run:
         working-directory: ${{ inputs.service-path }}
