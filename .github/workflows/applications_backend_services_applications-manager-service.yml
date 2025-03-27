@@ -9,7 +9,7 @@ on:
       - 'project/applications/backend/services/applications-manager-service/**'
 
 jobs:
-  call-quarkus-build:
+  build:
     uses: ./.github/workflows/spring-service.yml
     with:
       service-path: project/applications/backend/services/applications-manager-service
