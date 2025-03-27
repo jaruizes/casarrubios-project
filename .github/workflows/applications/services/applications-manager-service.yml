@@ -1,0 +1,15 @@
+name: Build Applications Manager Service
+
+on:
+  push:
+    paths:
+      - 'project/applications/backend/services/applications-manager-service/**'
+  pull_request:
+    paths:
+      - 'project/applications/backend/services/applications-manager-service/**'
+
+jobs:
+  call-quarkus-build:
+    uses: ./.github/workflows/spring-service.yml
+    with:
+      service-path: project/applications/backend/services/applications-manager-service
