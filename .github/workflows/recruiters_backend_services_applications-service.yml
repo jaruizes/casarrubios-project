@@ -1,4 +1,4 @@
-name: (Recruitment) Scoring Service
+name: (Recruitment) Applications Service
 
 on:
   workflow_dispatch:
