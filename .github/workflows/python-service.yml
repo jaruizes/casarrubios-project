@@ -27,7 +27,7 @@ jobs:
 
       - name: Install system dependencies
         run: |
-          apt-get update && apt-get install -y curl jq
+          sudo apt-get update && apt-get install -y curl jq
 
       - name: Install Poetry
         run: |
