@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.jaruiz.casarrubios.candidates.services</groupId>
     <artifactId>positions-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>positions-service</name>
     <description>positions-service</description>
     <properties>

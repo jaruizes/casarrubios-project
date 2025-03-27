@@ -1,0 +1,23 @@
+name: (Recruitment) Global Position Service
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'project/recruiters/backend/services/global-position-service/**'
+  pull_request:
+    paths:
+      - 'project/recruiters/backend/services/global-position-service/**'
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/quarkus-service.yml
+    with:
+      image-name: recruitment/global-position-service
+      service-path: project/recruiters/backend/services/global-position-service
