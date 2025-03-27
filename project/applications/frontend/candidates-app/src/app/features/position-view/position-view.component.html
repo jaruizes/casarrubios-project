@@ -1,13 +1,13 @@
 @if (position) {
-<div class="card border border-2 border-secondary ">
-  <div class="card-header bg-light-subtle">
+<div class="card border border-2 border-secondary card-container">
+  <div class="card-header" style="background-color: #001F3D; color: white">
     <div class="row">
       <div class="col-lg-8 align-self-center mb-3 mb-lg-0">
         <div class="d-flex align-items-center flex-row flex-wrap">
           <div class="">
             <h1 class="fw-semibold mb-1">{{ position.title }}</h1>
             <p class="mb-2 text-muted fw-medium">Fecha de creación: {{position.creationDate | date: 'dd-MM-yyyy'}}</p>
-            <span *ngFor="let tag of position.tags" class="badge bg-success me-2 fs-16">{{ tag.name }}</span>
+            <span *ngFor="let tag of position.tags" class="badge bg-secondary me-2 fs-14">{{ tag.name }}</span>
           </div>
         </div>
       </div>
@@ -15,10 +15,10 @@
         <div class="text-end flex-row flex-wrap">
           <div class="pb-2">
             <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="back()">
-              Back
+              Volver
             </button>
             <button type="button" class="btn rounded-pill btn-danger" (click)="openApplyForm()">
-              Apply
+              Aplicar
             </button>
           </div>
 
@@ -27,16 +27,16 @@
     </div>
   </div>
   <div class="card-body">
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
+    <div class="card section" >
+      <div class="card-header subheader">
         <h4 class="fw-semibold mb-1">¿Qué estamos buscando?</h4>
       </div>
       <div class="card-body">
         <p class="lead">{{ position.description }}</p>
       </div>
     </div>
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
+    <div class="card section">
+      <div class="card-header subheader">
         <h4 class="fw-semibold mb-1">¿Qué esperamos de ti?</h4>
       </div>
       <div class="card-body">
@@ -48,8 +48,8 @@
         </ul>
       </div>
     </div>
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
+    <div class="card section">
+      <div class="card-header subheader">
         <h4 class="fw-semibold mb-1">¿Qué responsabilidades y tareas principales tendrás?</h4>
       </div>
       <div class="card-body">
@@ -58,8 +58,8 @@
         </ul>
       </div>
     </div>
-    <div class="card border-dashed">
-      <div class="card-header bg-blue-subtle">
+    <div class="card section">
+      <div class="card-header subheader">
         <h4 class="fw-semibold mb-1">¿Por qué trabajar con nosotros?</h4>
       </div>
       <div class="card-body">
@@ -76,7 +76,7 @@
       role="dialog"
       aria-labelledby="applyToPositionModalTitle"
       aria-hidden="true">
-      <div class="modal-body">
+      <div class="modal-body modal-lg">
         <div class="row align-items-center">
           <div class="col">
             <app-new-application #newApplicationComponent [position]="position" (applicationFinished)="closeModal()"></app-new-application>

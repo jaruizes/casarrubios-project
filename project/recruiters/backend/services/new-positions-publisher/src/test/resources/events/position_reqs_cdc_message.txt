@@ -1,0 +1,26 @@
+{
+	"id": 1,
+	"position_id": <position_id>,
+	"key": "Experiencia",
+	"value": 2,
+	"description": "Experiencia mínima de 2 años en desarrollo de software.",
+	"mandatory": true
+}
+#####
+{
+	"id": 2,
+	"position_id": <position_id>,
+	"key": "Conocimiento",
+	"value": 3,
+	"description": "Conocimiento avanzado en programación orientada a objetos.",
+	"mandatory": true
+}
+#####
+{
+	"id": 3,
+	"position_id": <position_id>,
+	"key": "Capacidad",
+	"value": 1,
+	"description": "Capacidad para trabajar en equipo.",
+	"mandatory": true
+}

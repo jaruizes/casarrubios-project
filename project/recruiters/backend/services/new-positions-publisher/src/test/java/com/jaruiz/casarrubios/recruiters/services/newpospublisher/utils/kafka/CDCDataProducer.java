@@ -1,6 +1,10 @@
 package com.jaruiz.casarrubios.recruiters.services.newpospublisher.utils.kafka;
 
-import com.jaruiz.casarrubios.recruiters.services.newpospublisher.model.*;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
+
 import io.smallrye.reactive.messaging.kafka.api.OutgoingKafkaRecordMetadata;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -12,73 +16,64 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 public class CDCDataProducer {
 
     @Inject
-    @Channel("cdc-recruiters-positions-out") Emitter<Position> positionCDCEmitter;
+    @Channel("cdc-recruiters-positions-out") Emitter<String> positionCDCEmitter;
 
     @Inject
-    @Channel("cdc-recruiters-positions-requirements-out") Emitter<PositionRequirement> positionRequirementsCDCEmitter;
+    @Channel("cdc-recruiters-positions-requirements-out") Emitter<String> positionReqEmitter;
 
     @Inject
-    @Channel("cdc-recruiters-positions-tasks-out") Emitter<PositionTask> positionTasksCDCEmitter;
+    @Channel("cdc-recruiters-positions-tasks-out") Emitter<String> positionTasksEmitter;
 
     @Inject
-    @Channel("cdc-recruiters-positions-benefits-out") Emitter<PositionBenefit> positionBenefitCDCEmitter;
+    @Channel("cdc-recruiters-positions-benefits-out") Emitter<String> positionBenefitEmitter;
 
 
-    public void publishPosition(long id) {
-        Position position = new Position();
-        position.setId(id);
-        position.setTitle("Title");
-        position.setDescription("Description");
-        position.setStatus("OPEN");
-        position.setCreatedAt(System.currentTimeMillis());
-        position.setPublishedAt(System.currentTimeMillis());
-        position.setTags("Tag1, Tag2");
+    public void publishPosition(long positionId, boolean withReqs, boolean withTasks, boolean withBenefits) throws IOException {
+        String event = readEventFile("events/position_cdc_message.txt")
+            .replaceAll("<position_id>", String.valueOf(positionId));
+        this.positionCDCEmitter.send(Message.of(event).addMetadata(OutgoingKafkaRecordMetadata.<Long>builder().withKey(1L)));
+        if (withReqs) {
+            this.publishRequirements(positionId);
+        }
 
-        Message<Position> message = Message.of(position)
-                                           .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(id)));
-        positionCDCEmitter.send(message);
+        if (withTasks) {
+            this.publishTasks(positionId);
+        }
+
+        if (withBenefits) {
+            this.publishBenefits(positionId);
+        }
     }
 
-    public void publishRequirement(long positionId, long requirementId) {
-        PositionRequirement requirement = new PositionRequirement();
-        requirement.setPositionId(positionId);
-        requirement.setDescription("Description");
-        requirement.setKey("Key");
-        requirement.setValue("Value");
-        requirement.setId(requirementId);
-        requirement.setMandatory(true);
-
-        Message<PositionRequirement> message = Message.of(requirement)
-                                           .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(positionId)));
-        positionRequirementsCDCEmitter.send(message);
+    private void publishRequirements(long positionId) throws IOException {
+        String events = readEventFile("events/position_reqs_cdc_message.txt")
+            .replaceAll("<position_id>", String.valueOf(positionId));;
+        List<String> reqsCDCMessages = List.of(events.split("#####"));
+        reqsCDCMessages.forEach(event -> {
+            this.positionReqEmitter.send(Message.of(event).addMetadata(OutgoingKafkaRecordMetadata.<Long>builder().withKey(1L)));
+        });
     }
 
-    public void publishTask(long positionId, long taskId) {
-        PositionTask task = new PositionTask();
-        task.setPositionId(positionId);
-        task.setDescription("Description");
-        task.setId(taskId);
-
-        Message<PositionTask> message = Message.of(task)
-                                                      .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(positionId)));
-        positionTasksCDCEmitter.send(message);
+    private void publishTasks(long positionId) throws IOException {
+        String events = readEventFile("events/position_tasks_cdc_message.txt")
+            .replaceAll("<position_id>", String.valueOf(positionId));;
+        List<String> reqsCDCMessages = List.of(events.split("#####"));
+        reqsCDCMessages.forEach(event -> {
+            this.positionTasksEmitter.send(Message.of(event).addMetadata(OutgoingKafkaRecordMetadata.<Long>builder().withKey(1L)));
+        });
     }
 
-    public void publishBenefit(long positionId, long benefitId) {
-        PositionBenefit benefit = new PositionBenefit();
-        benefit.setPositionId(positionId);
-        benefit.setDescription("Description");
-        benefit.setId(benefitId);
-
-        Message<PositionBenefit> message = Message.of(benefit)
-                                               .addMetadata(OutgoingKafkaRecordMetadata.<PositionKey>builder().withKey(buildPositionKey(positionId)));
-        positionBenefitCDCEmitter.send(message);
+    private void publishBenefits(long positionId) throws IOException {
+        String events = readEventFile("events/position_benefits_cdc_message.txt")
+            .replaceAll("<position_id>", String.valueOf(positionId));;
+        List<String> reqsCDCMessages = List.of(events.split("#####"));
+        reqsCDCMessages.forEach(event -> {
+            this.positionBenefitEmitter.send(Message.of(event).addMetadata(OutgoingKafkaRecordMetadata.<Long>builder().withKey(1L)));
+        });
     }
 
-    private PositionKey buildPositionKey(long id) {
-        PositionKey key = new PositionKey();
-        key.setId(id);
-        return key;
+    private static String readEventFile(String fileName) throws IOException {
+        return new String(Objects.requireNonNull(CDCDataProducer.class.getClassLoader().getResourceAsStream(fileName)).readAllBytes(), StandardCharsets.UTF_8);
     }
 
 }

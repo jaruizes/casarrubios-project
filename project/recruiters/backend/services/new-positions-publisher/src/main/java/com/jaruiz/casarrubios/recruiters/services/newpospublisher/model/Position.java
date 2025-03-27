@@ -14,7 +14,7 @@ public class Position {
     private String status;
     @JsonProperty("created_at")
     private long createdAt;
-    @JsonProperty("created_at")
+    @JsonProperty("published_at")
     private long publishedAt;
     private String tags;
     private List<PositionRequirement> requirements;

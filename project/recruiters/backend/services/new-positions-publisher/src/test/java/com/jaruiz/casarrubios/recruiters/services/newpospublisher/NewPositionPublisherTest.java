@@ -1,5 +1,6 @@
 package com.jaruiz.casarrubios.recruiters.services.newpospublisher;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -16,7 +17,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
+import org.testcontainers.shaded.org.awaitility.Durations;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.testcontainers.shaded.org.bouncycastle.oer.its.template.ieee1609dot2.basetypes.Ieee1609Dot2BaseTypes.Duration;
 
 @QuarkusTest
 @QuarkusTestResource(KafkaContainer.class)
@@ -38,16 +41,10 @@ class NewPositionPublisherTest {
     }
 
     @Test
-    void whenARightPositionAndReqsAndTasksAndBenefitsAreReplicated_thenACompletePositionIsPublished() throws InterruptedException {
+    void whenARightPositionAndReqsAndTasksAndBenefitsAreReplicated_thenACompletePositionIsPublished() throws  IOException {
         long positionId = 1;
 
-        cdcDataProducer.publishPosition(positionId);
-
-        for (int i=0; i<5; i++) {
-            cdcDataProducer.publishBenefit(positionId, i);
-            cdcDataProducer.publishRequirement(positionId, i);
-            cdcDataProducer.publishTask(positionId, i);
-        }
+        cdcDataProducer.publishPosition(positionId, true, true, true);
 
         Awaitility.await()
                   .atMost(200, TimeUnit.SECONDS)
@@ -60,57 +57,36 @@ class NewPositionPublisherTest {
         assertTrue(positionComplete.getRequirements() != null && !positionComplete.getRequirements().isEmpty());
         assertTrue(positionComplete.getBenefits() != null && !positionComplete.getBenefits().isEmpty());
         assertTrue(positionComplete.getTasks() != null && !positionComplete.getTasks().isEmpty());
-        assertEquals(5, positionComplete.getRequirements().size());
-        assertEquals(5, positionComplete.getBenefits().size());
-        assertEquals(5, positionComplete.getTasks().size());
+        assertEquals(3, positionComplete.getRequirements().size());
+        assertEquals(3, positionComplete.getBenefits().size());
+        assertEquals(4, positionComplete.getTasks().size());
     }
 
     @Test
-    void whenAnIncompletePositionWithoutReqsIsReplicated_thenACompletePositionIsNotPublished() throws InterruptedException {
-        long positionId = 2;
+    void whenAnIncompletePositionWithoutReqsIsReplicated_thenACompletePositionIsNotPublished() throws IOException {
+        cdcDataProducer.publishPosition(2L, false, true, true);
 
-        cdcDataProducer.publishPosition(positionId);
-
-        for (int i=0; i<5; i++) {
-            cdcDataProducer.publishBenefit(positionId, i);
-            cdcDataProducer.publishTask(positionId, i);
-        }
-
-        Awaitility.await().during(30, TimeUnit.SECONDS);
+        Awaitility.await().pollDelay(Durations.FIVE_SECONDS).until(() -> true);
 
         final Position positionComplete = positionCompleteConsumer.getPositionComplete();
         assertNull(positionComplete);
     }
 
     @Test
-    void whenAnIncompletePositionWithoutTasksIsReplicated_thenACompletePositionIsNotPublished() throws InterruptedException {
-        long positionId = 3;
+    void whenAnIncompletePositionWithoutTasksIsReplicated_thenACompletePositionIsNotPublished() throws IOException {
+        cdcDataProducer.publishPosition(3L, true, false, true);
 
-        cdcDataProducer.publishPosition(positionId);
-
-        for (int i=0; i<5; i++) {
-            cdcDataProducer.publishBenefit(positionId, i);
-            cdcDataProducer.publishRequirement(positionId, i);
-        }
-
-        Awaitility.await().during(30, TimeUnit.SECONDS);
+        Awaitility.await().pollDelay(Durations.FIVE_SECONDS).until(() -> true);
 
         final Position positionComplete = positionCompleteConsumer.getPositionComplete();
         assertNull(positionComplete);
     }
 
     @Test
-    void whenAnIncompletePositionWithoutBenefitsIsReplicated_thenACompletePositionIsNotPublished() throws InterruptedException {
-        long positionId = 4;
+    void whenAnIncompletePositionWithoutBenefitsIsReplicated_thenACompletePositionIsNotPublished() throws IOException {
+        cdcDataProducer.publishPosition(4L, true, true, false);
 
-        cdcDataProducer.publishPosition(positionId);
-
-        for (int i=0; i<5; i++) {
-            cdcDataProducer.publishRequirement(positionId, i);
-            cdcDataProducer.publishTask(positionId, i);
-        }
-
-        Awaitility.await().during(30, TimeUnit.SECONDS);
+        Awaitility.await().pollDelay(Durations.FIVE_SECONDS).until(() -> true);
 
         final Position positionComplete = positionCompleteConsumer.getPositionComplete();
         assertNull(positionComplete);

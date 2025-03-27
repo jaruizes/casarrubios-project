@@ -31,7 +31,7 @@ public class NewPositionOpenPublishedTopology {
         StreamsBuilder builder = new StreamsBuilder();
         builder.addStateStore(
             Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(POSITION_COMPLETE_STORE),
+                Stores.inMemoryKeyValueStore(POSITION_COMPLETE_STORE),
                 Serdes.Long(),
                 positionCompleteSerde
             )
@@ -39,7 +39,7 @@ public class NewPositionOpenPublishedTopology {
 
         builder.addStateStore(
             Stores.keyValueStoreBuilder(
-                Stores.persistentKeyValueStore(POSITION_COMPLETE_TIMESTAMPS),
+                Stores.inMemoryKeyValueStore(POSITION_COMPLETE_TIMESTAMPS),
                 Serdes.Long(),
                 Serdes.Long()
             )

@@ -8,7 +8,8 @@
     left: 0;
     z-index: 1000;
     opacity: 1;
-  background-color: $gray-300;
+    background-color: #343A4B;
+    color: white;
     transition: 0.3s;
     .topbar-custom {
         //background-color: transparent;
@@ -135,6 +136,7 @@
 }
 html[data-bs-theme="dark"]{
     .topbar {
+      color: white;
         .topbar-custom {
             .nav-link{
                 &.nav-icon{
@@ -152,6 +154,7 @@ html[data-bs-theme="dark"]{
 
 html[data-bs-theme="light"]{
     .topbar {
+      color: white;
         .topbar-custom {
             .nav-link{
                 &.nav-icon{
@@ -179,6 +182,7 @@ html[data-bs-theme="light"]{
     body[data-sidebar-size="collapsed"],
     body[data-sidebar-size="default"] {
         .topbar {
+            color: white;
             width: 100%;
         }
     }
@@ -191,6 +195,7 @@ html[data-bs-theme="light"]{
         display: none !important;
     }
     .topbar {
+      color: white;
         .topbar-custom {
             .nav-link {
                 margin: 0 4px;
@@ -217,6 +222,7 @@ html[data-bs-theme="light"]{
 
 @media (max-width: 380px) {
     .topbar {
+      color: white;
         .topbar-custom {
             margin: 0;
         }

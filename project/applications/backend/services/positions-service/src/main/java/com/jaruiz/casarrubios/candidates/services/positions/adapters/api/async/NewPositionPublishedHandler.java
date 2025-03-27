@@ -79,7 +79,16 @@ public class NewPositionPublishedHandler {
     }
 
     private LocalDateTime getLocalDateTime(long timestamp) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), TimeZone.getDefault().toZoneId());
+        int length = String.valueOf(timestamp).length();
+        long epochMilis = timestamp;
+
+        if (length <= 10) {
+            epochMilis = timestamp * 1_000;
+        } else if (length >= 16) {
+            epochMilis = timestamp / 1_000;
+        }
+
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMilis), TimeZone.getDefault().toZoneId());
     }
 
 }

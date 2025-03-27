@@ -6,3 +6,38 @@
   text-overflow: ellipsis;
   max-height: 5em;
 }
+
+.positions-table {
+  color: white;
+
+  thead {
+    background-color: #4F5464;
+
+  }
+
+  th {
+    color: white;
+  }
+  td {
+    color: white;
+    border-color: #4F5464;
+
+    span {
+      color: black
+    }
+  }
+}
+
+ngb-pagination ::ng-deep .page-link {
+  background-color: #4F5464;
+  color: white;
+  border-color: gray;
+}
+
+ngb-pagination ::ng-deep .page-item.active .page-link {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
+

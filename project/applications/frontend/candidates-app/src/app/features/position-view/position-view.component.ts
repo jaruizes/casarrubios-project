@@ -59,6 +59,7 @@ export class PositionViewComponent implements OnInit {
     this.modalRef = this.modalService.open(this.applyToPositionModal, {
       backdrop: 'static',
       keyboard: false,
+      size: 'lg'
     });
   }
 

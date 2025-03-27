@@ -1,0 +1,17 @@
+{
+	"id": 1,
+	"position_id": <position_id>,
+	"description": "Salario competitivo acorde al mercado."
+}
+#####
+{
+    "id": 2,
+    "position_id": <position_id>,
+    "description": "Plan de salud integral."
+}
+#####
+{
+    "id": 3,
+    "position_id": <position_id>,
+    "description": "Bonificaciones por desempeño."
+}

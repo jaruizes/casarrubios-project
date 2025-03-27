@@ -244,6 +244,9 @@ services:
     container_name: recruitment.recruitment-bff
     ports:
       - "4000:4000"
+    depends_on:
+      broker:
+        condition: service_healthy
     environment:
       - POSITIONS_SERVICE_URL=http://recruitment-positions-service:9080
       - GLOBAL_POSITION_SERVICE_URL=http://recruitment-global-position-service:9090

@@ -1,0 +1,23 @@
+{
+	"id": 1,
+	"position_id": <position_id>,
+	"description": "Desarrollar nuevas funcionalidades según requerimientos."
+}
+#####
+{
+	"id": 2,
+	"position_id": <position_id>,
+	"description": "Realizar mantenimiento y mejoras en el código existente."
+}
+#####
+{
+    "id": 3,
+    "position_id": <position_id>,
+    "description": "Participar en reuniones de planificación y seguimiento de proyectos."
+}
+#####
+{
+    "id": 4,
+    "position_id": <position_id>,
+    "description": "Colaborar en la definición de arquitectura de software."
+}
