@@ -1,4 +1,4 @@
-name: (Recruitment) Positions Manager Service
+name: (Recruitment) Applications Updater Service
 
 on:
   workflow_dispatch:
