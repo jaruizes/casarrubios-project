@@ -1,19 +1,18 @@
 name: Build Spring
 
 on:
-  push:
-    paths:
-      - 'project/applications/backend/services/applications-manager-service/**'
-  pull_request:
-    paths:
-      - 'project/applications/backend/services/applications-manager-service/**'
+  workflow_call:
+    inputs:
+      service-path:
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: project/spring-service
+        working-directory: ${{ inputs.service-path }}
 
     steps:
       - uses: actions/checkout@v3
