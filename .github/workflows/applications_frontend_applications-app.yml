@@ -1,0 +1,23 @@
+name: (Applications) Angular Application
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'project/applications/frontend/candidates-app/**'
+  pull_request:
+    paths:
+      - 'project/applications/frontend/candidates-app/**'
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/node-application.yml
+    with:
+      image-name: applications/applications-app
+      service-path: project/applications/frontend/candidates-app

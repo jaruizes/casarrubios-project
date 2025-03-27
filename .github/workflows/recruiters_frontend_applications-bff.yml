@@ -1,0 +1,23 @@
+name: (Recruitment) BFF
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'project/recruiters/frontend/recruitment-bff/**'
+  pull_request:
+    paths:
+      - 'project/recruiters/frontend/recruitment-bff/**'
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/node-application.yml
+    with:
+      image-name: recruitment/recruitment-bff
+      service-path: project/recruiters/frontend/recruitment-bff
