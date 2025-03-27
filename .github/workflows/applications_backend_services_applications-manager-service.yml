@@ -9,6 +9,12 @@ on:
     paths:
       - 'project/applications/backend/services/applications-manager-service/**'
 
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
 jobs:
   build:
     uses: ./.github/workflows/spring-service.yml
