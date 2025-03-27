@@ -1,4 +1,4 @@
-name: Build Spring and Publish Docker Image
+name: (Base) Spring Services
 
 on:
   workflow_call:

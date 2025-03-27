@@ -1,4 +1,4 @@
-name: [Recruitment] Resume Analyzer Service
+name: (Recruitment) Resume Analyzer Service
 
 on:
   workflow_dispatch:

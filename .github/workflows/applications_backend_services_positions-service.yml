@@ -1,4 +1,4 @@
-name: [Applications] Positions Service
+name: (Applications) Positions Service
 
 on:
   workflow_dispatch:
