@@ -22,3 +22,4 @@ jobs:
       domain: applications
       service-name: positions-service
       service-path: project/applications/backend/services/positions-service
+    secrets: inherit

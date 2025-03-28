@@ -44,9 +44,6 @@ jobs:
           VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Package application
-        run: ./mvnw clean package -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ inputs.service-name }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=casarrubios-project -DskipPitest
-
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -61,10 +58,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: SonarQube analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=applications_applications-manager-service -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=casarrubios-project -DskipPitest
+      - name: Build, analysis and package
+        run: ./mvnw clean package -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ inputs.service-name }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=casarrubios-project -DskipPitest
 
       - name: Prepare Docker build context
         run: |
