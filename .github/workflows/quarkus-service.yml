@@ -21,6 +21,8 @@ jobs:
       packages: write
       attestations: write
       id-token: write
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     defaults:
       run:
         working-directory: ${{ inputs.service-path }}
