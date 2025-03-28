@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 import {PositionsService} from "../../services/positions.service";
 import {Position} from "../../model/position";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
+import {of} from "rxjs";
 
 
 @Component({
@@ -58,4 +59,6 @@ export class HomeComponent implements OnInit {
       this.pageSize = paginatedPosition.size;
     });
   }
+
+  protected readonly of = of;
 }
