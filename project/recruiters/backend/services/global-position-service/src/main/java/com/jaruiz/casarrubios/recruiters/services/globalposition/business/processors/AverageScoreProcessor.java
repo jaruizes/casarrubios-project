@@ -45,6 +45,8 @@ public class AverageScoreProcessor implements Processor<String, String, Void, Vo
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        logger.infof("Closing processor: %s", storeName);
+    }
 }
 

@@ -30,5 +30,7 @@ public class IncrementProcessor implements Processor<String, String, Void, Void>
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        logger.infof("Closing processor: %s", storeName);
+    }
 }

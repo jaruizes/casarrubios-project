@@ -20,7 +20,11 @@ public class GlobalPositionTopology {
     public static final String APPLICATIONS_STORE = "applications-store";
     public static final String SCORING_STORE = "scoring-store";
 
-    @Inject TopologyConfig config;
+    private final TopologyConfig config;
+
+    public GlobalPositionTopology(TopologyConfig config) {
+        this.config = config;
+    }
 
     @Produces
     public Topology buildTopology() {

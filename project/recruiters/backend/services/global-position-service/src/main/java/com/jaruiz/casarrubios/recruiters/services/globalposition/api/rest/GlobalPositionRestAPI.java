@@ -25,9 +25,13 @@ import static org.apache.kafka.streams.StoreQueryParameters.fromNameAndType;
 public class GlobalPositionRestAPI {
 
     private static final Logger logger = Logger.getLogger(GlobalPositionTopology.class);
+    public static final String COUNT = "count";
 
-    @Inject
-    KafkaStreams streams;
+    private final KafkaStreams streams;
+
+    public GlobalPositionRestAPI(KafkaStreams streams) {
+        this.streams = streams;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -41,13 +45,13 @@ public class GlobalPositionRestAPI {
             ReadOnlyKeyValueStore<String, Long> applications = streams.store(fromNameAndType(APPLICATIONS_STORE, QueryableStoreTypes.keyValueStore()));
             ReadOnlyKeyValueStore<String, Double> scoring = streams.store(fromNameAndType(SCORING_STORE, QueryableStoreTypes.keyValueStore()));
 
-            long posCount = positions.get("count") != null ? positions.get("count") : 0L;
-            long appCount = applications.get("count") != null ? applications.get("count") : 0L;
+            long posCount = positions.get(COUNT) != null ? positions.get(COUNT) : 0L;
+            long appCount = applications.get(COUNT) != null ? applications.get(COUNT) : 0L;
             double scoreAvg = scoring.get("average") != null ? scoring.get("average") : 0.0;
             double avgAppPerPos = posCount == 0 ? 0 : (double) appCount / posCount;
 
-            BigDecimal roundedScoreAvg = new BigDecimal(scoreAvg).setScale(2, RoundingMode.HALF_UP);
-            BigDecimal roundedAvgAppPerPos = new BigDecimal(avgAppPerPos).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal roundedScoreAvg = BigDecimal.valueOf(scoreAvg).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal roundedAvgAppPerPos = BigDecimal.valueOf(avgAppPerPos).setScale(2, RoundingMode.HALF_UP);
 
             globalPositionDTO.setTotalPositions(posCount);
             globalPositionDTO.setAverageApplications(roundedAvgAppPerPos.doubleValue());

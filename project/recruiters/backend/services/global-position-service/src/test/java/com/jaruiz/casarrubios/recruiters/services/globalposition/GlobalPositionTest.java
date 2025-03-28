@@ -51,11 +51,6 @@ public class GlobalPositionTest {
         logger.info("Topology started");
     }
 
-    @AfterEach
-    public void tearDown(){
-
-    }
-
     private List<String> getTopicNames() {
         return List.of(
             topologyConfig.getScoringTopic(),
