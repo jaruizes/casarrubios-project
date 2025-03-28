@@ -19,5 +19,7 @@ jobs:
   build:
     uses: ./.github/workflows/python-service.yml
     with:
-      image-name: recruitment/applications-service
+      domain: recruitment
+      service-name: applications-service
       service-path: project/recruiters/backend/services/applications-service
+    secrets: inherit

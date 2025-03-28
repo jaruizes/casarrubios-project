@@ -19,6 +19,7 @@ jobs:
   build:
     uses: ./.github/workflows/node-application.yml
     with:
-      image-name: applications/applications-bff
+      domain: applications
+      service-name: applications-bff
       service-path: project/applications/frontend/applications-bff
     secrets: inherit

@@ -19,5 +19,7 @@ jobs:
   build:
     uses: ./.github/workflows/python-service.yml
     with:
-      image-name: recruitment/scoring-service
+      domain: recruitment
+      service-name: scoring-service
       service-path: project/recruiters/backend/services/scoring-service
+    secrets: inherit

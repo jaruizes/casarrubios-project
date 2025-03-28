@@ -19,5 +19,7 @@ jobs:
   build:
     uses: ./.github/workflows/node-application.yml
     with:
-      image-name: recruitment/recruitment-bff
+      domain: recruitment
+      service-name: recruitment-bff
       service-path: project/recruiters/frontend/recruitment-bff
+    secrets: inherit

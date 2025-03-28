@@ -19,5 +19,7 @@ jobs:
   build:
     uses: ./.github/workflows/node-application.yml
     with:
-      image-name: applications/applications-app
+      domain: applications
+      service-name: applications-app
       service-path: project/applications/frontend/candidates-app
+    secrets: inherit
