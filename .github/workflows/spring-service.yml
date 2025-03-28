@@ -6,14 +6,12 @@ on:
       service-path:
         required: true
         type: string
-      image-name:
+      domain:
         required: true
         type: string
-#    secrets:
-#      OPENAI_API_KEY:
-#        required: false
-#      SONAR_TOKEN:
-#        required: true
+      service-name:
+        required: true
+        type: string
 
 
 jobs:
@@ -47,7 +45,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Package application
-        run: ./mvnw clean package
+        run: ./mvnw clean package -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ inputs.service-name }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=casarrubios-project -DskipPitest
 
       - name: Cache SonarQube packages
         uses: actions/cache@v4
@@ -75,7 +73,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ steps.extract_version.outputs.VERSION }} .
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ inputs.domain }}/${{ inputs.service-name }}:${{ steps.extract_version.outputs.VERSION }} .
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -86,5 +84,5 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ steps.extract_version.outputs.VERSION }}
+          docker push ghcr.io/${{ github.repository_owner }}/${{ inputs.domain }}/${{ inputs.service-name }}:${{ steps.extract_version.outputs.VERSION }}
   

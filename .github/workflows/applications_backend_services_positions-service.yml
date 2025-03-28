@@ -19,5 +19,6 @@ jobs:
   build:
     uses: ./.github/workflows/spring-service.yml
     with:
-      image-name: applications/positions-service
+      domain: applications
+      service-name: positions-service
       service-path: project/applications/backend/services/positions-service

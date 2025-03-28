@@ -19,5 +19,6 @@ jobs:
   build:
     uses: ./.github/workflows/spring-service.yml
     with:
-      image-name: recruitment/applications-analyzer-service
+      domain: recruitment
+      service-name: applications-analyzer-service
       service-path: project/recruiters/backend/services/resume-analyzer-service
