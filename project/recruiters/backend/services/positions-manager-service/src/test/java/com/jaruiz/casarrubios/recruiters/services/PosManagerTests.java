@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PosManagerIT {
+class PosManagerTests {
 
     @Test
     @Order(1)
@@ -72,8 +72,8 @@ class PosManagerIT {
     @Test
     public void givenPositionData_whenCreatePosition_thenANewPositionIsCreated() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("1").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -108,8 +108,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutTitle_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("1").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -142,8 +142,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutDescription_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("1").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -211,8 +211,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutTasks_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("2").mandatory(true));
 
 //        final List<TaskDTO> taskDTOS = new ArrayList<>();
 //        taskDTOS.add(new TaskDTO().description("Task 1"));
@@ -246,8 +246,8 @@ class PosManagerIT {
     @Test
     public void givenAPositionDataWithoutBenefits_whenCreatePosition_thenAnErrorIsThrown() {
         final List<RequirementDTO> requirementDTOS = new ArrayList<>();
-        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("Value 1").mandatory(true));
-        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("Value 2").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 1").description("Requirement 1").value("1").mandatory(true));
+        requirementDTOS.add(new RequirementDTO().key("Key 2").description("Requirement 2").value("2").mandatory(true));
 
         final List<TaskDTO> taskDTOS = new ArrayList<>();
         taskDTOS.add(new TaskDTO().description("Task 1"));
