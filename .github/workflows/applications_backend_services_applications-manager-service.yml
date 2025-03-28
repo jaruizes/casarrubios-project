@@ -21,5 +21,5 @@ jobs:
     with:
       image-name: applications/applications-manager-service
       service-path: project/applications/backend/services/applications-manager-service
-    secrets:
+    env:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
