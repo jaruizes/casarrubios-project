@@ -11,7 +11,7 @@
     <groupId>com.jaruiz.casarrubios.candidates.services</groupId>
     <artifactId>applications-manager-service</artifactId>
     <version>1.0.0</version>
-    <name>applications-service</name>
+    <name>applications-manager-service</name>
     <description>applications-service</description>
     <properties>
         <java.version>21</java.version>
