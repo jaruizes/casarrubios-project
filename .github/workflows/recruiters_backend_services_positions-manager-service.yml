@@ -22,3 +22,4 @@ jobs:
       domain: recruitment
       service-name: positions-manager-service
       service-path: project/recruiters/backend/services/positions-manager-service
+    secrets: inherit

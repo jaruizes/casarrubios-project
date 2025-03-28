@@ -22,3 +22,4 @@ jobs:
       domain: recruitment
       service-name: new-positions-publisher-service
       service-path: project/recruiters/backend/services/new-positions-publisher
+    secrets: inherit

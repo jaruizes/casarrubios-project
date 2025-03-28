@@ -22,3 +22,4 @@ jobs:
       domain: recruitment
       service-name: global-position-service
       service-path: project/recruiters/backend/services/global-position-service
+    secrets: inherit
