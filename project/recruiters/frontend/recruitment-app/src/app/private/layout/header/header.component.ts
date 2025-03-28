@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core'
 import {Router, RouterModule} from '@angular/router'
 import {NgbDropdownModule, NgbNavModule} from '@ng-bootstrap/ng-bootstrap'
 import {NotificationsService} from "../../services/notifications/notifications.service";
-import { Notification } from '../../model/notification';
+import {Notification} from '../../model/notification';
 
 @Component({
   selector: 'app-header',

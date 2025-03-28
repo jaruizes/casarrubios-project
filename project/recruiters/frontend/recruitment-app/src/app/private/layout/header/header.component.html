@@ -19,9 +19,7 @@
             ngbDropdownToggle
             data-bs-toggle="dropdown"
             href="javascript:void(0);"
-            role="button"
-            aria-haspopup="false"
-            aria-expanded="false" (click)="resetNotificationsBadge()">
+            (click)="resetNotificationsBadge()">
               <i class="icofont-bell-alt"></i>
             @if (newNotification) {
                 <span class="alert-badge"></span>

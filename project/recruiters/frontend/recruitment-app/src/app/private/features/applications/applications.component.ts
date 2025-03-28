@@ -31,7 +31,7 @@ export class ApplicationsComponent implements OnInit {
   applications: Application[] = [];
   position: Position;
 
-  constructor(private location: Location, private router: Router, private applicationsService: ApplicationsService) {
+  constructor(private readonly location: Location, private readonly router: Router, private readonly applicationsService: ApplicationsService) {
     this.router = router;
     this.applicationsService = applicationsService;
     this.position = {} as Position;

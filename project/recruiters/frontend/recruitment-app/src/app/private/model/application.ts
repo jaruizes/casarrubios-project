@@ -1,5 +1,3 @@
-import {Tag} from "./position";
-
 export interface PositionApplied {
   id: number;
   matchingPercentage: number;

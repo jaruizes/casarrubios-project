@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { io, Socket } from 'socket.io-client';
-import { Observable, Subject } from 'rxjs';
-import { Notification } from '../../model/notification';
+import {Injectable} from '@angular/core';
+import {io, Socket} from 'socket.io-client';
+import {Observable, Subject} from 'rxjs';
+import {Notification} from '../../model/notification';
 import {environment} from "../../../../environments/environment";
 
 @Injectable({
