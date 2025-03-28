@@ -40,7 +40,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Package application (without tests)
-        run: ./mvnw clean package -DskipTests
+        run: ./mvnw clean package
 
       - name: Prepare Docker build context
         run: |
@@ -64,7 +64,7 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=applications_applications-manager-service -Dsonar.host.url=https://sonarcloud.io
+        run: ./mvnw -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=applications_applications-manager-service -Dsonar.host.url=https://sonarcloud.io
 
       - name: Build Docker image
         run: |
@@ -80,3 +80,4 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ steps.extract_version.outputs.VERSION }}
+  
