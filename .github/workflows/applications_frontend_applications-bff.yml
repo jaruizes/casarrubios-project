@@ -21,3 +21,4 @@ jobs:
     with:
       image-name: applications/applications-bff
       service-path: project/applications/frontend/applications-bff
+    secrets: inherit
