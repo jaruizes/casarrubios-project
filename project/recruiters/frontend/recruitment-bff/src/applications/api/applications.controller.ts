@@ -225,6 +225,6 @@ export class ApplicationsController {
   }
 
   private generateShortId(uuid: string): string {
-    return crypto.createHash('md5').update(uuid).digest('hex').substring(0, 6);
+    return crypto.createHash('sha512').update(uuid).digest('hex').substring(0, 6);
   }
 }
