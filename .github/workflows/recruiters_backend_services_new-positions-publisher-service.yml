@@ -19,5 +19,6 @@ jobs:
   build:
     uses: ./.github/workflows/quarkus-service.yml
     with:
-      image-name: recruitment/new-positions-publisher-service
+      domain: recruitment
+      service-name: new-positions-publisher-service
       service-path: project/recruiters/backend/services/new-positions-publisher

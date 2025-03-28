@@ -6,7 +6,10 @@ on:
       service-path:
         required: true
         type: string
-      image-name:
+      domain:
+        required: true
+        type: string
+      service-name:
         required: true
         type: string
 
@@ -28,8 +31,25 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '23'
+          java-version: '21'
           distribution: 'temurin'
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build, analysis and package
+        run: ./mvnw clean package -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ inputs.service-name }} -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=casarrubios-project -DskipPitest
 
       - name: Extract version from pom.xml
         id: extract_version
@@ -37,12 +57,9 @@ jobs:
           VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Package application (without tests)
-        run: ./mvnw clean package -DskipTests
-
       - name: Build Docker image
         run: |
-          docker build -f src/main/docker/Dockerfile.jvm -t ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ steps.extract_version.outputs.VERSION }} .
+          docker build -f src/main/docker/Dockerfile.jvm -t ghcr.io/${{ github.repository_owner }}/${{ inputs.domain }}/${{ inputs.service-name }}:${{ steps.extract_version.outputs.VERSION }} .
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -53,4 +70,4 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push ghcr.io/${{ github.repository_owner }}/${{ inputs.image-name }}:${{ steps.extract_version.outputs.VERSION }}
+          docker push ghcr.io/${{ github.repository_owner }}/${{ inputs.domain }}/${{ inputs.service-name }}:${{ steps.extract_version.outputs.VERSION }}

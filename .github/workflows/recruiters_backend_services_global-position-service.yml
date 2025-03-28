@@ -19,5 +19,6 @@ jobs:
   build:
     uses: ./.github/workflows/quarkus-service.yml
     with:
-      image-name: recruitment/global-position-service
+      domain: recruitment
+      service-name: global-position-service
       service-path: project/recruiters/backend/services/global-position-service

@@ -1,0 +1,24 @@
+name: (Recruitment) Notifications Manager Service
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'project/recruiters/backend/services/notifications-manager-service/**'
+  pull_request:
+    paths:
+      - 'project/recruiters/backend/services/notifications-manager-service/**'
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  build:
+    uses: ./.github/workflows/quarkus-service.yml
+    with:
+      domain: recruitment
+      service-name: notifications-manager-service
+      service-path: project/recruiters/backend/services/notifications-manager-service

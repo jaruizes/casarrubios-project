@@ -19,5 +19,6 @@ jobs:
   build:
     uses: ./.github/workflows/quarkus-service.yml
     with:
-      image-name: recruitment/positions-manager-service
+      domain: recruitment
+      service-name: positions-manager-service
       service-path: project/recruiters/backend/services/positions-manager-service

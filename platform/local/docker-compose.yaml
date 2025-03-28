@@ -91,6 +91,25 @@ services:
       timeout: 10s
       retries: 5
 
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
+    ports:
+      - "13133:13133"
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - jaeger
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: infrastructure.kafka-ui
@@ -204,6 +223,10 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - SPRING_KAFKA_CONSUMER_GROUP-ID=positions-service
+      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
+      - OTEL_SERVICE_NAME="(Applications) positions-service"
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
 
 
   applications-manager-service:
@@ -225,6 +248,10 @@ services:
       - MINIO_URL=http://minio:9000
       - MINIO_ACCESS_NAME=minioadmin
       - MINIO_ACCESS_SECRET=minioadmin
+      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
+      - OTEL_SERVICE_NAME="(Applications) applications-manager-service"
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
 
 ### -------------------------------------------------------------- ###
 ### "RECRUITERS SIDE" SERVICES ###
