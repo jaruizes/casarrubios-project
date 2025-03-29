@@ -49,8 +49,6 @@ export class ApplicationsComponent implements OnInit {
     return this.applications.filter((application: Application) =>
       application.candidate.toLowerCase().includes(searchTerm)
     );
-
-    return this.applications;
   }
 
   back(): void {
