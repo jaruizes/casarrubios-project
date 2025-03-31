@@ -55,10 +55,6 @@ export class ApplicationsComponent implements OnInit {
     this.location.back();
   }
 
-  getMatchingPercentage(positionsApplied: PositionApplied[]): number {
-    return positionsApplied.filter((position) => position.id === this.position.id)[0].matchingPercentage;
-  }
-
   goToApplicationDetail(id: string) {
     let applicationSelected = this.applications.filter((application: Application) => application.id === id)[0];
     if (applicationSelected.scoring) {

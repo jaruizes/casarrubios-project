@@ -1,5 +1,5 @@
 {
-  "name": "applications-postgresql-connector",
+  "name": "recruiters-new-applications-outbox-connector",
   "config": {
     "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
     "database.hostname": "postgresql",
@@ -14,12 +14,18 @@
     "key.converter.schemas.enable": "false",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
-    "slot.name": "applications",
-    "table.include.list": "APPLICATIONS.APPLICATIONS",
+    "slot.name": "outbox",
+    "table.include.list": "RECRUITERS.OUTBOX",
     "topic.creation.enable": "true",
     "topic.creation.default.replication.factor": "1",
     "topic.creation.default.partitions": "1",
-    "transforms": "unwrap",
-    "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState"
+    "transforms": "outbox",
+    "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+    "transforms.outbox.table.fields.additional.placement": "type:header:eventType",
+    "transforms.outbox.route.by.field": "type",
+    "transforms.outbox.route.topic.replacement": "recruitment.applications-received",
+    "transforms.outbox.table.expand.json.payload": "true",
+    "transforms.outbox.delete.handling.mode": "rewrite",
+    "transforms.outbox.table.fields.include": "payload"
   }
 }

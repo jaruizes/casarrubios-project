@@ -1,0 +1,45 @@
+---
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
+    ports:
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP
+      - "13133:13133"  # Health check/debug
+    depends_on:
+      - jaeger
+
+  jaeger:
+    image: jaegertracing/jaeger:2.4.0
+    ports:
+      - "16686:16686"
+    environment:
+      - LOG_LEVEL=debug
+#    volumes:
+#      - ./otel/jaeger.yaml:/jaeger/config.yaml:ro
+#    command: [ "--config", "/jaeger/config.yaml" ]
+
+
+#  applications-applications-bff:
+#    image: "applications/applications-bff:1.0.0"
+#    container_name: applications.applications-bff
+#    ports:
+#      - "3000:3000"
+#    environment:
+#      - BACKEND_URL=http://localhost:8080
+#      - APPLICATIONS_BACKEND_URL=http://localhost:8090
+#      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+
+  hotrod:
+    image: jaegertracing/example-hotrod:1.63.0
+    ports:
+      - "18080:8080"
+      - "18083:8083"
+    command: [ "all" ]
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      - jaeger

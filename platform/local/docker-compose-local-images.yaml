@@ -91,35 +91,24 @@ services:
       timeout: 10s
       retries: 5
 
-#  otel-collector:
-#    image: otel/opentelemetry-collector:latest
-#    command: [ "--config=/etc/otel-collector-config.yaml" ]
-#    volumes:
-#      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
-#    ports:
-#      - "13133:13133"
-#      - "4317:4317"
-#      - "4318:4318"
-#    depends_on:
-#      - jaeger
-#
-#  jaeger:
-#    image: jaegertracing/all-in-one:latest
-#    ports:
-#      - "16686:16686"
-#      - "14268:14268"
-#      - "14250:14250"
-
   otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
+    ports:
+      - "13133:13133"
+      - "4317:4317"
+      - "4318:4318"
+    depends_on:
+      - jaeger
+
+  jaeger:
     image: jaegertracing/all-in-one:latest
     ports:
-      - "16686:16686" # Jaeger UI
-      - "14268:14268" # Receive legacy OpenTracing traces, optional
-      - "4317:4317"   # OTLP gRPC receiver
-      - "4318:4318"   # OTLP HTTP receiver
-      - "14250:14250" # Receive from external otel-collector, optional
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -181,7 +170,6 @@ services:
     volumes:
       - ../../project/applications/cdc/connectors/applications-cdc-postgresql-connector.json:/connectors/applications-cdc-postgresql-connector.json
       - ../../project/recruiters/cdc/connectors/recruiters-positions-cdc-connector.json:/connectors/recruiters-positions-cdc-connector.json
-      - ../../project/recruiters/cdc/connectors/recruiters-new-applications-outbox-connector.json:/connectors/recruiters-new-applications-outbox-connector.json
       - ./cdc/register-connectors.sh:/register-connectors.sh
     entrypoint: [ "sh", "/register-connectors.sh" ]
 
@@ -200,8 +188,7 @@ services:
   ### -------------------------------------------------------------- ###
   ### "CANDIDATE SIDE" SERVICES ###
   applications-applications-app:
-    image: "ghcr.io/jaruizes/applications/applications-app:1.0.0"
-    pull_policy: always
+    image: "applications/applications-app:1.0.0"
     container_name: applications.applications-app
     ports:
       - "8081:8081"
@@ -210,22 +197,16 @@ services:
       - APPLICATIONS=http://localhost:3000/applications
 
   applications-applications-bff:
-    image: "ghcr.io/jaruizes/applications/applications-bff:1.0.0"
-    pull_policy: always
+    image: "applications/applications-bff:1.0.0"
     container_name: applications.applications-bff
     ports:
       - "3000:3000"
-    depends_on:
-      - applications-positions-service
-      - applications-manager-service
     environment:
       - BACKEND_URL=http://applications-positions-service:8080
       - APPLICATIONS_BACKEND_URL=http://applications-manager-service:8090
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
 
   applications-positions-service:
-    image: "ghcr.io/jaruizes/applications/positions-service:1.0.0"
-    pull_policy: always
+    image: "applications/positions-service:1.0.0"
     container_name: applications.positions-service
     ports:
       - "8080:8080"
@@ -242,17 +223,14 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - SPRING_KAFKA_CONSUMER_GROUP-ID=positions-service
-#      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
+      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
+      - OTEL_SERVICE_NAME="(Applications) positions-service"
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-      - OTEL_SERVICE_NAME=applications-positions-service
       - OTEL_METRICS_EXPORTER=none
-      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://otel-collector:4317
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://otel-collector:4317
 
 
   applications-manager-service:
-    image: "ghcr.io/jaruizes/applications/applications-manager-service:1.0.0"
-    pull_policy: always
+    image: "applications/applications-manager-service:1.0.0"
     container_name: applications.manager-service
     ports:
       - "8090:8090"
@@ -270,16 +248,15 @@ services:
       - MINIO_URL=http://minio:9000
       - MINIO_ACCESS_NAME=minioadmin
       - MINIO_ACCESS_SECRET=minioadmin
-#      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
+      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
+      - OTEL_SERVICE_NAME="(Applications) applications-manager-service"
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-      - OTEL_SERVICE_NAME=applications-manager-service
-#      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
 
 ### -------------------------------------------------------------- ###
 ### "RECRUITERS SIDE" SERVICES ###
   recruitment-recruitment-app:
-    image: "ghcr.io/jaruizes/recruitment/recruitment-app:1.0.0"
-    pull_policy: always
+    image: "recruitment/recruitment-app:1.0.0"
     container_name: recruitment.recruitment-app
     ports:
       - "9070:9070"
@@ -290,20 +267,13 @@ services:
       - GLOBAL_POSITION=http://localhost:4000/global-position
 
   recruitment-recruitment-bff:
-    image: "ghcr.io/jaruizes/recruitment/recruitment-bff:1.0.0"
-    pull_policy: always
+    image: "recruitment/recruitment-bff:1.0.0"
     container_name: recruitment.recruitment-bff
     ports:
       - "4000:4000"
     depends_on:
       broker:
         condition: service_healthy
-      recruitment-positions-service:
-        condition: service_started
-      recruitment-applications-service:
-        condition: service_started
-      recruitment-global-position-service:
-        condition: service_started
     environment:
       - POSITIONS_SERVICE_URL=http://recruitment-positions-service:9080
       - GLOBAL_POSITION_SERVICE_URL=http://recruitment-global-position-service:9090
@@ -311,12 +281,9 @@ services:
       - PORT=4000
       - KAFKA_BROKERS=broker:29092
       - KAFKA_NOTIFICATION_TOPIC=recruitment.notifications
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
-#      - NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
 
   recruitment-positions-service:
-    image: "ghcr.io/jaruizes/recruitment/positions-manager-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/positions-manager-service:1.0.0"
     container_name: recruitment.positions-manager-service
     ports:
       - "9080:9080"
@@ -329,12 +296,9 @@ services:
       - QUARKUS_DATASOURCE_USERNAME=postgres
       - QUARKUS_DATASOURCE_PASSWORD=postgres
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
-      - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-positions-publisher-service:
-    image: "ghcr.io/jaruizes/recruitment/new-positions-publisher-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/new-positions-publisher-service:1.0.0"
     container_name: recruitment.new-positions-publisher-service
     depends_on:
       broker:
@@ -350,12 +314,9 @@ services:
       - RECRUITERS_NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - QUARKUS.KAFKA-STREAMS.TOPICS=cdc.recruiters.positions,cdc.recruiters.requirements,cdc.recruiters.benefits,cdc.recruiters.tasks
       - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-positions-publisher-service
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
-      - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-applications-updater-service:
-    image: "ghcr.io/jaruizes/recruitment/applications-updater-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/applications-updater-service:1.0.0"
     container_name: recruitment.applications-updater-service
     depends_on:
       postgresql:
@@ -369,12 +330,9 @@ services:
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MP_MESSAGING_INCOMING_CDC-APPLICATIONS_TOPIC=cdc.applications.applications
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
-      - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-applications-service:
-    image: "ghcr.io/jaruizes/recruitment/applications-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/applications-service:1.0.0"
     container_name: recruitment.applications-service
     ports:
       - "9081:9081"
@@ -402,13 +360,10 @@ services:
       - MINIO_ACCESS_NAME=minioadmin
       - MINIO_ACCESS_SECRET=minioadmin
       - MINIO_BUCKET_NAME=resumes
-      - OTEL_SERVICE_NAME=recruitment-applications-service
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
     restart: unless-stopped
 
   recruitment-applications-analyzer-service:
-    image: "ghcr.io/jaruizes/recruitment/applications-analyzer-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/applications-analyzer-service:1.0.0"
     container_name: recruitment.applications-analyzer-service
     ports:
       - "9082:9082"
@@ -430,13 +385,9 @@ services:
       - MINIO_ACCESS_SECRET=minioadmin
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - SPRING_AI_OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-      - OTEL_SERVICE_NAME=applications-analyzer-service
-      - OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL-SPAN-ATTRIBUTES=true
 
   recruitment-scoring-service:
-    image: "ghcr.io/jaruizes/recruitment/scoring-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/scoring-service:1.0.0"
     container_name: recruitment.scoring-service
     depends_on:
       postgresql:
@@ -457,12 +408,9 @@ services:
       - KAFKA_INPUT_TOPIC=recruitment.applications-analyzed
       - KAFKA_OUTPUT_TOPIC=recruitment.applications-scored
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OTEL_SERVICE_NAME=recruitment-scoring-service
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
 
   recruitment-global-position-service:
-    image: "ghcr.io/jaruizes/recruitment/global-position-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/global-position-service:1.0.0"
     container_name: recruitment.global-position-service
     ports:
       - "9090:9090"
@@ -479,12 +427,9 @@ services:
       - NEW-APPLICATIONS_TOPIC=recruitment.applications-received
       - SCORING_TOPIC=recruitment.applications-scored
       - QUARKUS_HTTP_PORT=9090
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
-      - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-notifications-manager-service:
-    image: "ghcr.io/jaruizes/recruitment/notifications-manager-service:1.0.0"
-    pull_policy: always
+    image: "recruitment/notifications-manager-service:1.0.0"
     container_name: recruitment.notifications-manager-service
     depends_on:
       broker:
@@ -496,8 +441,6 @@ services:
       - MP_MESSAGING_OUTGOING_NOTIFICATIONS-PUBLISHER_TOPIC=recruitment.notifications
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_TOPIC=recruitment.applications-scored
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_GROUP_ID=notifications-manager-service
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
-      - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
 volumes:
   minio_data:

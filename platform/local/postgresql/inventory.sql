@@ -40,7 +40,7 @@ CREATE TABLE APPLICATIONS.POSITIONS_TASKS
 
 CREATE TABLE APPLICATIONS.APPLICATIONS
 (
-    id         VARCHAR(255) PRIMARY KEY,
+    id         UUID PRIMARY KEY,
     name       VARCHAR(255) NOT NULL,
     email      VARCHAR(255) NOT NULL,
     phone      VARCHAR(255) NOT NULL,
@@ -110,6 +110,18 @@ SELECT id, 'Colaboración con equipos multidisciplinarios' FROM APPLICATIONS.POS
 --- RECRUITERS ---
 
 CREATE SCHEMA IF NOT EXISTS RECRUITERS;
+
+CREATE TABLE RECRUITERS.outbox (
+   id UUID PRIMARY KEY,
+   aggregatetype VARCHAR(255) NOT NULL,
+   aggregateid VARCHAR(255) NOT NULL,
+   type VARCHAR(255) NOT NULL,
+   payload JSONB NOT NULL,
+   timestamp TIMESTAMP DEFAULT now()
+);
+
+
+
 CREATE TABLE RECRUITERS.positions
 (
     id           SERIAL PRIMARY KEY,
