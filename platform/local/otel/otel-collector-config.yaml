@@ -3,23 +3,26 @@ receivers:
     protocols:
       grpc:
         endpoint: otel-collector:4317
+      http:
+        endpoint: otel-collector:4318
+
 
 exporters:
   otlp/jaeger:
-    endpoint: jaeger:14250
+    endpoint: jaeger:4317
     tls:
       insecure: true
 
 processors:
   batch:
-
-extensions:
-  health_check:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 100
+    spike_limit_mib: 20
 
 service:
-  extensions: [health_check]
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [memory_limiter, batch]
       exporters: [otlp/jaeger]

@@ -9,7 +9,7 @@ const traceExporter = new OTLPTraceExporter({ url: otelExporterEndpoint });
 export const otelSDK = new NodeSDK({
   traceExporter: traceExporter,
   instrumentations: [getNodeAutoInstrumentations()],
-  serviceName: 'recruitment-bff',
+  serviceName: 'applications-bff',
 });
 
 otelSDK.start();
