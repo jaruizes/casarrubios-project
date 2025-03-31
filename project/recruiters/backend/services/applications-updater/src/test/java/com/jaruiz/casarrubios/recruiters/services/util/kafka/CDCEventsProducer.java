@@ -2,10 +2,12 @@ package com.jaruiz.casarrubios.recruiters.services.util.kafka;
 
 import java.util.UUID;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
+@ApplicationScoped
 public class CDCEventsProducer {
     public static final String APPLICATION_NAME = "John Doe";
     public static final String APPLICATION_EMAIL = "email@email.com";
@@ -33,17 +35,14 @@ public class CDCEventsProducer {
     }
 
     private String buildApplicationFake(UUID applicationId) {
-//        return "{\n" +
-//            "    \"id\": \"" + applicationId + "\",\n" +
-//            "    \"name\": \"" + APPLICATION_NAME + "\",\n" +
-//            "    \"email\": \"" + APPLICATION_EMAIL + "\",\n" +
-//            "    \"phone\": \"" + APPLICATION_PHONE + "\",\n" +
-//            "    \"cv\": \"" + APPLICATION_CV + "\",\n" +
-//            "    \"position_id\": " + APPLICATION_POSITION_ID + ",\n" +
-//            "    \"created_at\": " + APPLICATION_CREATED_AT + "\n" +
-//            "}";
-
-        return "{\n" + "\t\"id\": \"d4bb4799-8952-4f3c-aebe-d5217c6d0f14\",\n" + "\t\"name\": \"José Alberto Ruiz Casarrubios\",\n" + "\t\"email\": \"jalb80@gmail.com\",\n" + "\t\"phone\": \"699975474\",\n" + "\t\"cv\": \"3/d4bb4799-8952-4f3c-aebe-d5217c6d0f14\",\n" + "\t\"position_id\": 3,\n" + "\t\"created_at\": 1742215986593865\n" + "}";
+        return "{\n" +
+            "\t\"id\": \"" + applicationId + "\",\n" +
+            "\t\"name\": \"" + APPLICATION_NAME + "\",\n" +
+            "\t\"email\": \"" + APPLICATION_EMAIL + "\",\n" +
+            "\t\"phone\": \"" + APPLICATION_PHONE + "\",\n" +
+            "\t\"cv\": \"" + APPLICATION_CV  + "\",\n" +
+            "\t\"position_id\": " + APPLICATION_POSITION_ID + ",\n" +
+            "\t\"created_at\": " + APPLICATION_CREATED_AT + "\n" + "}";
     }
 
     private String buildWrongApplicationFake(UUID applicationId) {

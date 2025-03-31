@@ -20,7 +20,7 @@ public class ApplicationsUpdaterService {
         this.newApplicationReceivedEventPublisher = newApplicationReceivedEventPublisher;
     }
 
-    @Transactional(Transactional.TxType.REQUIRED)
+    @Transactional
     public void processApplication(Application application) {
         logger.info("Processing application with Id: " + application.getId());
 

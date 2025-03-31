@@ -1,16 +1,12 @@
 package com.jaruiz.casarrubios.recruiters.services.adapters.persistence;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.ApplicationsRepository;
 import com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.entities.ApplicationEntity;
 import com.jaruiz.casarrubios.recruiters.services.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.business.ports.PersistenceService;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.jboss.logging.Logger;
 

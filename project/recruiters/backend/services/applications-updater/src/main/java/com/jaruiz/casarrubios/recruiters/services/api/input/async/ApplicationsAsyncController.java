@@ -8,11 +8,7 @@ import java.util.stream.Collectors;
 import com.jaruiz.casarrubios.recruiters.services.api.input.async.dto.ApplicationCDCDTO;
 import com.jaruiz.casarrubios.recruiters.services.business.ApplicationsUpdaterService;
 import com.jaruiz.casarrubios.recruiters.services.business.model.Application;
-import io.smallrye.reactive.messaging.MutinyEmitter;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.logging.Logger;
 
@@ -26,7 +22,6 @@ public class ApplicationsAsyncController {
     }
 
     @Incoming("cdc-applications")
-    @Transactional
     public void applicationCDCEventHandler(ApplicationCDCDTO applicationCDCDTO) {
         logger.info("Received application: " + applicationCDCDTO);
 

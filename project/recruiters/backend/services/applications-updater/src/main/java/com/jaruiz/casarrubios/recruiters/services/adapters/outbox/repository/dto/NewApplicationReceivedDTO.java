@@ -1,4 +1,4 @@
-package com.jaruiz.casarrubios.recruiters.services.api.output.async.dto;
+package com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.dto;
 
 import java.io.Serial;
 import java.io.Serializable;

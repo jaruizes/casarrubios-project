@@ -9,3 +9,13 @@ CREATE TABLE IF NOT EXISTS recruiters.applications (
     position_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE recruiters.outbox (
+    id UUID PRIMARY KEY,
+    aggregatetype VARCHAR(255) NOT NULL,
+    aggregateid VARCHAR(255) NOT NULL,
+    type VARCHAR(255) NOT NULL,
+    payload JSONB NOT NULL,
+    timestamp TIMESTAMP DEFAULT now()
+);

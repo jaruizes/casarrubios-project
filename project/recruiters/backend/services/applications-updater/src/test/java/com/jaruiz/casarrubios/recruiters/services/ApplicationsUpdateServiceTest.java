@@ -3,33 +3,30 @@ package com.jaruiz.casarrubios.recruiters.services;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.jaruiz.casarrubios.recruiters.services.api.input.async.dto.ApplicationCDCDTO;
+import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.OutboxRepository;
+import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.dto.NewApplicationReceivedDTO;
+import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.entitites.OutboxEntity;
 import com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.ApplicationsRepository;
 import com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.entities.ApplicationEntity;
-import com.jaruiz.casarrubios.recruiters.services.api.output.async.dto.NewApplicationReceivedDTO;
 import com.jaruiz.casarrubios.recruiters.services.util.containers.KafkaTestResource;
-import com.jaruiz.casarrubios.recruiters.services.util.kafka.ApplicationReceivedTestConsumer;
 import com.jaruiz.casarrubios.recruiters.services.util.kafka.CDCEventsProducer;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
-
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-
-import jakarta.inject.Inject;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static com.jaruiz.casarrubios.recruiters.services.business.ports.NewApplicationReceivedEventPublisherPort.NEW_APPLICATION_RECEIVED_EVENT;
+import static com.jaruiz.casarrubios.recruiters.services.business.ports.NewApplicationReceivedEventPublisherPort.NEW_APPLICATION_RECEIVED_EVENT_TYPE;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @QuarkusTestResource(KafkaTestResource.class)
 class ApplicationsUpdateServiceTest {
 
     @Inject CDCEventsProducer CDCEventsProducer;
-    @Inject ApplicationReceivedTestConsumer applicationReceivedTestConsumer;
     @Inject ApplicationsRepository applicationsRepository;
+    @Inject OutboxRepository outboxRepository;
 
     @Test
     void whenANewApplicationIsSubmitted_thenTheApplicationIsCapturedAndStoredIntoDatabase() {
@@ -37,14 +34,6 @@ class ApplicationsUpdateServiceTest {
         Awaitility.await()
                   .atMost(120, TimeUnit.SECONDS)
                   .until(() -> isMessageProcessed(applicationId));
-
-        Awaitility.await()
-                  .atMost(120, TimeUnit.SECONDS)
-                  .until(() -> applicationReceivedTestConsumer.isApplicationReceivedEventPublished());
-
-        final NewApplicationReceivedDTO newApplicationReceivedDTO = applicationReceivedTestConsumer.getApplicationReceivedDTO();
-        assertNotNull(newApplicationReceivedDTO);
-        assertEquals(applicationId, newApplicationReceivedDTO.getId());
     }
 
     @Test
@@ -58,14 +47,27 @@ class ApplicationsUpdateServiceTest {
     @Transactional
     public boolean isMessageProcessed(UUID applicationId) {
         final ApplicationEntity applicationEntity = applicationsRepository.findById(applicationId);
-        if (applicationsRepository.findById(applicationId) != null) {
+        OutboxEntity outboxEvent = outboxRepository.find("aggregateId",applicationId.toString()).firstResult();
+
+        if (applicationEntity != null && outboxEvent != null) {
             assertEquals(applicationId, applicationEntity.getId());
             assertEquals(CDCEventsProducer.APPLICATION_NAME, applicationEntity.getName());
             assertEquals(CDCEventsProducer.APPLICATION_EMAIL, applicationEntity.getEmail());
             assertEquals(CDCEventsProducer.APPLICATION_PHONE, applicationEntity.getPhone());
             assertEquals(CDCEventsProducer.APPLICATION_CV, applicationEntity.getCv());
             assertEquals(CDCEventsProducer.APPLICATION_POSITION_ID, applicationEntity.getPositionId());
-            assertEquals(CDCEventsProducer.APPLICATION_CREATED_AT, applicationEntity.getCreatedAt());
+
+            assertEquals(NEW_APPLICATION_RECEIVED_EVENT_TYPE, outboxEvent.getAggregateType());
+            assertEquals(NEW_APPLICATION_RECEIVED_EVENT, outboxEvent.getType());
+            assertNotNull(outboxEvent.getPayload());
+
+            final NewApplicationReceivedDTO newApplicationReceivedDTO = outboxEvent.getPayload();
+            assertEquals(applicationId, newApplicationReceivedDTO.getId());
+            assertEquals(CDCEventsProducer.APPLICATION_NAME, newApplicationReceivedDTO.getName());
+            assertEquals(CDCEventsProducer.APPLICATION_EMAIL, newApplicationReceivedDTO.getEmail());
+            assertEquals(CDCEventsProducer.APPLICATION_PHONE, newApplicationReceivedDTO.getPhone());
+            assertEquals(CDCEventsProducer.APPLICATION_CV, newApplicationReceivedDTO.getCv());
+            assertEquals(CDCEventsProducer.APPLICATION_POSITION_ID, applicationEntity.getPositionId());
 
             return true;
         }
