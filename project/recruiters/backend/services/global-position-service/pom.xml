@@ -104,7 +104,6 @@
                     </execution>
                 </executions>
             </plugin>
-
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${compiler-plugin.version}</version>
@@ -140,29 +139,9 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>prepare-agent</goal>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <dataFile>${project.build.directory}/jacoco-quarkus.exec</dataFile>
-                            <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-prepare-agent-integration</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
-                            <append>true</append>
-                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
@@ -189,25 +168,19 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                    </execution><execution>
-                    <id>default-prepare-agent-integration</id>
-                    <goals>
-                        <goal>prepare-agent-integration</goal>
-                    </goals>
-                    <configuration>
-                        <destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
-                        <append>true</append>
-                    </configuration>
-                </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
                         <configuration>
                             <dataFile>${project.build.directory}/jacoco-quarkus.exec</dataFile>
                             <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-prepare-agent-integration</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-quarkus.exec</destFile>
+                            <append>true</append>
                         </configuration>
                     </execution>
                 </executions>
