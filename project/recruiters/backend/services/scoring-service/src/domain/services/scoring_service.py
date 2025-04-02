@@ -160,7 +160,8 @@ class ScoringService:
             "4. How each of these elements contributed to the final score. \n\n"
             "The explanation should be clear and concise and highlights both the strengths and the areas for improvement."
             "It must be written in Spanish, no more than 750 words long. "
-            "The output must be valid HTML, using only semantic tags like <div>, <ul>, <ol>, <li>, <p>, <strong>, etc., without any CSS or inline styles."
+            "The output must be valid HTML, using only semantic tags like <div>, <ul>, <ol>, <li>, <p>, <strong>, etc., without any CSS or inline styles"
+            "The output must be a <div> element with the class 'explanation'"
         )
 
         try:
