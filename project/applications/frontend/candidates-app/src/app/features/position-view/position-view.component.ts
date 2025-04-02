@@ -5,6 +5,7 @@ import {Position} from "../../model/position";
 import {DatePipe, NgForOf, NgIf} from "@angular/common";
 import {NewApplicationComponent} from "../new-application/new-application.component";
 import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import {ReqAndSkillsPipe} from "../../infrastructure/pipes/requirements-and-skills-pipe.pipe";
 
 @Component({
   selector: 'app-position-view',
@@ -13,7 +14,8 @@ import {NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
     DatePipe,
     NgForOf,
     NgIf,
-    NewApplicationComponent
+    NewApplicationComponent,
+    ReqAndSkillsPipe
   ],
   templateUrl: './position-view.component.html',
   styleUrl: './position-view.component.scss'
@@ -69,4 +71,5 @@ export class PositionViewComponent implements OnInit {
   }
 
 
+  protected readonly Number = Number;
 }
