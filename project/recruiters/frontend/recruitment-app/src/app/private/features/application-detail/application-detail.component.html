@@ -249,7 +249,7 @@
                                 <td class="align-top px-2">
                                   <ul>
                                     @for (skill of application.analysis.hardSkills; track skill) {
-                                      <li>{{ skill.skill }} - {{ skill.level}}</li>
+                                      <li>{{ skill.skill }} - {{ skill.level | reqAndSkillsPipe}}</li>
                                     }
                                   </ul>
                                 </td>
