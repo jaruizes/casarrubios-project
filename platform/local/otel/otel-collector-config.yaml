@@ -15,14 +15,13 @@ exporters:
 
 processors:
   batch:
-  memory_limiter:
-    check_interval: 1s
-    limit_mib: 100
-    spike_limit_mib: 20
 
 service:
+  telemetry:
+    logs:
+      level: debug
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch]
+      processors: [batch]
       exporters: [otlp/jaeger]

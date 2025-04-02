@@ -4,6 +4,10 @@ import { ApplicationsModule } from './applications/applications.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ConfigModule.forRoot({isGlobal: true}), PositionsModule, ApplicationsModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PositionsModule,
+    ApplicationsModule,
+  ],
 })
 export class AppModule {}

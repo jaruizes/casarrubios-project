@@ -34,6 +34,39 @@ services:
       timeout: 10s
       retries: 5
 
+#  broker:
+#    image: confluentinc/cp-kafka:7.9.0
+#    hostname: broker
+#    container_name: broker
+#    ports:
+#      - "9092:9092"
+#      - "9101:9101"
+#    environment:
+#      KAFKA_NODE_ID: 1
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+#      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+#      KAFKA_JMX_PORT: 9101
+#      KAFKA_JMX_HOSTNAME: localhost
+#      KAFKA_PROCESS_ROLES: 'broker,controller'
+#      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
+#      KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+#      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+#      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+#      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
+#      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+#    healthcheck:
+#      test: [ "CMD", "curl", "http://localhost:8090/kafka/v3/clusters" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+
+
+
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     hostname: zookeeper
@@ -91,44 +124,12 @@ services:
       timeout: 10s
       retries: 5
 
-#  otel-collector:
-#    image: otel/opentelemetry-collector:latest
-#    command: [ "--config=/etc/otel-collector-config.yaml" ]
-#    volumes:
-#      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
-#    ports:
-#      - "13133:13133"
-#      - "4317:4317"
-#      - "4318:4318"
-#    depends_on:
-#      - jaeger
-#
-#  jaeger:
-#    image: jaegertracing/all-in-one:latest
-#    ports:
-#      - "16686:16686"
-#      - "14268:14268"
-#      - "14250:14250"
-
-  otel-collector:
-    image: jaegertracing/all-in-one:latest
-    ports:
-      - "16686:16686" # Jaeger UI
-      - "14268:14268" # Receive legacy OpenTracing traces, optional
-      - "4317:4317"   # OTLP gRPC receiver
-      - "4318:4318"   # OTLP HTTP receiver
-      - "14250:14250" # Receive from external otel-collector, optional
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
-
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: infrastructure.kafka-ui
     ports:
       - 8001:8001
     depends_on:
-      zookeeper:
-        condition: service_healthy
       broker:
         condition: service_healthy
     environment:
@@ -166,6 +167,11 @@ services:
       KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       ENABLE_DEBEZIUM_SCRIPTING: 'true'
+      OTEL_SERVICE_NAME: 'kafka-connect'
+      OTEL_TRACES_EXPORTER: 'otlp'
+      OTEL_METRICS_EXPORTER: 'none'
+      OTEL_EXPORTER_OTLP_ENDPOINT: 'http://otel-collector:4318'
+      OTEL_TRACES_SAMPLER: 'always_on'
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:8083" ]
       interval: 30s
@@ -197,6 +203,26 @@ services:
     command: bash /init-topics.sh
 
 
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    command: [ "--config=/etc/otel-collector-config.yaml" ]
+    volumes:
+      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
+    ports:
+      - "4317:4317"  # OTLP gRPC
+      - "4318:4318"  # OTLP HTTP
+      - "13133:13133"  # Health check/debug
+    depends_on:
+      - jaeger
+
+  jaeger:
+    image: jaegertracing/jaeger:2.4.0
+    ports:
+      - "16686:16686"
+    environment:
+      - LOG_LEVEL=debug
+
+
   ### -------------------------------------------------------------- ###
   ### "CANDIDATE SIDE" SERVICES ###
   applications-applications-app:
@@ -221,7 +247,7 @@ services:
     environment:
       - BACKEND_URL=http://applications-positions-service:8080
       - APPLICATIONS_BACKEND_URL=http://applications-manager-service:8090
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
 
   applications-positions-service:
     image: "ghcr.io/jaruizes/applications/positions-service:1.0.0"
@@ -242,13 +268,9 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - SPRING_KAFKA_CONSUMER_GROUP-ID=positions-service
-#      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_SERVICE_NAME=applications-positions-service
       - OTEL_METRICS_EXPORTER=none
-      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://otel-collector:4317
-      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://otel-collector:4317
-
 
   applications-manager-service:
     image: "ghcr.io/jaruizes/applications/applications-manager-service:1.0.0"
@@ -270,10 +292,9 @@ services:
       - MINIO_URL=http://minio:9000
       - MINIO_ACCESS_NAME=minioadmin
       - MINIO_ACCESS_SECRET=minioadmin
-#      - JAVA_TOOL_OPTIONS="-javaagent:/app/lib/opentelemetry-javaagent-1.22.1.jar"
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_SERVICE_NAME=applications-manager-service
-#      - MANAGEMENT_OTLP_TRACING_ENDPOINT=http://otel-collector:4317
+      - OTEL_METRICS_EXPORTER=none
 
 ### -------------------------------------------------------------- ###
 ### "RECRUITERS SIDE" SERVICES ###
@@ -311,8 +332,7 @@ services:
       - PORT=4000
       - KAFKA_BROKERS=broker:29092
       - KAFKA_NOTIFICATION_TOPIC=recruitment.notifications
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
-#      - NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register"
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
 
   recruitment-positions-service:
     image: "ghcr.io/jaruizes/recruitment/positions-manager-service:1.0.0"
@@ -329,7 +349,7 @@ services:
       - QUARKUS_DATASOURCE_USERNAME=postgres
       - QUARKUS_DATASOURCE_PASSWORD=postgres
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-positions-publisher-service:
@@ -350,7 +370,7 @@ services:
       - RECRUITERS_NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - QUARKUS.KAFKA-STREAMS.TOPICS=cdc.recruiters.positions,cdc.recruiters.requirements,cdc.recruiters.benefits,cdc.recruiters.tasks
       - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-positions-publisher-service
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-applications-updater-service:
@@ -369,7 +389,7 @@ services:
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MP_MESSAGING_INCOMING_CDC-APPLICATIONS_TOPIC=cdc.applications.applications
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-applications-service:
@@ -430,7 +450,7 @@ services:
       - MINIO_ACCESS_SECRET=minioadmin
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - SPRING_AI_OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_SERVICE_NAME=applications-analyzer-service
       - OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL-SPAN-ATTRIBUTES=true
 
@@ -479,7 +499,7 @@ services:
       - NEW-APPLICATIONS_TOPIC=recruitment.applications-received
       - SCORING_TOPIC=recruitment.applications-scored
       - QUARKUS_HTTP_PORT=9090
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-notifications-manager-service:
@@ -496,7 +516,7 @@ services:
       - MP_MESSAGING_OUTGOING_NOTIFICATIONS-PUBLISHER_TOPIC=recruitment.notifications
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_TOPIC=recruitment.applications-scored
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_GROUP_ID=notifications-manager-service
-      - QUARKUS_OTEL_EXPORTER-OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
 volumes:
