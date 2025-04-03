@@ -23,7 +23,7 @@ def configure_tracer(app, sqlalchemy_engine=None):
     tracer_provider = TracerProvider(resource=resource, sampler=ALWAYS_ON)
     trace.set_tracer_provider(tracer_provider)
 
-    span_exporter = OTLPSpanExporter(endpoint=otel_endpoint + "/v1/traces", insecure=True)
+    span_exporter = OTLPSpanExporter(endpoint=otel_endpoint + "/v1/traces")
     span_processor = BatchSpanProcessor(span_exporter)
     tracer_provider.add_span_processor(span_processor)
 
