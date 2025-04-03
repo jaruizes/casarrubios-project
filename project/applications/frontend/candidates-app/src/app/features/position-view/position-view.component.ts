@@ -21,6 +21,7 @@ import {ReqAndSkillsPipe} from "../../infrastructure/pipes/requirements-and-skil
   styleUrl: './position-view.component.scss'
 })
 export class PositionViewComponent implements OnInit {
+  loading: boolean = false;
   positionId!: number;
   position!: Position;
   @ViewChild('applyToPositionModal')
@@ -53,8 +54,11 @@ export class PositionViewComponent implements OnInit {
     this.router.navigate(['home']);
   }
 
-  closeModal() {
-    this.modalRef.close()
+  closeModal(isOk: boolean) {
+    if (isOk) {
+      this.modalRef.close();
+    }
+    this.loading = false;
   }
 
   openApplyForm() {
@@ -66,7 +70,7 @@ export class PositionViewComponent implements OnInit {
   }
 
   applyToPosition() {
-    // this.applyToPositionModal.elementRef.nativeElement.submitApplication();
+    this.loading = true;
     this.newApplicationComponent.submitApplication();
   }
 

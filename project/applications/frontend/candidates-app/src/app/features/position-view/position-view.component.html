@@ -76,17 +76,24 @@
       role="dialog"
       aria-labelledby="applyToPositionModalTitle"
       aria-hidden="true">
-      <div class="modal-body modal-lg">
+      <div class="modal-body modal-lg" style="position: relative">
+        @if (loading) {
+          <div class="full-overlay">
+            <div class="spinner-border mb-1 text-primary" role="status"></div>
+          </div>
+        }
         <div class="row align-items-center">
           <div class="col">
-            <app-new-application #newApplicationComponent [position]="position" (applicationFinished)="closeModal()"></app-new-application>
+            <app-new-application #newApplicationComponent [position]="position" (applicationFinished)="closeModal($event)"></app-new-application>
           </div>
         </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="closeModal()">Cancelar</button>
+          <button type="button" class="btn rounded-pill btn-secondary me-0.5" (click)="closeModal(true)">Cancelar</button>
           <button type="button" class="btn rounded-pill btn-danger" (click)="applyToPosition()">Aplicar</button>
         </div>
+
+
       </div>
 
     </ng-template>

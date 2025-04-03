@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
 })
 export class NewApplicationComponent {
   @Input() position!: Position;
-  @Output() applicationFinished = new EventEmitter<void>();
+  @Output() applicationFinished = new EventEmitter<boolean>();
 
   applicationForm: FormGroup;
   uploadedFile: File | null = null;
@@ -40,13 +40,6 @@ export class NewApplicationComponent {
     this.uploadedFile = event.target.files[0];
     console.log('...................');
     console.log(this.uploadedFile);
-    // const file = event.target.files[0];
-    // if (file && file.type === 'application/pdf') {
-    //   this.uploadedFile = file;
-    //   // this.convertFileToBase64(file);
-    // } else {
-    //   alert('Only PDF files are allowed.');
-    // }
   }
 
   submitApplication() {
@@ -54,7 +47,7 @@ export class NewApplicationComponent {
       this.applicationService.applyToPosition(this.buildApplicationData(), this.uploadedFile).subscribe({
           next: (response) => {
             Swal.fire('¡CV enviado correctamente!', 'Nos pondremos en contacto contigo próximamente', 'success').then(() => {
-              this.applicationFinished.emit();
+              this.applicationFinished.emit(true);
             });
 
           },
@@ -63,7 +56,9 @@ export class NewApplicationComponent {
               icon: 'error',
               title: 'Oops...',
               text: 'No se pudo enviar tu CV. Por favor, inténtalo de nuevo más tarde.',
-            })
+            }).then(() => {
+              this.applicationFinished.emit(false);
+            });
           }
         }
       );
