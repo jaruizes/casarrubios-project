@@ -23,6 +23,7 @@ def setup_telemetry(otlp_endpoint):
 
     AsyncPGInstrumentor().instrument()
     LoggingInstrumentor().instrument()
+    HTTPXClientInstrumentor().instrument()
 
     logger.info(f"Tracing started (endpoint = {otel_endpoint} up database connection")
 
