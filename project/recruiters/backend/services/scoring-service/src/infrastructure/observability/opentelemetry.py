@@ -1,4 +1,5 @@
 import os
+import logging
 
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
@@ -10,6 +11,7 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.trace.sampling import ALWAYS_ON
 
+logger = logging.getLogger(__name__)
 resource = Resource.create({
     "service.name": "scoring-service"
 })
