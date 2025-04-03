@@ -15,6 +15,12 @@ exporters:
 
 processors:
   batch:
+  filter/exclusions_kafka_connect_spans:
+    traces:
+      span:
+        - resource.attributes["service.name"] == "kafka-connect" and attributes["span.kind"] == "client"
+        - resource.attributes["service.name"] == "kafka-connect" and attributes["span.kind"] == "server"
+
 
 service:
   telemetry:
@@ -23,5 +29,5 @@ service:
   pipelines:
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [batch, filter/exclusions_kafka_connect_spans]
       exporters: [otlp/jaeger]

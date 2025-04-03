@@ -153,6 +153,8 @@ services:
         condition: service_healthy
     ports:
       - "8083:8083"
+    volumes:
+      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       BOOTSTRAP_SERVERS: 'broker:29092'
       ADVERTISED_HOST_NAME: connect
@@ -167,7 +169,9 @@ services:
       KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
       VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       ENABLE_DEBEZIUM_SCRIPTING: 'true'
-      OTEL_SERVICE_NAME: 'kafka-connect'
+      ENABLE_OTEL: 'true'
+      JAVA_TOOL_OPTIONS: '-javaagent:/otel/opentelemetry-javaagent.jar'
+      OTEL_SERVICE_NAME: 'cdc-service'
       OTEL_TRACES_EXPORTER: 'otlp'
       OTEL_METRICS_EXPORTER: 'none'
       OTEL_EXPORTER_OTLP_ENDPOINT: 'http://otel-collector:4318'
@@ -248,6 +252,7 @@ services:
       - BACKEND_URL=http://applications-positions-service:8080
       - APPLICATIONS_BACKEND_URL=http://applications-manager-service:8090
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - PORT=3000
 
   applications-positions-service:
     image: "ghcr.io/jaruizes/applications/positions-service:1.0.0"
@@ -361,6 +366,8 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
+    volumes:
+      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - QUARKUS_KAFKA-STREAMS_BOOTSTRAP-SERVERS=broker:29092
       - CDC_RECRUITERS_POSITIONS_TOPIC=cdc.recruiters.positions
@@ -370,8 +377,9 @@ services:
       - RECRUITERS_NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - QUARKUS.KAFKA-STREAMS.TOPICS=cdc.recruiters.positions,cdc.recruiters.requirements,cdc.recruiters.benefits,cdc.recruiters.tasks
       - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-positions-publisher-service
-      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
+      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
 
   recruitment-applications-updater-service:
     image: "ghcr.io/jaruizes/recruitment/applications-updater-service:1.0.0"
@@ -422,8 +430,8 @@ services:
       - MINIO_ACCESS_NAME=minioadmin
       - MINIO_ACCESS_SECRET=minioadmin
       - MINIO_BUCKET_NAME=resumes
-      - OTEL_SERVICE_NAME=recruitment-applications-service
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - TRACING_ENABLED=true
     restart: unless-stopped
 
   recruitment-applications-analyzer-service:
@@ -477,8 +485,8 @@ services:
       - KAFKA_INPUT_TOPIC=recruitment.applications-analyzed
       - KAFKA_OUTPUT_TOPIC=recruitment.applications-scored
       - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - OTEL_SERVICE_NAME=recruitment-scoring-service
-      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - TRACING_ENABLED=true
 
   recruitment-global-position-service:
     image: "ghcr.io/jaruizes/recruitment/global-position-service:1.0.0"
