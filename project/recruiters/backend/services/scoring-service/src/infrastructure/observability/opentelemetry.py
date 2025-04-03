@@ -30,9 +30,9 @@ def setup_telemetry(otlp_endpoint):
     LoggingInstrumentor().instrument()
     HTTPXClientInstrumentor().instrument()
 
-    logger.info(f"Tracing started (endpoint = {otel_endpoint_complete} up database connection")
+    logger.info(f"Tracing started (endpoint = {otel_endpoint_complete})")
 
-    return provider
+    return tracer_provider
 
 
 def shutdown_telemetry():
