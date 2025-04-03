@@ -18,7 +18,7 @@ async function bootstrap() {
           prefix: 'Applications-BFF',
         }),
       });
-      await app.listen(process.env.PORT ?? 3001);
+      await app.listen(process.env.PORT ?? 3000);
       trace.getSpan(context.active())?.end();
     },
   );
