@@ -24,7 +24,7 @@ class KafkaConfig:
 @dataclass
 class TelemetryConfig:
     enabled: bool = os.getenv("TRACING_ENABLED", "true").lower() == "false"
-    otlp_endpoint: Optional[str] = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+    otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
 
 
 @dataclass
@@ -54,7 +54,7 @@ def load_config() -> ApplicationConfig:
         ),
         telemetry=TelemetryConfig(
             enabled=os.getenv("TELEMETRY_ENABLED", "true").lower() == "true",
-            otlp_endpoint=os.getenv("OTLP_EXPORTER_ENDPOINT")
+            otlp_endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
         ),
         log_level=os.getenv("LOG_LEVEL", "INFO"),
         openai_key=os.getenv("OPENAI_API_KEY")
