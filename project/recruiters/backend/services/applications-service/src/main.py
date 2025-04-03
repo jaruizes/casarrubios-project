@@ -2,8 +2,8 @@ import asyncio
 import logging
 import signal
 import sys
-import threading
 
+from src.infrastructure.tracing.otel_tracing import configure_tracer
 from src.adapters.cvfiles.minio_cv_service import MinioCVService
 from src.adapters.db.repositories import ApplicationRepository
 from src.api.input.message.application_scored_event_handler import ApplicationScoredEventHandler
@@ -65,9 +65,12 @@ def startup():
     setup_logging('INFO')
     logger = logging.getLogger(__name__)
     logger.info('Starting up')
-    app = configFastAPIApp()
 
     config = load_config()
+    app = configFastAPIApp()
+
+    if config.tracing_enabled:
+        configure_tracer(app)
 
     logger.info('Starting up database connection')
     db_connection = SQLAlchemyConnection(

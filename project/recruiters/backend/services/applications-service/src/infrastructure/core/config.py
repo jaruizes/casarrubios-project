@@ -19,6 +19,7 @@ class ApplicationConfig:
     minio_access_name: str
     minio_access_secret: str
     minio_bucket_name: str
+    tracing_enabled: bool
 
 def load_config() -> ApplicationConfig:
     return ApplicationConfig(
@@ -36,5 +37,6 @@ def load_config() -> ApplicationConfig:
         minio_url=os.getenv("MINIO_URL", "INFO"),
         minio_access_name=os.getenv("MINIO_ACCESS_NAME", "minioadmin"),
         minio_access_secret=os.getenv("MINIO_ACCESS_SECRET", "minioadmin"),
-        minio_bucket_name=os.getenv("MINIO_BUCKET_NAME", "files")
+        minio_bucket_name=os.getenv("MINIO_BUCKET_NAME", "files"),
+        tracing_enabled=os.getenv("TRACING_ENABLED", "false").lower() == "true"
     )
