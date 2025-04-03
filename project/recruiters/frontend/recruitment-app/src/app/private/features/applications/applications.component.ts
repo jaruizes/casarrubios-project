@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {DatePipe, Location, NgForOf, NgIf} from "@angular/common";
+import {DatePipe, DecimalPipe, Location, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {NgbPagination} from "@ng-bootstrap/ng-bootstrap";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
@@ -11,14 +11,15 @@ import {ApplicationsService} from "../../services/applications/applications.serv
 @Component({
   selector: 'app-applications',
   standalone: true,
-    imports: [
-        DatePipe,
-        FormsModule,
-        NgForOf,
-        NgIf,
-        NgbPagination,
-        PositionStatusPipePipe
-    ],
+  imports: [
+    DatePipe,
+    FormsModule,
+    NgForOf,
+    NgIf,
+    NgbPagination,
+    PositionStatusPipePipe,
+    DecimalPipe
+  ],
   templateUrl: './applications.component.html',
   styleUrl: './applications.component.scss'
 })

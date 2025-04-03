@@ -75,7 +75,7 @@
                         }
                         </div>
                       </td>
-                      <td class="d-flex flex-wrap justify-content-center">{{ application.scoring * 100 }} %</td>
+                      <td class="d-flex flex-wrap justify-content-center">{{ (application.scoring * 100) | number : '1.2-2' }} %</td>
                     } @else {
                       <td class="text-center" colspan="2">
                         <div class="d-flex flex-wrap justify-content-center">Procesando....</div>
