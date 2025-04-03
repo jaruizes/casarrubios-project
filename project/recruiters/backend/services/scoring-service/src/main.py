@@ -46,7 +46,7 @@ def startup():
 
     if config.telemetry.enabled:
         logger.info("Setting up OpenTelemetry...")
-        setup_telemetry()
+        setup_telemetry(config.telemetry.otlp_endpoint)
 
     logger.info("Connecting to database...")
     db_connection = SQLAlchemyConnection(
