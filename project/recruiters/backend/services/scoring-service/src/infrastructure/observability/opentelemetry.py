@@ -24,7 +24,7 @@ def setup_telemetry(otlp_endpoint):
         otel_endpoint_complete = otlp_endpoint + "/v1/traces"
         otlp_exporter = OTLPSpanExporter(endpoint=otel_endpoint_complete)
         span_processor = BatchSpanProcessor(otlp_exporter)
-        provider.add_span_processor(span_processor)
+        tracer_provider.add_span_processor(span_processor)
 
     AsyncPGInstrumentor().instrument()
     LoggingInstrumentor().instrument()
