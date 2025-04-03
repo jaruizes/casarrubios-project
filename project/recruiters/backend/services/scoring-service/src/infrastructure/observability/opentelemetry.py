@@ -21,7 +21,8 @@ def setup_telemetry(otlp_endpoint):
     trace.set_tracer_provider(tracer_provider)
 
     if otlp_endpoint:
-        otlp_exporter = OTLPSpanExporter(endpoint=otlp_endpoint + "/v1/traces")
+        otel_endpoint_complete = otlp_endpoint + "/v1/traces"
+        otlp_exporter = OTLPSpanExporter(endpoint=otel_endpoint_complete)
         span_processor = BatchSpanProcessor(otlp_exporter)
         provider.add_span_processor(span_processor)
 
@@ -29,7 +30,7 @@ def setup_telemetry(otlp_endpoint):
     LoggingInstrumentor().instrument()
     HTTPXClientInstrumentor().instrument()
 
-    logger.info(f"Tracing started (endpoint = {otel_endpoint} up database connection")
+    logger.info(f"Tracing started (endpoint = {otel_endpoint_complete} up database connection")
 
     return provider
 
