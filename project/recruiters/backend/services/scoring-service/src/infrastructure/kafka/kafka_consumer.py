@@ -42,7 +42,7 @@ class KafkaConsumer():
 
                     headers_list = msg.headers() or []
                     headers_dict = {
-                        safe_decode(k): safe_decode(v)
+                        safe_decode(k): self.__safe_decode(v)
                         for k, v in headers_list if k and v
                     }
 
