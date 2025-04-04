@@ -36,12 +36,15 @@ class KafkaConsumer():
                 if msg.error():
                     manage_errors(msg)
                 else:
-                    headers_list = msg.headers() or []
-                    headers_dict = {k.decode(): v.decode() for k, v in headers_list if k and v}
-
                     from opentelemetry.propagate import extract
                     from opentelemetry.context import attach, detach
                     from opentelemetry import trace
+
+                    headers_list = msg.headers() or []
+                    headers_dict = {
+                        safe_decode(k): safe_decode(v)
+                        for k, v in headers_list if k and v
+                    }
 
                     tracer = trace.get_tracer(__name__)
                     ctx = extract(headers_dict)
@@ -57,4 +60,7 @@ class KafkaConsumer():
 
     def stop(self):
         self.consumer.close()
+
+    def __safe_decode(value):
+        return value.decode() if isinstance(value, bytes) else value
 
