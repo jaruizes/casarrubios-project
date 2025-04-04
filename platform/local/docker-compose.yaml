@@ -76,9 +76,6 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-#      EXTRA_ARGS: -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/zookeeper.yml
-#    volumes:
-#      - ./jmx-exporter:/usr/share/jmx_exporter/
     healthcheck:
       test: [ "CMD", "nc", "-z", "localhost", "2181" ]
       interval: 30s
@@ -86,7 +83,7 @@ services:
       retries: 5
 
   broker:
-    image: confluentinc/cp-server:7.5.0
+    image: confluentinc/cp-kafka:7.5.0
     hostname: broker
     container_name: infrastructure.broker
     depends_on:
@@ -101,28 +98,17 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
-#      KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-#      KAFKA_JMX_PORT: 9101
-#      KAFKA_JMX_HOSTNAME: localhost
-#      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-#      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
-#      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-#      CONFLUENT_METRICS_ENABLE: 'true'
-#      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
-#      KAFKA_JMX_OPTS: -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -javaagent:/usr/share/jmx_exporter/jmx_prometheus_javaagent-0.20.0.jar=9200:/usr/share/jmx_exporter/kafka-broker.yml
-#    volumes:
-#      - ./jmx-exporter:/usr/share/jmx_exporter/
     healthcheck:
-      test: [ "CMD", "curl", "http://localhost:8090/kafka/v3/clusters" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: ["CMD-SHELL", "/usr/bin/kafka-topics --bootstrap-server broker:29092 --list > /dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
@@ -174,12 +160,13 @@ services:
       OTEL_SERVICE_NAME: 'cdc-service'
       OTEL_TRACES_EXPORTER: 'otlp'
       OTEL_METRICS_EXPORTER: 'none'
+      OTEL_LOGS_EXPORTER: 'none'
       OTEL_EXPORTER_OTLP_ENDPOINT: 'http://otel-collector:4318'
       OTEL_TRACES_SAMPLER: 'always_on'
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:8083" ]
       interval: 30s
-      timeout: 10s
+      timeout: 60s
       retries: 5
 
   cdc-service-init:
@@ -196,7 +183,7 @@ services:
     entrypoint: [ "sh", "/register-connectors.sh" ]
 
   kafka-init:
-    image: confluentinc/cp-server:7.5.0
+    image: confluentinc/cp-kafka:7.5.0
     container_name: infrastructure.kafka-init
     depends_on:
       broker:
@@ -205,7 +192,6 @@ services:
       - ./kafka/init-topics.sh:/init-topics.sh
       - ./kafka/topics-to-create.txt:/topics-to-create.txt
     command: bash /init-topics.sh
-
 
   otel-collector:
     image: otel/opentelemetry-collector:latest
@@ -265,6 +251,8 @@ services:
         condition: service_started
       broker:
         condition: service_healthy
+    volumes:
+      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
       - SPRING_DATASOURCE_USERNAME=postgres
@@ -273,9 +261,12 @@ services:
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - NEW-POSITIONS-PUBLISHED_TOPIC=recruitment.new-positions-published
       - SPRING_KAFKA_CONSUMER_GROUP-ID=positions-service
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
       - OTEL_SERVICE_NAME=applications-positions-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
 
   applications-manager-service:
     image: "ghcr.io/jaruizes/applications/applications-manager-service:1.0.0"
@@ -379,7 +370,11 @@ services:
       - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-positions-publisher-service
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
       - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_SERVICE_NAME=recruitment-positions-publisher-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
 
   recruitment-applications-updater-service:
     image: "ghcr.io/jaruizes/recruitment/applications-updater-service:1.0.0"
@@ -390,6 +385,8 @@ services:
         condition: service_started
       broker:
         condition: service_healthy
+#    volumes:
+#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgresql:5432/applications
       - QUARKUS_DATASOURCE_USERNAME=postgres
@@ -397,8 +394,20 @@ services:
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MP_MESSAGING_INCOMING_CDC-APPLICATIONS_TOPIC=cdc.applications.applications
-      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - MP_MESSAGING_INCOMING_CDC-APPLICATIONS_TRACING-ENABLED=false
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
+      - QUARKUS_OPENTELEMETRY_ENABLED=true
+      - QUARKUS_OPENTELEMETRY_TRACER_EXPORTER=otlp
+      - QUARKUS_OPENTELEMETRY_TRACER_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - QUARKUS_OPENTELEMETRY_TRACER_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - QUARKUS_OPENTELEMETRY_TRACER_SAMPLER=always_on
+      - QUARKUS_OPENTELEMETRY_SERVICE_NAME=recruitment-applications-updater-service
+#      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
+#      - OTEL_SERVICE_NAME=recruitment-applications-updater-service
+#      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+#      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+#      - OTEL_METRICS_EXPORTER=none
+#      - OTEL_LOGS_EXPORTER=none
 
   recruitment-applications-service:
     image: "ghcr.io/jaruizes/recruitment/applications-service:1.0.0"
@@ -447,6 +456,8 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
+    volumes:
+      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - SERVER_PORT=9082
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
@@ -458,9 +469,12 @@ services:
       - MINIO_ACCESS_SECRET=minioadmin
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - SPRING_AI_OPENAI_API_KEY=${OPENAI_API_KEY}
+      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
+      - OTEL_SERVICE_NAME=recruitment-applications-analyzer-service
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-      - OTEL_SERVICE_NAME=applications-analyzer-service
-      - OTEL_INSTRUMENTATION_KAFKA_EXPERIMENTAL-SPAN-ATTRIBUTES=true
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
 
   recruitment-scoring-service:
     image: "ghcr.io/jaruizes/recruitment/scoring-service:1.0.0"
@@ -499,6 +513,8 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
+    volumes:
+      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - QUARKUS.KAFKA-STREAMS.TOPICS=recruitment.new-positions-published,recruitment.applications-received,recruitment.applications-scored
@@ -507,7 +523,12 @@ services:
       - NEW-APPLICATIONS_TOPIC=recruitment.applications-received
       - SCORING_TOPIC=recruitment.applications-scored
       - QUARKUS_HTTP_PORT=9090
-      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
+      - OTEL_SERVICE_NAME=recruitment-global-position-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
   recruitment-notifications-manager-service:
@@ -519,12 +540,19 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
+    volumes:
+      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MP_MESSAGING_OUTGOING_NOTIFICATIONS-PUBLISHER_TOPIC=recruitment.notifications
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_TOPIC=recruitment.applications-scored
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_GROUP_ID=notifications-manager-service
-      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
+      - OTEL_SERVICE_NAME=recruitment-notifications-manager-service
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
 
 volumes:
