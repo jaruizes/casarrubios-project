@@ -30,14 +30,22 @@ class KafkaConsumer():
         try:
             self.consumer.subscribe(self.topic)
             while True:
-                msg = self.consumer.poll(timeout=1.0)
-                if msg is None: continue
+                headers_list = msg.headers() or []
+                headers_dict = {k.decode(): v.decode() for k, v in headers_list if k and v}
 
-                if msg.error():
-                    manage_errors(msg)
-                else:
+                from opentelemetry.propagate import extract
+                from opentelemetry.context import attach, detach
+                from opentelemetry import trace
+
+                tracer = trace.get_tracer(__name__)
+                ctx = extract(headers_dict)
+                token = attach(ctx)
+
+                with tracer.start_as_current_span("kafka-consume"):
                     processor(msg)
-                    self.consumer.commit(asynchronous=False)
+
+                detach(token)
+                self.consumer.commit(asynchronous=False)
         finally:
             self.stop()
 
