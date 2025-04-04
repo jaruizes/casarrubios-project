@@ -13,7 +13,7 @@ from opentelemetry.sdk.trace.sampling import ALWAYS_ON
 
 logger = logging.getLogger(__name__)
 resource = Resource.create({
-    "service.name": "scoring-service"
+    "service.name": "recruitment-scoring-service"
 })
 tracer_provider = TracerProvider(resource=resource, sampler=ALWAYS_ON)
 

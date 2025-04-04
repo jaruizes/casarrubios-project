@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 def configure_tracer(app, sqlalchemy_engine=None):
     otel_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
     resource = Resource.create({
-        "service.name": "applications-service"
+        "service.name": "recruitment-applications-service"
     })
 
     tracer_provider = TracerProvider(resource=resource, sampler=ALWAYS_ON)
