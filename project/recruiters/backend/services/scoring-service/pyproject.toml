@@ -28,6 +28,7 @@ numpy = "*"
 scikit-learn = "*"
 sqlalchemy = "2.0.4"
 psycopg2-binary = "2.9.9"
+opentelemetry-instrumentation-kafka-python = "^0.52b1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "7.4.0"
