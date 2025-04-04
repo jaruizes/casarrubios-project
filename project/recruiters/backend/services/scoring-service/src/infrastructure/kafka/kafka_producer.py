@@ -21,7 +21,7 @@ class KafkaProducer():
             # key_bytes = key.encode('utf-8') if key else None
             event_bytes = json.dumps(event).encode("utf-8")
 
-            self.producer.produce(topic, key=key, value=event_bytes, callback=self.__acked)
+            self.producer.produce(topic, key=key, value=event_bytes, on_delivery=self.__acked)
 
             logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')}")
         except Exception as e:
