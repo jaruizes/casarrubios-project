@@ -3,6 +3,7 @@ import logging
 import os
 
 from opentelemetry import trace
+from opentelemetry.instrumentation.kafka import KafkaInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -29,6 +30,7 @@ def configure_tracer(app, sqlalchemy_engine=None):
 
     FastAPIInstrumentor.instrument_app(app)
     HTTPXClientInstrumentor().instrument()
+    KafkaInstrumentor().instrument()
 
     if sqlalchemy_engine:
         SQLAlchemyInstrumentor().instrument(engine=sqlalchemy_engine)
