@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.exceptions.AnalysingException;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.ResumeAnalysis;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.LLMServicePort;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -22,6 +23,7 @@ public class LLMServiceAdapter implements LLMServicePort {
         this.chatModel = chatModel;
     }
 
+    @WithSpan("llm-analyze-resume")
     public ResumeAnalysis analyze(UUID applicationId, String resumeText) throws AnalysingException {
         String response = chatModel.call(buildPrompt(resumeText));
         if (response == null || response.isBlank()) {

@@ -9,6 +9,7 @@ import com.jaruiz.casarrubios.recruiters.services.applications.api.input.async.m
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ApplicationsAnalyzerService;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.ApplicationAnalyzerEventsPublisherPort;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public class ApplicationsAnalyzerAsyncAPI {
     }
 
     @KafkaListener(id = "application-received-listener", topics = "#{config.applicationsReceivedTopic}", groupId = "analysing-services")
+    @WithSpan("applications-received-event-handler")
     public void handleApplicationReceivedEvent(ConsumerRecord<String, String> record) {
         try {
             NewApplicationReceivedDTO application = objectMapper.readValue(record.value(), NewApplicationReceivedDTO.class);

@@ -11,6 +11,7 @@ import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.Ap
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.CVServicePort;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.LLMServicePort;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.TextExtractorPort;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class ApplicationsAnalyzerService {
         this.eventPublisher = eventPublisher;
     }
 
+    @WithSpan("analyzing-application")
     public void analyzeApplication(Application application) {
         final UUID applicationId = application.getId();
         try {
@@ -55,6 +57,7 @@ public class ApplicationsAnalyzerService {
         }
     }
 
+    @WithSpan("getting-text-from-cv")
     private String getTextFromCv(UUID applicationId) throws CVNotFoundException, TextExtractingException {
         byte[] cv = cvService.getCV(applicationId);
         return textExtractor.extractTextFromCV(applicationId, cv);

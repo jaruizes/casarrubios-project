@@ -12,6 +12,7 @@ import com.jaruiz.casarrubios.recruiters.services.applications.api.output.async.
 import com.jaruiz.casarrubios.recruiters.services.applications.business.model.ResumeAnalysis;
 import com.jaruiz.casarrubios.recruiters.services.applications.business.ports.ApplicationAnalyzerEventsPublisherPort;
 import com.jaruiz.casarrubios.recruiters.services.applications.infrastructure.Config;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ public class ApplicationAnalyzerEventsPublisher implements ApplicationAnalyzerEv
     }
 
     @Override
+    @WithSpan("publishing-application-analysed-event")
     public void sendApplicationAnalysedEvent(UUID applicationId, long positionId, ResumeAnalysis resumeAnalysis) {
         logger.info("Sending application analysed event [cvAnalysis = {}]", resumeAnalysis);
         final ApplicationAnalysedEventDTO applicationAnalysedEventDTO = buildApplicationAnalysedEvent(applicationId, positionId, resumeAnalysis);
