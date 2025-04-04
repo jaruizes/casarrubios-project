@@ -5,6 +5,10 @@ from confluent_kafka import Consumer, KafkaError, KafkaException
 logger = logging.getLogger(__name__)
 
 
+def safe_decode(value):
+    return value.decode() if isinstance(value, bytes) else value
+
+
 def manage_errors(msg):
     if msg.error():
         if msg.error().code() == KafkaError._PARTITION_EOF:
@@ -42,7 +46,7 @@ class KafkaConsumer():
 
                     headers_list = msg.headers() or []
                     headers_dict = {
-                        safe_decode(k): self.__safe_decode(v)
+                        safe_decode(k): safe_decode(v)
                         for k, v in headers_list if k and v
                     }
 
@@ -60,7 +64,4 @@ class KafkaConsumer():
 
     def stop(self):
         self.consumer.close()
-
-    def __safe_decode(value):
-        return value.decode() if isinstance(value, bytes) else value
 
