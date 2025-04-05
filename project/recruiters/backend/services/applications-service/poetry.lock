@@ -844,21 +844,22 @@ colors = ["colorama (>=0.4.6)"]
 
 [[package]]
 name = "kafka-python"
-version = "2.1.0"
+version = "2.1.5"
 description = "Pure Python client for Apache Kafka"
 optional = false
 python-versions = "*"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
-    {file = "kafka_python-2.1.0-py2.py3-none-any.whl", hash = "sha256:f3d1c638732a2fd5788528e4247407b651f94ec77b38103f84c8f2a9a97fa214"},
-    {file = "kafka_python-2.1.0.tar.gz", hash = "sha256:6aa76a264d7c45c3cdaa7569d8b03b2ac8060428119fc16ff78a15f62198a7d0"},
+    {file = "kafka_python-2.1.5-py2.py3-none-any.whl", hash = "sha256:205953e581c0371cada35bebdacc58ac7dee6c3f9e8d95b9a6a0a7bacc054ca0"},
+    {file = "kafka_python-2.1.5.tar.gz", hash = "sha256:6765c25440046cdadeb9c31469566be259d50802d27d4f8aae86d9ae755b78e2"},
 ]
 
 [package.extras]
+benchmarks = ["pyperf"]
 crc32c = ["crc32c"]
 lz4 = ["lz4"]
 snappy = ["python-snappy"]
-testing = ["mock ; python_version < \"3.3\"", "pytest", "pytest-mock"]
+testing = ["mock ; python_version < \"3.3\"", "pytest", "pytest-mock", "pytest-timeout"]
 zstd = ["zstandard"]
 
 [[package]]
@@ -2075,4 +2076,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.9"
-content-hash = "d40120456636c4c372928926bec7fc8770a61694cbc43a6ab379876a302ed07e"
+content-hash = "a6c2b1975e387cfcb2dd2b761b147cf9c16a28f20e3a2596552051dc1e5fc21f"
