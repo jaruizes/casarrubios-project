@@ -4,6 +4,9 @@ import socket
 
 from confluent_kafka import Producer
 from opentelemetry.propagate import inject
+from opentelemetry.propagate import extract
+from opentelemetry.context import attach, detach
+from opentelemetry import trace
 
 logger = logging.getLogger(__name__)
 
@@ -20,18 +23,20 @@ class KafkaProducer():
         try:
             event_bytes = json.dumps(event).encode("utf-8")
 
-            otel_headers = {}
-            inject(otel_headers)
+            tracer = trace.get_tracer(__name__)
 
-            kafka_headers = [(k, v.encode("utf-8")) for k, v in otel_headers.items()]
+            with tracer.start_as_current_span("scoring_produce_event"):
+                otel_headers = {}
+                inject(otel_headers)
 
-            self.producer.produce(
-                topic=topic,
-                key=key,
-                value=event_bytes,
-                headers=kafka_headers,
-                on_delivery=self.__acked
-            )
+                kafka_headers = [(k, v.encode("utf-8")) for k, v in otel_headers.items()]
+                self.producer.produce(
+                    topic=topic,
+                    key=key,
+                    value=event_bytes,
+                    headers=kafka_headers,
+                    on_delivery=self.__acked
+                )
 
             logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')}")
         except Exception as e:
