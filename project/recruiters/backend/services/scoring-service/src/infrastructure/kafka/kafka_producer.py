@@ -9,6 +9,7 @@ from opentelemetry.context import attach, detach
 from opentelemetry import trace
 
 logger = logging.getLogger(__name__)
+tracer = trace.get_tracer(__name__)
 
 
 class KafkaProducer():
@@ -30,7 +31,7 @@ class KafkaProducer():
                     on_delivery=self.__acked
                 )
 
-                logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')}")
+                logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')} !!")
             except Exception as e:
                 logger.exception(f"Error sending event to {topic}: {str(e)}")
 

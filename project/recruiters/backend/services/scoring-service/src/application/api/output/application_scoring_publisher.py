@@ -8,6 +8,7 @@ from src.domain.model.application_analysis import ResumeAnalysis
 from src.domain.model.application_scoring import ApplicationScoring, Scoring
 
 logger = logging.getLogger(__name__)
+tracer = trace.get_tracer(__name__)
 
 class ApplicationScoringPublisher():
     def __init__(self, kafka_producer, output_topic: str):
