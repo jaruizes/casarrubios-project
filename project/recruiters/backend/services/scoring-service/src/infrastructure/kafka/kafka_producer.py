@@ -3,6 +3,7 @@ import logging
 import socket
 
 from confluent_kafka import Producer
+from opentelemetry.propagate import inject
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +11,6 @@ logger = logging.getLogger(__name__)
 class KafkaProducer():
     def __init__(self, bootstrap_servers: str):
         self.bootstrap_servers = bootstrap_servers
-        # self.producer = Producer(bootstrap_servers=self.bootstrap_servers)
         conf = {'bootstrap.servers': bootstrap_servers,
                 'client.id': socket.gethostname()}
 
@@ -18,10 +18,20 @@ class KafkaProducer():
 
     def send(self, topic: str, event: dict[str, any], key: str = None):
         try:
-            # key_bytes = key.encode('utf-8') if key else None
             event_bytes = json.dumps(event).encode("utf-8")
 
-            self.producer.produce(topic, key=key, value=event_bytes, on_delivery=self.__acked)
+            otel_headers = {}
+            inject(otel_headers)
+
+            kafka_headers = [(k, v.encode("utf-8")) for k, v in otel_headers.items()]
+
+            self.producer.produce(
+                topic=topic,
+                key=key,
+                value=event_bytes,
+                headers=kafka_headers,
+                on_delivery=self.__acked
+            )
 
             logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')}")
         except Exception as e:
