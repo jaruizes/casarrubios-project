@@ -20,27 +20,19 @@ class KafkaProducer():
         self.producer = Producer(conf)
 
     def send(self, topic: str, event: dict[str, any], key: str = None):
-        try:
-            event_bytes = json.dumps(event).encode("utf-8")
-
-            tracer = trace.get_tracer(__name__)
-
-            with tracer.start_as_current_span("scoring_produce_event"):
-                otel_headers = {}
-                inject(otel_headers)
-
-                kafka_headers = [(k, v.encode("utf-8")) for k, v in otel_headers.items()]
+        with tracer.start_as_current_span("scoring_produce_event"):
+            try:
+                event_bytes = json.dumps(event).encode("utf-8")
                 self.producer.produce(
                     topic=topic,
                     key=key,
                     value=event_bytes,
-                    headers=kafka_headers,
                     on_delivery=self.__acked
                 )
 
-            logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')}")
-        except Exception as e:
-            logger.exception(f"Error sending event to {topic}: {str(e)}")
+                logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')}")
+            except Exception as e:
+                logger.exception(f"Error sending event to {topic}: {str(e)}")
 
     def close(self):
         if self.producer:
