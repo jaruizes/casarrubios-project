@@ -6,6 +6,7 @@ from src.application.api.output.dto.application_scored_event_dto import Applicat
     ScoringDTO
 from src.domain.model.application_analysis import ResumeAnalysis
 from src.domain.model.application_scoring import ApplicationScoring, Scoring
+from opentelemetry import trace
 
 logger = logging.getLogger(__name__)
 tracer = trace.get_tracer(__name__)
