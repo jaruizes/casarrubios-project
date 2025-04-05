@@ -24,14 +24,23 @@ class KafkaProducer():
         with tracer.start_as_current_span("scoring_produce_event"):
             try:
                 event_bytes = json.dumps(event).encode("utf-8")
+
+                otel_headers = {}
+                inject(otel_headers)
+
+                logger.info(f"[Otel] Injected headers: {otel_headers}")
+
+                kafka_headers = [(k, v.encode("utf-8")) for k, v in otel_headers.items()]
+
                 self.producer.produce(
                     topic=topic,
                     key=key,
                     value=event_bytes,
+                    headers=kafka_headers,
                     on_delivery=self.__acked
                 )
 
-                logger.debug(f"Event sent to {topic}: {event.get('applicationId', 'unknown')} !!")
+                logger.info(f"Event sent to {topic}: {event.get('applicationId', 'unknown')} !!")
             except Exception as e:
                 logger.exception(f"Error sending event to {topic}: {str(e)}")
 
