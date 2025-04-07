@@ -6,6 +6,7 @@ import sys
 import openai
 
 from src.application.adapters.db.sqlalchemy_repository import PositionRepository
+from src.application.adapters.vector_storage.vector_storage_service import VectorStorageService
 from src.application.api.input.scoring_service_async_api import ScoringServiceAsyncAPI
 from src.application.api.output.application_scoring_publisher import ApplicationScoringPublisher
 from src.config import load_config
@@ -14,6 +15,7 @@ from src.infrastructure.db.sqlalchemy_connection import SQLAlchemyConnection
 from src.infrastructure.kafka.kafka_consumer import KafkaConsumer
 from src.infrastructure.kafka.kafka_producer import KafkaProducer
 from src.infrastructure.observability.opentelemetry import setup_telemetry, shutdown_telemetry
+from src.infrastructure.qdrant.QdrantService import QdrantService
 
 
 # Configuración de logging
@@ -70,9 +72,14 @@ def startup():
         output_topic=config.kafka.output_topic
     )
 
+    logger.info("Initializing Qdrant service...")
+    qdrant_service = QdrantService(host=config.vector_storage.host, port=config.vector_storage.port)
+    vector_storage_service = VectorStorageService(qdrant_service)
+
     logger.info("Initializing Scoring Service...")
     scoring_service = ScoringService(position_repository=position_repository,
-                                     applicationScoringPublisher=applicationScoringPublisher)
+                                     applicationScoringPublisher=applicationScoringPublisher,
+                                     vectorStorageService=vector_storage_service)
 
     logger.info("Initializing Open AI...")
     openai.api_key = config.openai_key

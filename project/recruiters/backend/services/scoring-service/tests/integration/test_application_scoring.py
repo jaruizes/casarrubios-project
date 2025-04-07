@@ -21,7 +21,7 @@ async def test_score(setup_e2e, kafka_container, setup_topics, wait_for_result_i
     producer.send(input_topic, application_analysed_event, application_analysed_event['applicationId'])
 
     result_topic = os.getenv("KAFKA_OUTPUT_TOPIC")
-    result = await wait_for_result_in_kafka(result_topic, timeout=20)
+    result = await wait_for_result_in_kafka(result_topic, timeout=200)
     assert result is not None
     __assert_event_received(result)
 
@@ -75,19 +75,19 @@ def __build_application_analysed_event():
                 "May require upskilling in emerging AI regulations."
             ],
             "hardSkills": [
-                {"skill": "Machine Learning", "level": "Expert"},
-                {"skill": "Deep Learning", "level": "Expert"},
-                {"skill": "Machine Learning", "level": "Expert"},
-                {"skill": "Generative AI", "level": "Expert"},
-                {"skill": "Natural Language Processing (NLP)", "level": "Expert"},
-                {"skill": "MLOps", "level": "Expert"}
+                {"skill": "Machine Learning", "level": 2},
+                {"skill": "Deep Learning", "level": 2},
+                {"skill": "Machine Learning", "level": 3},
+                {"skill": "Generative AI", "level": 3},
+                {"skill": "Natural Language Processing (NLP)", "level": 3},
+                {"skill": "MLOps", "level": 3}
             ],
             "softSkills": [
-                {"skill": "Communication", "level": "Expert"},
-                {"skill": "Leadership", "level": "Expert"},
-                {"skill": "Teamwork", "level": "Expert"},
-                {"skill": "Problem-solving", "level": "Expert"},
-                {"skill": "Research", "level": "Expert"}
+                {"skill": "Communication", "level": 3},
+                {"skill": "Leadership", "level": 3},
+                {"skill": "Teamwork", "level": 3},
+                {"skill": "Problem-solving", "level": 3},
+                {"skill": "Research", "level": 3}
             ],
             "keyResponsibilities": [
                 "Lead development projects based on Generative AI for various sectors.",
@@ -140,25 +140,25 @@ def __build_application_analysed_event_2():
                 "Less emphasis on purely business-oriented roles."
             ],
             "hardSkills": [
-                {"skill": "Angular", "level": "Avanzado"},
-                {"skill": "Spring", "level": "Avanzado"},
-                {"skill": "Kubernetes", "level": "Avanzado"},
-                {"skill": "Cloud", "level": "Avanzado"},
-                {"skill": "API Design", "level": "Avanzado"},
-                {"skill": "AWS", "level": "Avanzado"},
-                {"skill": "Software Architecture", "level": "Avanzado"},
-                {"skill": "Terraform", "level": "Avanzado"},
-                {"skill": "Kafka", "level": "Avanzado"},
-                {"skill": "Java", "level": "Avanzado"},
-                {"skill": "Microservices", "level": "Avanzado"},
-                {"skill": "CI/CD", "level": "Avanzado"}
+                {"skill": "Angular", "level": 2},
+                {"skill": "Spring", "level": 2},
+                {"skill": "Kubernetes", "level": 2},
+                {"skill": "Cloud", "level": 2},
+                {"skill": "API Design", "level": 2},
+                {"skill": "AWS", "level": 2},
+                {"skill": "Software Architecture", "level": 2},
+                {"skill": "Terraform", "level": 2},
+                {"skill": "Kafka", "level": 2},
+                {"skill": "Java", "level": 2},
+                {"skill": "Microservices", "level": 2},
+                {"skill": "CI/CD", "level": 2}
             ],
             "softSkills": [
-                {"skill": "Communication", "level": "Expert"},
-                {"skill": "Leadership", "level": "Expert"},
-                {"skill": "Mentoring", "level": "Expert"},
-                {"skill": "Problem-solving", "level": "Expert"},
-                {"skill": "Team collaboration", "level": "Expert"}
+                {"skill": "Communication", "level": 3},
+                {"skill": "Leadership", "level": 3},
+                {"skill": "Mentoring", "level": 3},
+                {"skill": "Problem-solving", "level": 3},
+                {"skill": "Team collaboration", "level": 3}
             ],
             "keyResponsibilities": [
                 "Lead architectural design and development of end-to-end solutions.",

@@ -32,7 +32,7 @@ class Requirement(Base):
     id = Column(Integer, primary_key=True)
     position_id = Column(Integer, ForeignKey("recruiters.positions.id", ondelete="CASCADE"), nullable=False)
     key = Column(String(255), nullable=False)
-    value = Column(String(255), nullable=False)
+    value = Column(Integer, nullable=False)
     description = Column(Text, nullable=False)
     mandatory = Column(Boolean, nullable=False)
 

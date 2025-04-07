@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 from confluent_kafka import Consumer, KafkaException
+from qdrant_client import QdrantClient
+from testcontainers.core.container import DockerContainer
 from testcontainers.kafka import KafkaContainer
 from testcontainers.postgres import PostgresContainer
 from unittest.mock import patch, MagicMock
@@ -19,14 +21,6 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
-
-
-# @pytest.fixture(scope="session")
-# def event_loop():
-#     loop = asyncio.get_event_loop_policy().new_event_loop()
-#     yield loop
-#     loop.close()
-
 
 @pytest.fixture(scope="module")
 def postgres_container(request):
@@ -64,6 +58,19 @@ def kafka_container(request):
 
 
 @pytest.fixture(scope="module")
+def qdrant_container(request):
+    container = DockerContainer("qdrant/qdrant")
+    container.with_exposed_ports(6333)
+    container.start()
+
+    time.sleep(2)
+
+    yield container
+
+    container.stop()
+
+
+@pytest.fixture(scope="module")
 def setup_topics(kafka_container, setup_environment_variables):
     from confluent_kafka.admin import (AdminClient, NewTopic)
     admin = AdminClient({'bootstrap.servers': kafka_container} )
@@ -85,7 +92,7 @@ def setup_topics(kafka_container, setup_environment_variables):
 
 
 @pytest.fixture(scope="module")
-def setup_environment_variables(postgres_container, kafka_container):
+def setup_environment_variables(postgres_container, kafka_container, qdrant_container):
     import os
     os.environ["DB_HOST"] = postgres_container.get_container_host_ip()
     os.environ["DB_PORT"] = str(postgres_container.get_exposed_port(5432))
@@ -95,6 +102,8 @@ def setup_environment_variables(postgres_container, kafka_container):
     os.environ["KAFKA_BOOTSTRAP_SERVERS"] = kafka_container
     os.environ["KAFKA_INPUT_TOPIC"] = "application-analyzed-events"
     os.environ["KAFKA_OUTPUT_TOPIC"] = "application-scored-events"
+    os.environ["VECTOR_STORAGE_HOST"] = qdrant_container.get_container_host_ip()
+    os.environ["VECTOR_STORAGE_PORT"] = qdrant_container.get_exposed_port(6333)
 
     yield
 
@@ -145,7 +154,6 @@ def mock_openai_embeddings():
 
         embeddings = []
         for text in inputs:
-            # Simula un embedding "determinista" basado en el texto
             vector = [(ord(c) % 10) / 10.0 for c in text][:10]
             padded = vector + [0.0] * (1536 - len(vector))
             embeddings.append(MagicMock(embedding=padded))

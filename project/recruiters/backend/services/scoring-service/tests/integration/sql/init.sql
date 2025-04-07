@@ -15,7 +15,7 @@ CREATE TABLE RECRUITERS.requirements
     id          SERIAL PRIMARY KEY,
     position_id INT  NOT NULL REFERENCES RECRUITERS.positions (id) ON DELETE CASCADE,
     key VARCHAR(255) NOT NULL,
-    value VARCHAR(255) NOT NULL,
+    value SMALLINT NOT NULL,
     description TEXT NOT NULL,
     mandatory BOOLEAN NOT NULL
 );
@@ -46,11 +46,11 @@ VALUES (
 
 INSERT INTO RECRUITERS.requirements (position_id, key, value, description, mandatory)
 VALUES
-    (1, 'Python', 'Avanzado', 'Experiencia en Python para manipulación de datos y modelado.', TRUE),
-    (1, 'Machine Learning', 'Avanzado', 'Conocimiento profundo en algoritmos de ML y Deep Learning.', TRUE),
-    (1, 'Big Data', 'Intermedio', 'Experiencia con Apache Spark o Hadoop.', FALSE),
-    (1, 'SQL', 'Avanzado', 'Manejo de SQL para análisis de grandes volúmenes de datos.', TRUE),
-    (1, 'Cloud', 'Intermedio', 'Experiencia en GCP, AWS o Azure.', FALSE);
+    (1, 'Python', 3, 'Experiencia en Python para manipulación de datos y modelado.', TRUE),
+    (1, 'Machine Learning', 3, 'Conocimiento profundo en algoritmos de ML y Deep Learning.', TRUE),
+    (1, 'Big Data', 2, 'Experiencia con Apache Spark o Hadoop.', FALSE),
+    (1, 'SQL', 3, 'Manejo de SQL para análisis de grandes volúmenes de datos.', TRUE),
+    (1, 'Cloud', 2, 'Experiencia en GCP, AWS o Azure.', FALSE);
 
 INSERT INTO RECRUITERS.tasks (position_id, description)
 VALUES
@@ -75,11 +75,11 @@ VALUES (
 
 INSERT INTO RECRUITERS.requirements (position_id, key, value, description, mandatory)
 VALUES
-    (2, 'Java', 'Avanzado', 'Experiencia en desarrollo backend con Java 11 o superior.', TRUE),
-    (2, 'Spring Boot', 'Avanzado', 'Conocimiento profundo del framework Spring Boot.', TRUE),
-    (2, 'REST APIs', 'Intermedio', 'Experiencia diseñando y consumiendo APIs REST.', TRUE),
-    (2, 'Docker', 'Intermedio', 'Conocimiento en contenedores y despliegue en Docker.', FALSE),
-    (2, 'Kubernetes', 'Básico', 'Familiaridad con orquestación de contenedores.', FALSE);
+    (2, 'Java', 3, 'Experiencia en desarrollo backend con Java 11 o superior.', TRUE),
+    (2, 'Spring Boot', 3, 'Conocimiento profundo del framework Spring Boot.', TRUE),
+    (2, 'REST APIs', 2, 'Experiencia diseñando y consumiendo APIs REST.', TRUE),
+    (2, 'Docker', 2, 'Conocimiento en contenedores y despliegue en Docker.', FALSE),
+    (2, 'Kubernetes', 1, 'Familiaridad con orquestación de contenedores.', FALSE);
 
 INSERT INTO RECRUITERS.tasks (position_id, description)
 VALUES
@@ -105,11 +105,11 @@ VALUES (
 
 INSERT INTO RECRUITERS.requirements (position_id, key, value, description, mandatory)
 VALUES
-    (3, 'AWS', 'Avanzado', 'Experiencia en servicios de AWS (EC2, RDS, S3).', TRUE),
-    (3, 'CI/CD', 'Intermedio', 'Conocimiento en integración y despliegue continuo con Jenkins o GitHub Actions.', TRUE),
-    (3, 'Kubernetes', 'Intermedio', 'Experiencia en orquestación de contenedores con Kubernetes.', TRUE),
-    (3, 'Terraform', 'Básico', 'Conocimiento en IaC con Terraform o CloudFormation.', FALSE),
-    (3, 'Observabilidad', 'Intermedio', 'Experiencia en monitoreo con Prometheus, Grafana o Datadog.', TRUE);
+    (3, 'AWS', 3, 'Experiencia en servicios de AWS (EC2, RDS, S3).', TRUE),
+    (3, 'CI/CD', 2, 'Conocimiento en integración y despliegue continuo con Jenkins o GitHub Actions.', TRUE),
+    (3, 'Kubernetes', 2, 'Experiencia en orquestación de contenedores con Kubernetes.', TRUE),
+    (3, 'Terraform', 1, 'Conocimiento en IaC con Terraform o CloudFormation.', FALSE),
+    (3, 'Observabilidad', 2, 'Experiencia en monitoreo con Prometheus, Grafana o Datadog.', TRUE);
 
 INSERT INTO RECRUITERS.tasks (position_id, description)
 VALUES
@@ -135,11 +135,11 @@ VALUES (
 
 INSERT INTO RECRUITERS.requirements (position_id, key, value, description, mandatory)
 VALUES
-    (4, 'Product Management', 'Avanzado', 'Experiencia gestionando productos digitales.', TRUE),
-    (4, 'Scrum', 'Intermedio', 'Conocimiento en metodologías ágiles y gestión de sprints.', TRUE),
-    (4, 'UX/UI', 'Básico', 'Capacidad de entender y mejorar la experiencia de usuario.', FALSE),
-    (4, 'Stakeholder Management', 'Intermedio', 'Experiencia interactuando con clientes y equipos técnicos.', TRUE),
-    (4, 'Roadmap', 'Intermedio', 'Capacidad para definir y gestionar roadmaps de producto.', TRUE);
+    (4, 'Product Management', 3, 'Experiencia gestionando productos digitales.', TRUE),
+    (4, 'Scrum', 2, 'Conocimiento en metodologías ágiles y gestión de sprints.', TRUE),
+    (4, 'UX/UI', 1, 'Capacidad de entender y mejorar la experiencia de usuario.', FALSE),
+    (4, 'Stakeholder Management', 2, 'Experiencia interactuando con clientes y equipos técnicos.', TRUE),
+    (4, 'Roadmap', 2, 'Capacidad para definir y gestionar roadmaps de producto.', TRUE);
 
 INSERT INTO RECRUITERS.tasks (position_id, description)
 VALUES
@@ -165,11 +165,11 @@ VALUES (
 
 INSERT INTO RECRUITERS.requirements (position_id, key, value, description, mandatory)
 VALUES
-    (5, 'Penetration Testing', 'Avanzado', 'Experiencia realizando pruebas de seguridad y ethical hacking.', TRUE),
-    (5, 'SIEM', 'Intermedio', 'Uso de herramientas de monitoreo de seguridad como Splunk o ELK.', TRUE),
-    (5, 'Cloud Security', 'Básico', 'Conocimientos en seguridad de AWS, Azure o GCP.', FALSE),
-    (5, 'SOC Operations', 'Intermedio', 'Experiencia en respuesta a incidentes de seguridad.', TRUE),
-    (5, 'ISO 27001', 'Básico', 'Familiaridad con normativas de seguridad.', FALSE);
+    (5, 'Penetration Testing', 3, 'Experiencia realizando pruebas de seguridad y ethical hacking.', TRUE),
+    (5, 'SIEM', 2, 'Uso de herramientas de monitoreo de seguridad como Splunk o ELK.', TRUE),
+    (5, 'Cloud Security', 1, 'Conocimientos en seguridad de AWS, Azure o GCP.', FALSE),
+    (5, 'SOC Operations', 2, 'Experiencia en respuesta a incidentes de seguridad.', TRUE),
+    (5, 'ISO 27001', 1, 'Familiaridad con normativas de seguridad.', FALSE);
 
 INSERT INTO RECRUITERS.tasks (position_id, description)
 VALUES
@@ -195,11 +195,11 @@ VALUES (
 
 INSERT INTO RECRUITERS.requirements (position_id, key, value, description, mandatory)
 VALUES
-    (6, 'React', 'Avanzado', 'Experiencia en desarrollo con React y gestión de estado (Redux, Context API).', TRUE),
-    (6, 'TypeScript', 'Intermedio', 'Uso de TypeScript para mejorar la robustez del código.', TRUE),
-    (6, 'CSS/SASS', 'Intermedio', 'Manejo de estilos avanzados y diseño responsivo.', TRUE),
-    (6, 'UI/UX', 'Básico', 'Conocimiento en diseño centrado en el usuario.', FALSE),
-    (6, 'Testing', 'Básico', 'Familiaridad con pruebas unitarias (Jest, React Testing Library).', FALSE);
+    (6, 'React', 3, 'Experiencia en desarrollo con React y gestión de estado (Redux, Context API).', TRUE),
+    (6, 'TypeScript', 2, 'Uso de TypeScript para mejorar la robustez del código.', TRUE),
+    (6, 'CSS/SASS', 2, 'Manejo de estilos avanzados y diseño responsivo.', TRUE),
+    (6, 'UI/UX', 1, 'Conocimiento en diseño centrado en el usuario.', FALSE),
+    (6, 'Testing', 1, 'Familiaridad con pruebas unitarias (Jest, React Testing Library).', FALSE);
 
 INSERT INTO RECRUITERS.tasks (position_id, description)
 VALUES
@@ -226,11 +226,11 @@ VALUES (
 
 INSERT INTO RECRUITERS.requirements (position_id, key, value, description, mandatory)
 VALUES
-    (7, 'Software Architecture', 'Avanzado', 'Experiencia en diseño de arquitecturas escalables y resilientes.', TRUE),
-    (7, 'Microservices', 'Avanzado', 'Implementación de arquitecturas basadas en microservicios.', TRUE),
-    (7, 'Cloud', 'Intermedio', 'Experiencia con AWS, Azure o GCP.', TRUE),
-    (7, 'Kubernetes', 'Intermedio', 'Despliegue y gestión de aplicaciones en contenedores.', FALSE),
-    (7, 'API Design', 'Intermedio', 'Diseño de APIs REST y GraphQL.', TRUE);
+    (7, 'Software Architecture', 3, 'Experiencia en diseño de arquitecturas escalables y resilientes.', TRUE),
+    (7, 'Microservices', 3, 'Implementación de arquitecturas basadas en microservicios.', TRUE),
+    (7, 'Cloud', 2, 'Experiencia con AWS, Azure o GCP.', TRUE),
+    (7, 'Kubernetes', 2, 'Despliegue y gestión de aplicaciones en contenedores.', FALSE),
+    (7, 'API Design', 2, 'Diseño de APIs REST y GraphQL.', TRUE);
 
 INSERT INTO RECRUITERS.tasks (position_id, description)
 VALUES

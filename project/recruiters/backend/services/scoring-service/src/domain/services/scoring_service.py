@@ -1,11 +1,14 @@
+import json
 import logging
 import time
 
 import numpy as np
 import openai
+from openai import embeddings
 from sklearn.metrics.pairwise import cosine_similarity
 
 from src.application.adapters.db.sqlalchemy_repository import PositionRepository
+from src.application.adapters.vector_storage.vector_storage_service import VectorStorageService
 from src.application.api.output.application_scoring_publisher import ApplicationScoringPublisher
 from src.domain.model.application_analysis import ApplicationAnalysis, ResumeAnalysis
 from src.domain.model.application_scoring import Scoring, ApplicationScoring
@@ -17,9 +20,10 @@ logger = logging.getLogger(__name__)
 tracer = trace.get_tracer(__name__)
 
 class ScoringService:
-    def __init__(self, position_repository: PositionRepository, applicationScoringPublisher: ApplicationScoringPublisher):
+    def __init__(self, position_repository: PositionRepository, applicationScoringPublisher: ApplicationScoringPublisher, vectorStorageService: VectorStorageService):
         self.position_repository = position_repository
         self.applicationScoringPublisher = applicationScoringPublisher
+        self.vectorStorageService = vectorStorageService
 
     def score(self, application_analysis: ApplicationAnalysis):
         with tracer.start_as_current_span("scoring"):
@@ -29,23 +33,17 @@ class ScoringService:
             position = self.position_repository.get_position_by_id(application_analysis.position_id)
             analysis = application_analysis.analysis
 
-            cv_skills = analysis.hard_skills + analysis.soft_skills + analysis.tags
+            position_collection = f"position_{position.id}"
+            self.vectorStorageService.create_collection(position_collection)
 
-            desc_score = round(self.__score_desc(position.description, str(analysis.strengths)), 2)
-            requirement_score = round(self.__score_requirements(position.requirements, cv_skills), 2)
-            task_score = round(self.__score_tasks(position.tasks, analysis.key_responsibilities), 2)
+            desc_score = round(self.__score_desc(position=position, position_collection=position_collection, analysis=analysis), 2)
+            requirement_score = round(self.__score_requirements_new(position=position, analysis=analysis, position_collection=position_collection), 2)
+            task_score = round(self.__score_tasks_new(position=position, analysis=analysis, position_collection=position_collection), 2)
             final_score = round((0.1 * desc_score) + (0.6 * requirement_score) + (0.3 * task_score), 2)
 
             explanation = self.__generate_explanation(final_score, desc_score, requirement_score, task_score, position, analysis)
 
             time_spent = round(time.time() - start_time, 2)
-
-            logger.info(f"Score computed for position {position.id} and application {application_analysis.application_id}")
-            logger.info(f"[{position.id} //  {application_analysis.application_id}] Time spent: {time_spent}")
-            logger.info(f"[{position.id} //  {application_analysis.application_id}] Score: {final_score}")
-            logger.info(f"[{position.id} //  {application_analysis.application_id}] Desc score: {desc_score}")
-            logger.info(f"[{position.id} //  {application_analysis.application_id}] Requirement score: {requirement_score}")
-            logger.info(f"[{position.id} //  {application_analysis.application_id}] Tasks score: {task_score}")
 
             scoring = Scoring(
                 application_id=application_analysis.application_id,
@@ -65,11 +63,46 @@ class ScoringService:
             )
 
             logger.info(f"Scoring computed for position {position.id} and application {application_analysis.application_id}: {final_score}")
+            self.__logger_scoring(position.id, application_analysis.application_id, scoring)
 
             self.applicationScoringPublisher.publish_application_scored_event(application_scoring)
 
+    def __logger_scoring(self, position_id: int, application_id: str, scoring: Scoring):
+        logger.info(f"Score computed for position {position_id} and application {application_id}")
+        logger.info(f"[{position_id} //  {application_id}] Time spent: {scoring.time_spent}")
+        logger.info(f"[{position_id} //  {application_id}] Score: {scoring.score}")
+        logger.info(f"[{position_id} //  {application_id}] Desc score: {scoring.desc_score}")
+        logger.info(f"[{position_id} //  {application_id}] Requirement score: {scoring.requirement_score}")
+        logger.info(f"[{position_id} //  {application_id}] Tasks score: {scoring.tasks_score}")
 
-    def __get_embedding(self, text: str):
+
+    def __get_embeddings_from_vector_storage(self, collection:str, position_id: int, key: str, text: str):
+        with tracer.start_as_current_span("get_embeddings"):
+            try:
+                conditions = [
+                    ("position_id", position_id),
+                    ("key", key)
+                ]
+
+                logger.info(f"Getting embeddings for position {position_id} and key {key} from vector storage")
+                embeddings = self.vectorStorageService.get_embeddings(collection=collection, metadata_filter=conditions)
+                if len(embeddings) == 0 or np.all(embeddings == 0):
+                    embeddings = self.__get_embeddings_from_model(text)
+                    metadata = {
+                        "position_id": position_id,
+                        "key": key
+                    }
+
+                    self.vectorStorageService.add_embeddings(collection=collection, embeddings=embeddings, metadata=metadata)
+                    logger.info(f"Embeddings added to vector storage. Metadata filter: {metadata}")
+
+                return embeddings
+            except Exception as e:
+                logger.error(f"Error getting embedding for text: {text}")
+                logger.error(str(e))
+                raise e
+
+    def __get_embeddings_from_model(self, text: str):
         with tracer.start_as_current_span("get_embedding"):
             try:
                 response = openai.embeddings.create(input=text, model="text-embedding-3-small")
@@ -79,69 +112,89 @@ class ScoringService:
                 logger.error(str(e))
                 raise e
 
-    def __compute_semantic_similarity(self, text1: str, text2: str):
+    def __compute_semantic_similarity(self, position_collection: str, position_text: str, cv_text: str):
         with tracer.start_as_current_span("compute_semantic_similarity"):
-            embedding1 = self.__get_embedding(text1)
-            embedding2 = self.__get_embedding(text2)
-            score = cosine_similarity(embedding1, embedding2)[0][0]
-            return score
+            position_embeddings = self.__get_embeddings_from_model(position_text)
+            cv_embeddings = self.__get_embeddings_from_model(cv_text)
+            similarity = cosine_similarity(position_embeddings, cv_embeddings)[0][0]
+            return similarity
 
-    def __score_desc(self, text1: str, text2: str):
+    def __score_desc(self, position: Position, position_collection: str, analysis: ResumeAnalysis):
         with tracer.start_as_current_span("score_desc"):
-            return self.__compute_semantic_similarity(text1, text2)
+            position_desc_embeddings = self.__get_embeddings_from_vector_storage(collection=position_collection,
+                                                                                 position_id=position.id,
+                                                                                 key="description",
+                                                                                 text=position.description)
 
-    def __score_requirements(self, requirements, cv_skills):
+            cv_embeddings = self.__get_embeddings_from_model(analysis.summary)
+
+            return cosine_similarity(position_desc_embeddings, cv_embeddings)[0][0]
+
+
+    def __get_requirements_model(self, position: Position, mandatory: bool):
+        filtered = [req for req in position.requirements if req.mandatory == mandatory]
+        return json.dumps([
+                {"key": req.key, "value": req.value}
+                for req in filtered
+            ], ensure_ascii=False)
+
+    def __get_skills_model(self, analysis: ResumeAnalysis):
+        cv_skills = analysis.hard_skills + analysis.soft_skills + analysis.tags
+
+        return json.dumps([
+            {"key": skill.skill if hasattr(skill, 'skill') else skill, "value": skill.level if hasattr(skill, 'level') else 2}
+            for skill in cv_skills
+        ])
+
+    def __score_requirements_new(self, position: Position, analysis: ResumeAnalysis, position_collection: str):
         with tracer.start_as_current_span("score_requirements"):
-            total_score = 0
-            max_score = 0
+            mandatory_req_model = self.__get_requirements_model(position, True)
+            mandatory_req_embeddings = self.__get_embeddings_from_vector_storage(collection=position_collection,
+                                                                                 position_id=position.id,
+                                                                                 key="mandatory_requirements",
+                                                                                 text=mandatory_req_model)
+            additional_req_model = self.__get_requirements_model(position, False)
+            additional_req_embeddings = self.__get_embeddings_from_vector_storage(collection=position_collection,
+                                                                                 position_id=position.id,
+                                                                                 key="additional_requirements",
+                                                                                 text=additional_req_model)
 
-            for req in requirements:
-                skill = req.key
-                mandatory = req.mandatory
-                value = req.value
-                best_match = 0
-                skill_and_level = skill + ' (' + str(self.__assignNumericLevel(value)) + ')'
-                for cv_skill in cv_skills:
-                    cv_skill_and_level = cv_skill
-                    if hasattr(cv_skill, 'level'):
-                        cv_skill_and_level = cv_skill.skill + ' (' + str(self.__assignNumericLevel(cv_skill.level)) + ')'
+            skills_model = self.__get_skills_model(analysis)
+            skills_embeddings = self.__get_embeddings_from_model(skills_model)
 
-                    if skill_and_level == cv_skill_and_level:
-                        best_match = 1
-                        break
+            mandatory_reqs_and_skills_similarity = cosine_similarity(mandatory_req_embeddings, skills_embeddings)[0][0]
+            additional_req_and_skills_similarity = cosine_similarity(additional_req_embeddings, skills_embeddings)[0][0]
+            bonus_for_additional_similarity = 0.1 if additional_req_and_skills_similarity >= 0.6 else 0.0
+            reqs_similarity = mandatory_reqs_and_skills_similarity * (1.0 + bonus_for_additional_similarity)
 
-                    match = self.__compute_semantic_similarity(skill_and_level, cv_skill_and_level)
-                    if match > best_match:
-                        best_match = match
+            return min(reqs_similarity, 1.0)
 
-                weight = 2 if mandatory else 1
-                total_score += best_match * weight
-                max_score += weight
-
-
-            return total_score / max_score if max_score > 0 else 0
-
-    def __assignNumericLevel(self, level):
-        if level == "Avanzado":
-            return 3
-        if level == "Intermediate":
-            return 2
-        if level == "Basico":
-            return 1
-        return 0
-
-
-    def __score_tasks(self, tasks, cv_tasks):
+    def __score_tasks_new(self, position: Position, analysis: ResumeAnalysis, position_collection: str):
         with tracer.start_as_current_span("score_tasks"):
-            if not tasks:
-                return 0
-            total_score = 0
+            tasks = position.tasks
+            cv_tasks = analysis.key_responsibilities
+            cv_tasks_embeddings_map = {}
+            total_similarity = 0
+
             for task in tasks:
-                best_match = max((self.__compute_semantic_similarity(task.description, cv_task) for cv_task in cv_tasks), default=0)
+                task_embedding = self.__get_embeddings_from_vector_storage(collection=position_collection,
+                                                                             position_id=position.id,
+                                                                             key=f"task_{task.id}",
+                                                                             text=task.description)
+                best_similarity = 0
+                for cv_task in cv_tasks:
+                    cv_task_embedding = cv_tasks_embeddings_map.get(cv_task)
+                    if cv_task_embedding is None:
+                        cv_task_embedding = self.__get_embeddings_from_model(cv_task)
+                        cv_tasks_embeddings_map[cv_task] = cv_task_embedding
 
-                total_score += best_match
+                    similarity = cosine_similarity(task_embedding, cv_task_embedding)[0][0]
+                    if similarity > best_similarity:
+                        best_similarity = similarity
 
-            return total_score / len(tasks)
+                total_similarity += best_similarity
+
+            return total_similarity / len(tasks)
 
     def __generate_explanation(self, score, desc_score, requirement_score, tasks_score, position: Position, candidate: ResumeAnalysis) -> str:
         with tracer.start_as_current_span("generate_explanation"):
@@ -163,7 +216,7 @@ class ScoringService:
                 f"- Tasks score ('task_score'): {tasks_score}\n"
                 f"- Final score ('score'): {score}\n"
                 f"- Score formula: 'score = round((0.1 * desc_score) + (0.6 * requirement_score) + (0.3 * task_score), 2)'\n"
-                "Please generate a detailed explanation in natural language addressing the following:\n"
+                "Please generate a detailed explanation about the score achieved, in natural language addressing the following:\n"
                 "1. How the candidate's profile relates to the position's description and requirements.\n"
                 "2. Which aspects of the CV strongly match the position's tasks and responsibilities.\n"
                 "3. Areas of opportunity or discrepancies between the candidate's profile and the role's expectations.\n"
