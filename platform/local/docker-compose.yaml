@@ -16,6 +16,13 @@ services:
       - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
       - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
 
+  qdrant:
+    image: qdrant/qdrant:v1.13.6
+    container_name: infrastructure.qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+
   minio:
     image: quay.io/minio/minio
     container_name: infrastructure.minio
@@ -394,14 +401,12 @@ services:
       - QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA=recruiters
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MP_MESSAGING_INCOMING_CDC-APPLICATIONS_TOPIC=cdc.applications.applications
-      - MP_MESSAGING_INCOMING_CDC-APPLICATIONS_TRACING-ENABLED=false
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
-      - QUARKUS_OPENTELEMETRY_ENABLED=true
-      - QUARKUS_OPENTELEMETRY_TRACER_EXPORTER=otlp
-      - QUARKUS_OPENTELEMETRY_TRACER_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-      - QUARKUS_OPENTELEMETRY_TRACER_EXPORTER_OTLP_PROTOCOL=http/protobuf
-      - QUARKUS_OPENTELEMETRY_TRACER_SAMPLER=always_on
-      - QUARKUS_OPENTELEMETRY_SERVICE_NAME=recruitment-applications-updater-service
+      - QUARKUS_OTEL_ENABLED=true
+      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - QUARKUS_OTEL_SERVICE_NAME=recruitment-applications-updater-service
+      - QUARKUS_APPLICATION_NAME=recruitment-applications-updater-service
+      - QUARKUS_DATASOURCE_JDBC_TELEMETRY=true
 #      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
 #      - OTEL_SERVICE_NAME=recruitment-applications-updater-service
 #      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
@@ -420,8 +425,8 @@ services:
         condition: service_started
       broker:
         condition: service_healthy
-      kafka-init:
-        condition: service_completed_successfully
+#      kafka-init:
+#        condition: service_completed_successfully
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -456,8 +461,8 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
-    volumes:
-      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
+#    volumes:
+#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - SERVER_PORT=9082
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
@@ -469,12 +474,14 @@ services:
       - MINIO_ACCESS_SECRET=minioadmin
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - SPRING_AI_OPENAI_API_KEY=${OPENAI_API_KEY}
-      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
+#      - JAVA_TOOL_OPTIONS=-javaagent:/otel/opentelemetry-javaagent.jar -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED
       - OTEL_SERVICE_NAME=recruitment-applications-analyzer-service
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_TRACES_EXPORTER=otlp
       - OTEL_METRICS_EXPORTER=none
       - OTEL_LOGS_EXPORTER=none
+      - OTEL_JAVAAGENT_ENABLED=true
 
   recruitment-scoring-service:
     image: "ghcr.io/jaruizes/recruitment/scoring-service:1.0.0"
@@ -485,8 +492,8 @@ services:
         condition: service_started
       broker:
         condition: service_healthy
-      kafka-init:
-        condition: service_completed_successfully
+#      kafka-init:
+#        condition: service_completed_successfully
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -499,6 +506,8 @@ services:
       - KAFKA_INPUT_TOPIC=recruitment.applications-analyzed
       - KAFKA_OUTPUT_TOPIC=recruitment.applications-scored
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - VECTOR_STORAGE_HOST=qdrant
+      - VECTOR_STORAGE_PORT=6333
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
       - TRACING_ENABLED=true
 
