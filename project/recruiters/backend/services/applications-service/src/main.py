@@ -67,8 +67,9 @@ def startup():
         logger = logging.getLogger(__name__)
         logger.info('Starting up')
 
-        config = load_config()
         app = configFastAPIApp()
+        config = load_config()
+
 
         if config.tracing_enabled:
             configure_tracer(app)
