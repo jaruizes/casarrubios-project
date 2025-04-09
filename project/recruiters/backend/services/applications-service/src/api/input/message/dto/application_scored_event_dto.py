@@ -41,6 +41,7 @@ class ScoringDTO:
 @dataclass
 class ApplicationScoredEventDTO:
     applicationId: str
+    candidateId: str
     positionId: int
     analysis: ResumeAnalysisDTO
     scoring: ScoringDTO

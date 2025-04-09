@@ -17,12 +17,7 @@ public class NewApplicationReceivedDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
     private UUID id;
-    @JsonProperty("position_id")
+    private UUID candidateId;
     private Long positionId;
-    private String name;
-    private String email;
-    private String phone;
-    private String cv;
-    @JsonProperty("created_at")
     private Long createdAt;
 }

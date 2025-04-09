@@ -3,26 +3,31 @@ package com.jaruiz.casarrubios.recruiters.services.adapters.persistence.reposito
 import java.sql.Timestamp;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "applications")
+@Table(name = "candidate_applications")
 public class ApplicationEntity {
 
     @Id
     private UUID id;
-    private String name;
-    private String email;
-    private String phone;
-    private String cv;
+
+    @Column(name = "candidate_id")
+    private UUID candidateId;
+
     @Column(name = "position_id")
     private Long positionId;
 
     @Column(name = "created_at")
     private Timestamp createdAt;
+
+    public UUID getCandidateId() {
+        return candidateId;
+    }
+
+    public void setCandidateId(UUID candidateId) {
+        this.candidateId = candidateId;
+    }
 
     public ApplicationEntity() { }
 
@@ -32,38 +37,6 @@ public class ApplicationEntity {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getCv() {
-        return cv;
-    }
-
-    public void setCv(String cv) {
-        this.cv = cv;
     }
 
     public Timestamp getCreatedAt() {

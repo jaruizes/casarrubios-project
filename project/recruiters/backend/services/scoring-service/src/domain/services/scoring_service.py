@@ -4,7 +4,7 @@ import time
 
 import numpy as np
 import openai
-from openai import embeddings
+from opentelemetry import trace
 from sklearn.metrics.pairwise import cosine_similarity
 
 from src.application.adapters.db.sqlalchemy_repository import PositionRepository
@@ -13,8 +13,6 @@ from src.application.api.output.application_scoring_publisher import Application
 from src.domain.model.application_analysis import ApplicationAnalysis, ResumeAnalysis
 from src.domain.model.application_scoring import Scoring, ApplicationScoring
 from src.domain.model.position import Position
-from src.infrastructure.kafka.kafka_producer import KafkaProducer
-from opentelemetry import trace
 
 logger = logging.getLogger(__name__)
 tracer = trace.get_tracer(__name__)
@@ -57,6 +55,7 @@ class ScoringService:
 
             application_scoring = ApplicationScoring(
                 application_id=application_analysis.application_id,
+                candidate_id=application_analysis.candidate_id,
                 position_id=application_analysis.position_id,
                 analysis=analysis,
                 scoring=scoring
@@ -221,10 +220,11 @@ class ScoringService:
                 "2. Which aspects of the CV strongly match the position's tasks and responsibilities.\n"
                 "3. Areas of opportunity or discrepancies between the candidate's profile and the role's expectations.\n"
                 "4. How each of these elements contributed to the final score. \n\n"
-                "The explanation should be clear and concise and highlights both the strengths and the areas for improvement."
-                "It must be written in Spanish, no more than 750 words long. "
-                "The output must be valid HTML, using only semantic tags like <div>, <ul>, <ol>, <li>, <p>, <strong>, etc., without any CSS or inline styles"
-                "The output must be a <div> element with the class 'explanation'"
+                "The explanation should be clear and concise and highlights both the strengths and the areas for improvement.\n"
+                "It must be written in Spanish, no more than 750 words long.\n"
+                "The output must be valid HTML, using only semantic tags like <div>, <ul>, <ol>, <li>, <p>, <strong>, etc., without any CSS or inline styles.\n"
+                "The output must be start with a <div> element with the class 'explanation'. For instance: <div class='explanation'>...</div>\n"
+                "Do not start with ```html or any other code block similar.. "
             )
 
             try:

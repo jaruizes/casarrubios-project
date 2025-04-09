@@ -1,17 +1,13 @@
 import io
 import json
 import logging
-import uuid
-from datetime import datetime
 from pathlib import Path
-from uuid import UUID
-from sqlalchemy.sql import text
 
 import pytest
 from fastapi.testclient import TestClient
 
-from src.adapters.db.models import Application
-from src.api.input.rest.dto.models import ApplicationDTO
+from src.adapters.db.models import CandidateApplicationsDB, CandidateDB
+from src.api.input.rest.dto.application_rest_api_dto import ApplicationDTO
 from src.infrastructure.app.app import app
 
 client = TestClient(app)
@@ -25,21 +21,22 @@ def test_get_applications_empty(setup_config):
     assert response.json()["totalElements"] == 22
 
 def test_get_application_by_id_right(db_session):
-    application_stored: Application = db_session.query(Application).filter(Application.position_id == 1).first()
+    application_stored: CandidateApplicationsDB = db_session.query(CandidateApplicationsDB).filter(CandidateApplicationsDB.position_id == 1).first()
+    candidate_stored: CandidateDB = db_session.query(CandidateDB).filter(CandidateDB.id == application_stored.candidate_id).first()
     assert application_stored is not None, "Error getting application with id 1 from the database"
 
     response = client.get("/applications/" + str(application_stored.id))
 
     assert response.status_code == 200
     application_dto = ApplicationDTO(**response.json())
-    __assert_basic_data(application_dto, application_stored)
+    __assert_basic_data(application_dto, application_stored, candidate_stored)
 
-def test_get_application_by_id_not_found():
+def test_get_application_by_id_not_found(db_session):
     response = client.get("/applications/550e8400-e29b-41d4-a716-446655440000")
     assert response.status_code == 404
 
 def test_get_cv_file(setup_config, minio_setup, db_session):
-    application_stored: Application = db_session.query(Application).filter(Application.position_id == 1).first()
+    application_stored: CandidateApplicationsDB = db_session.query(CandidateApplicationsDB).filter(CandidateApplicationsDB.position_id == 1).first()
     assert application_stored is not None, "Error getting application with id 1 from the database"
 
     cv_file_test_bytes = __upload_cv_fake(str(application_stored.id), minio_setup)
@@ -52,11 +49,13 @@ def test_get_cv_file(setup_config, minio_setup, db_session):
 @pytest.mark.asyncio
 async def test_process_application_scored_event(db_session, setup_producer, setup_config, wait_for_process_event, setup_e2e):
     # Obtener una aplicación existente
-    application_stored: Application = db_session.query(Application).filter(Application.position_id == 1).first()
+    application_stored: CandidateApplicationsDB = db_session.query(CandidateApplicationsDB).filter(CandidateApplicationsDB.id == "b5299ca1-fa06-41b7-817d-3f33950f94f7").first()
+    candidate_stored: CandidateDB = db_session.query(CandidateDB).filter(CandidateDB.id == application_stored.candidate_id).first()
     application_id = application_stored.id
     position_id = application_stored.position_id
-    
-    application_scored_event = __build_applycation_scored_event(application_id, position_id)
+    candidate_id = application_stored.candidate_id
+
+    application_scored_event = __build_application_scored_event(application_id, position_id, candidate_id)
     application_scored_event_bytes = json.dumps(application_scored_event).encode("utf-8")
     setup_producer.produce(topic=setup_config.input_topic, value=application_scored_event_bytes)
 
@@ -70,7 +69,7 @@ async def test_process_application_scored_event(db_session, setup_producer, setu
     
     # Verificar que los datos de análisis y puntuación están presentes
     application_dto = ApplicationDTO(**response.json())
-    __assert_basic_data(application_dto, application_stored)
+    __assert_basic_data(application_dto, application_stored, candidate_stored)
     __assert_analysis_and_scoring_data(application_dto, application_scored_event)
 
 
@@ -82,14 +81,14 @@ def __upload_cv_fake(application_id: str, minio_setup):
 
     return cv_file_test_bytes
 
-def __assert_basic_data(application_dto, application_stored):
+def __assert_basic_data(application_dto, application_stored, candidate_stored):
     assert application_dto is not None
     assert str(application_dto.applicationId) == str(application_stored.id)
-    assert application_dto.candidate.name == application_stored.name
-    assert application_dto.candidate.email == application_stored.email
-    assert application_dto.candidate.phone == application_stored.phone
+    assert application_dto.candidate.name == candidate_stored.name
+    assert application_dto.candidate.email == candidate_stored.email
+    assert application_dto.candidate.phone == candidate_stored.phone
     assert application_dto.positionId == application_stored.position_id
-    assert application_dto.cvFile == application_stored.cv
+    assert application_dto.cvFile == candidate_stored.cv
     assert application_dto.creationDate == application_stored.created_at.isoformat()
 
 def __assert_analysis_and_scoring_data(application_dto, application_scored_event):
@@ -121,7 +120,7 @@ def __assert_analysis_and_scoring_data(application_dto, application_scored_event
     assert application_scored_event["scoring"]["explanation"] is not None
 
 def __publish_application_scored_event(producer, topic, application_id, position_id):
-    application_scored_event = __build_applycation_scored_event(application_id, position_id)
+    application_scored_event = __build_application_scored_event(application_id, position_id)
     try:
         key = application_scored_event.get("applicationId")
         event_bytes = json.dumps(application_scored_event).encode("utf-8")
@@ -132,10 +131,11 @@ def __publish_application_scored_event(producer, topic, application_id, position
 
     return application_scored_event
 
-def __build_applycation_scored_event(application_id: str, position_id: int):
+def __build_application_scored_event(application_id: str, position_id: int, candidate_id: str):
     return {
         "applicationId": str(application_id),
         "positionId": position_id,
+        "candidateId": str(candidate_id),
         "analysis": {
             "summary": "Jose A. is a passionate technology expert with over 20 years of experience in strategic and technical roles across various sectors. He possesses extensive knowledge in Frontend, Backend, Cloud, APIs, and Databases, enabling him to manage complex architectures in high-performance enterprise environments. He emphasizes an end-to-end vision in solution delivery, ensuring that solutions are not only current but also scalable and adaptable for future needs. With experience in mentoring less experienced professionals, he actively contributes to the tech community through articles and presentations at events like Commit Conf and OpenExpo. His role as a Principal Solutions Architect at Paradigma Digital involves participation in pre-sales, designing end-to-end architectures, developing PoCs for new technologies, and standardizing best practices across the organization. He has led significant projects such as the digital transformation of document management for Mercadona and the regulatory adaptation for BME. His technical expertise spans a wide array of technologies, including Angular, Spring, Kubernetes, AWS, and GCP, and he holds multiple relevant certifications. José is committed to continuous learning and sharing knowledge, reflected in his publications and talks on modern architecture.",
             "strengths": [

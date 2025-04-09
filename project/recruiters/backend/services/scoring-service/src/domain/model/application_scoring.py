@@ -19,6 +19,7 @@ class Scoring:
 @dataclass
 class ApplicationScoring:
     application_id: str
+    candidate_id: str
     position_id: int
     analysis: ResumeAnalysis
     scoring: Scoring

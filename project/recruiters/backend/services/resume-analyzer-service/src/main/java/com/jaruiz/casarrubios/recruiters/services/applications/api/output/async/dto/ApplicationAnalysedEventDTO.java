@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ApplicationAnalysedEventDTO implements Serializable {
     private UUID applicationId;
+    private UUID candidateId;
     private Long positionId;
     private ResumeAnalysisDTO analysis;
 }

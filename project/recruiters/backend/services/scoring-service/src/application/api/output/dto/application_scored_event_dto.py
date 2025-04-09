@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from src.application.api.input.dto.application_analyzed_event_dto import ResumeAnalysisDTO
 
+
 @dataclass
 class ScoringDTO:
     score: float
@@ -17,6 +18,7 @@ class ScoringDTO:
 @dataclass
 class ApplicationScoredEventDTO:
     applicationId: str
+    candidateId: str
     positionId: int
     analysis: ResumeAnalysisDTO
     scoring: ScoringDTO

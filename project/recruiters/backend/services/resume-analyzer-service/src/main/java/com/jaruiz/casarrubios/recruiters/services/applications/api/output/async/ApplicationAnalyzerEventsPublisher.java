@@ -36,9 +36,9 @@ public class ApplicationAnalyzerEventsPublisher implements ApplicationAnalyzerEv
 
     @Override
     @WithSpan("publishing-application-analysed-event")
-    public void sendApplicationAnalysedEvent(UUID applicationId, long positionId, ResumeAnalysis resumeAnalysis) {
+    public void sendApplicationAnalysedEvent(UUID applicationId, long positionId, UUID candidateId, ResumeAnalysis resumeAnalysis) {
         logger.info("Sending application analysed event [cvAnalysis = {}]", resumeAnalysis);
-        final ApplicationAnalysedEventDTO applicationAnalysedEventDTO = buildApplicationAnalysedEvent(applicationId, positionId, resumeAnalysis);
+        final ApplicationAnalysedEventDTO applicationAnalysedEventDTO = buildApplicationAnalysedEvent(applicationId, positionId, candidateId, resumeAnalysis);
         final String applicationAnalysedEvent = applicationAnalysedEventToJsonString(applicationAnalysedEventDTO);
 
         final String applicationsAnalyzedTopic = this.config.getApplicationsAnalyzedTopic();
@@ -98,12 +98,13 @@ public class ApplicationAnalyzerEventsPublisher implements ApplicationAnalyzerEv
         return null;
     }
 
-    private ApplicationAnalysedEventDTO buildApplicationAnalysedEvent(UUID applicationId, long positionId, ResumeAnalysis resumeAnalysis) {
+    private ApplicationAnalysedEventDTO buildApplicationAnalysedEvent(UUID applicationId, long positionId, UUID candidateId, ResumeAnalysis resumeAnalysis) {
         final ResumeAnalysisDTO resumeAnalysisDTO = this.mapper.cvAnalysisToResumeAnalysisDTO(resumeAnalysis);
         return ApplicationAnalysedEventDTO.builder()
                                           .applicationId(applicationId)
                                           .positionId(positionId)
                                           .analysis(resumeAnalysisDTO)
+                                          .candidateId(candidateId)
                                           .build();
     }
 }

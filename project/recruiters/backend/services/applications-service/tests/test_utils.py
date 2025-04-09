@@ -1,7 +1,5 @@
 import json
 import logging
-import threading
-import time
 from typing import Dict, Any, Optional
 from uuid import UUID
 
@@ -9,7 +7,6 @@ from confluent_kafka import Producer
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 
-from src.domain.models.application_scoring import ApplicationScoring
 from src.adapters.db.repositories import ApplicationRepository
 from src.domain.services.application_service import ApplicationService
 from src.api.input.message.application_scored_event_handler import ApplicationScoredEventHandler
@@ -39,7 +36,7 @@ class TestEventProcessor:
         
     def check_application_processed(self, application_id: UUID) -> bool:
         result = self.db_session.execute(
-            text('SELECT * FROM recruiters.resume_analysis WHERE application_id = :application_id'),
+            text('SELECT * FROM recruiters.candidate_analysis WHERE candidate_id = (SELECT candidate_id FROM recruiters.candidate_applications WHERE id = :application_id)'),
             {"application_id": application_id}
         )
         rows = result.fetchall()

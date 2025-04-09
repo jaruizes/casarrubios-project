@@ -41,10 +41,6 @@ def postgres_container(request):
 
     postgres.start()
 
-    def remove_container():
-        postgres.stop()
-    # request.addfinalizer(remove_container)
-
     logger.info(f"PostgreSQL container started: {postgres.get_connection_url()}")
     yield postgres
     postgres.stop()
@@ -196,17 +192,23 @@ def wait_for_process_event(db_session):
                 # Hacer commit para asegurarnos de que estamos viendo los datos más recientes
                 db_session.commit()
                 
-                result = db_session.execute(
-                    text('SELECT * FROM recruiters.resume_analysis WHERE application_id = :application_id'),
+                result_analysis = db_session.execute(
+                    text('SELECT * FROM recruiters.candidate_analysis WHERE candidate_id = (SELECT candidate_id FROM recruiters.candidate_applications WHERE id = :application_id)'),
+                    {"application_id": application_id}
+                )
+
+                result_scoring = db_session.execute(
+                    text('SELECT * FROM recruiters.application_scoring WHERE application_id = :application_id'),
                     {"application_id": application_id}
                 )
                 
-                rows = result.fetchall()
-                if rows and len(rows) > 0:
-                    return rows
+                rows_analysis = result_analysis.fetchall()
+                rows_scoring = result_scoring.fetchall()
+                if rows_analysis and len(rows_analysis) > 0 and rows_scoring and len(rows_scoring) > 0:
+                    return rows_analysis
 
                 # Esperar un poco antes de volver a consultar
-                await asyncio.sleep(1)
+                await asyncio.sleep(5)
             
             # Si llegamos aquí, significa que se agotó el tiempo de espera
             logging.warning(f"Timeout waiting for application_id {application_id} to be processed")

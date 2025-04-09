@@ -29,6 +29,7 @@ class ResumeAnalysisDTO:
 @dataclass
 class ApplicationAnalysedEventDTO:
     applicationId: str
+    candidateId: str
     positionId: int
     analysis: ResumeAnalysisDTO
 

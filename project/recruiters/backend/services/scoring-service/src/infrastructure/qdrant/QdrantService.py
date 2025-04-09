@@ -6,7 +6,6 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct
 from qdrant_client.models import VectorParams, Distance, Filter, FieldCondition, MatchValue
 
-
 logger = logging.getLogger(__name__)
 
 class QdrantService:

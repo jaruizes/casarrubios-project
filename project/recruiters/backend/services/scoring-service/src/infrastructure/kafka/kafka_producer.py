@@ -3,10 +3,8 @@ import logging
 import socket
 
 from confluent_kafka import Producer
-from opentelemetry.propagate import inject
-from opentelemetry.propagate import extract
-from opentelemetry.context import attach, detach
 from opentelemetry import trace
+from opentelemetry.propagate import inject
 
 logger = logging.getLogger(__name__)
 tracer = trace.get_tracer(__name__)

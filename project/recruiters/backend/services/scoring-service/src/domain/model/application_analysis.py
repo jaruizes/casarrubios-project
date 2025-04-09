@@ -36,6 +36,7 @@ class ResumeAnalysis:
 @dataclass
 class ApplicationAnalysis:
     application_id: str
+    candidate_id: str
     position_id: int
     analysis: ResumeAnalysis
 

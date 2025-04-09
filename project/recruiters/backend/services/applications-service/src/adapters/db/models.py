@@ -7,50 +7,46 @@ import uuid
 Base = declarative_base()
 
 
-class Application(Base):
-    __tablename__ = "applications"
+class CandidateDB(Base):
+    __tablename__ = 'candidates'
+    __table_args__ = {'schema': 'recruiters'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False)
+    phone = Column(String(255), nullable=False)
+    cv = Column(String(255), nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+
+    applications = relationship("CandidateApplicationsDB", back_populates="candidate", cascade="all, delete")
+    analysis = relationship("CandidateAnalysisDB", uselist=False, back_populates="candidate", cascade="all, delete")
+    strengths = relationship("CandidateStrengthDB", back_populates="candidate", cascade="all, delete")
+    concerns = relationship("CandidateConcernDB", back_populates="candidate", cascade="all, delete")
+    hard_skills = relationship("CandidateHardSkillDB", back_populates="candidate", cascade="all, delete")
+    soft_skills = relationship("CandidateSoftSkillDB", back_populates="candidate", cascade="all, delete")
+    responsibilities = relationship("CandidateKeyResponsibilityDB", back_populates="candidate", cascade="all, delete")
+    questions = relationship("CandidateInterviewQuestionDB", back_populates="candidate", cascade="all, delete")
+    tags = relationship("CandidateTagDB", back_populates="candidate", cascade="all, delete")
+
+
+class CandidateApplicationsDB(Base):
+    __tablename__ = 'candidate_applications'
+    __table_args__ = {'schema': 'recruiters'}
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id', ondelete='CASCADE'), nullable=False)
+    position_id = Column(Integer, nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+
+    candidate = relationship("CandidateDB", back_populates="applications")
+    scoring = relationship("ApplicationScoreDB", uselist=False, back_populates="application", cascade="all, delete")
+
+
+class ApplicationScoreDB(Base):
+    __tablename__ = "application_scoring"
     __table_args__ = {"schema": "recruiters"}
 
-    id = Column(UUID(as_uuid=True), primary_key=True, name="id")
-    name = Column(String, nullable=False, name="name")
-    email = Column(String, nullable=False, name="email")
-    phone = Column(String, nullable=False, name="phone")
-    cv = Column(String, nullable=False, name="cv")
-    position_id = Column(Integer, nullable=False, name="position_id")
-    created_at = Column(DateTime, default=func.now(), name="created_at")
-
-
-    resume_analysis = relationship("ResumeAnalysis", back_populates="application", uselist=False,
-                                   cascade="all, delete-orphan")
-    scoring = relationship("Scoring", back_populates="application", uselist=False, cascade="all, delete-orphan")
-    strengths = relationship("Strength", back_populates="application", cascade="all, delete-orphan")
-    concerns = relationship("Concern", back_populates="application", cascade="all, delete-orphan")
-    hard_skills = relationship("HardSkill", back_populates="application", cascade="all, delete-orphan")
-    soft_skills = relationship("SoftSkill", back_populates="application", cascade="all, delete-orphan")
-    key_responsibilities = relationship("KeyResponsibility", back_populates="application", cascade="all, delete-orphan")
-    interview_questions = relationship("InterviewQuestion", back_populates="application", cascade="all, delete-orphan")
-    tags = relationship("Tag", back_populates="application", cascade="all, delete-orphan")
-
-
-class ResumeAnalysis(Base):
-    __tablename__ = "resume_analysis"
-    __table_args__ = {"schema": "recruiters"}
-
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), primary_key=True)
-    summary = Column(Text)
-    total_years_experience = Column(Integer)
-    average_permanency = Column(Float)
-    created_at = Column(DateTime, default=func.now())
-
-    # Relación
-    application = relationship("Application", back_populates="resume_analysis")
-
-
-class Scoring(Base):
-    __tablename__ = "scoring"
-    __table_args__ = {"schema": "recruiters"}
-
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), primary_key=True)
+    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.candidate_applications.id"), primary_key=True)
     score = Column(Float, nullable=False)
     desc_score = Column(Float, nullable=False)
     requirement_score = Column(Float, nullable=False)
@@ -59,98 +55,104 @@ class Scoring(Base):
     time_spent = Column(Float, nullable=False)
     created_at = Column(DateTime, default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="scoring")
+    application = relationship("CandidateApplicationsDB", back_populates="scoring")
 
 
-class Strength(Base):
-    __tablename__ = "strengths"
-    __table_args__ = {"schema": "recruiters"}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), nullable=False)
+class CandidateAnalysisDB(Base):
+    __tablename__ = 'candidate_analysis'
+    __table_args__ = {'schema': 'recruiters'}
+
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'), primary_key=True)
+    summary = Column(Text)
+    total_years_experience = Column(Integer)
+    average_permanency = Column(Float)
+    created_at = Column(DateTime, server_default=func.now())
+
+    candidate = relationship("CandidateDB", back_populates="analysis")
+
+
+class CandidateStrengthDB(Base):
+    __tablename__ = 'candidate_strengths'
+    __table_args__ = {'schema': 'recruiters'}
+
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'))
     strength = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="strengths")
+    candidate = relationship("CandidateDB", back_populates="strengths")
 
 
-class Concern(Base):
-    __tablename__ = "concerns"
-    __table_args__ = {"schema": "recruiters"}
+class CandidateConcernDB(Base):
+    __tablename__ = 'candidate_concerns'
+    __table_args__ = {'schema': 'recruiters'}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), nullable=False)
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'))
     concern = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="concerns")
+    candidate = relationship("CandidateDB", back_populates="concerns")
 
 
-class HardSkill(Base):
-    __tablename__ = "hard_skills"
-    __table_args__ = {"schema": "recruiters"}
+class CandidateHardSkillDB(Base):
+    __tablename__ = 'candidate_hard_skills'
+    __table_args__ = {'schema': 'recruiters'}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), nullable=False)
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'))
     skill = Column(String(255), nullable=False)
     level = Column(String(50), nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="hard_skills")
+    candidate = relationship("CandidateDB", back_populates="hard_skills")
 
 
-class SoftSkill(Base):
-    __tablename__ = "soft_skills"
-    __table_args__ = {"schema": "recruiters"}
+class CandidateSoftSkillDB(Base):
+    __tablename__ = 'candidate_soft_skills'
+    __table_args__ = {'schema': 'recruiters'}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), nullable=False)
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'))
     skill = Column(String(255), nullable=False)
     level = Column(String(50), nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="soft_skills")
+    candidate = relationship("CandidateDB", back_populates="soft_skills")
 
 
-class KeyResponsibility(Base):
-    __tablename__ = "key_responsibilities"
-    __table_args__ = {"schema": "recruiters"}
+class CandidateKeyResponsibilityDB(Base):
+    __tablename__ = 'candidate_key_responsibilities'
+    __table_args__ = {'schema': 'recruiters'}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), nullable=False)
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'))
     responsibility = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="key_responsibilities")
+    candidate = relationship("CandidateDB", back_populates="responsibilities")
 
 
-class InterviewQuestion(Base):
-    __tablename__ = "interview_questions"
-    __table_args__ = {"schema": "recruiters"}
+class CandidateInterviewQuestionDB(Base):
+    __tablename__ = 'candidate_interview_questions'
+    __table_args__ = {'schema': 'recruiters'}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), nullable=False)
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'))
     question = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="interview_questions")
+    candidate = relationship("CandidateDB", back_populates="questions")
 
 
-class Tag(Base):
-    __tablename__ = "tags"
-    __table_args__ = {"schema": "recruiters"}
+class CandidateTagDB(Base):
+    __tablename__ = 'candidate_tags'
+    __table_args__ = {'schema': 'recruiters'}
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    application_id = Column(UUID(as_uuid=True), ForeignKey("recruiters.applications.id"), nullable=False)
+    id = Column(Integer, primary_key=True)
+    candidate_id = Column(UUID(as_uuid=True), ForeignKey('recruiters.candidates.id'))
     tag = Column(String(255), nullable=False)
-    created_at = Column(DateTime, default=func.now())
+    created_at = Column(DateTime, server_default=func.now())
 
-    # Relación
-    application = relationship("Application", back_populates="tags")
+    candidate = relationship("CandidateDB", back_populates="tags")

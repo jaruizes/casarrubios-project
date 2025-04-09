@@ -5,13 +5,14 @@ import io
 from fastapi import APIRouter, Depends, Query, HTTPException
 from starlette.responses import StreamingResponse
 
-from src.api.input.rest.dto.models import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO, ResumeAnalysisDTO, \
+from src.api.input.rest.dto.application_rest_api_dto import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO, ResumeAnalysisDTO, \
     SkillDTO, ScoringDTO
+from src.domain.exceptions.ApplicationNotFoundException import ApplicationNotFoundException
+
 from src.domain.exceptions.CVException import CVException
 from src.domain.exceptions.CVFileNotFoundException import CVFileNotFoundException
+from src.domain.models.applications_model import ApplicationDetail, CandidateApplication
 from src.domain.services.application_service import ApplicationService
-from src.domain.models.paginated_result import PaginatedResult
-from src.adapters.db.models import Application, HardSkill
 
 from src.infrastructure.app.dependencies import get_application_service
 
@@ -52,12 +53,13 @@ def get_applications(
 def get_application_by_id(application_id: UUID, application_service: ApplicationService = Depends(get_application_service)) -> ApplicationDTO:
     logger.info(f"Getting application by ID {application_id}")
 
-    application = application_service.get_application_by_id(application_id)
-    if not application:
+    try:
+        application_detail: ApplicationDetail = application_service.get_application_by_id(application_id)
+    except ApplicationNotFoundException:
         logger.error(f"Application with ID {application_id} not found")
         raise HTTPException(status_code=404, detail=f"Application with ID {application_id} not found")
 
-    return build_application_dto(application, True)
+    return build_application_dto_from_detail(application_detail)
 
 
 @router.get('/applications/{application_id}/cv')
@@ -82,54 +84,50 @@ def get_application_cv(application_id: UUID, application_service: ApplicationSer
         raise HTTPException(status_code=500, detail=f"Error getting cv for application ID {application_id}")
 
 
-def build_application_dto(application: Application, is_detail: bool = False) -> ApplicationDTO:
+def build_application_dto(application: CandidateApplication) -> ApplicationDTO:
     creation_date = application.created_at.isoformat()
-    candidate: CandidateDTO = CandidateDTO(name=application.name, email=application.email, phone=application.phone)
-    application_dto = ApplicationDTO(applicationId=application.id,
-                                     candidate=candidate,
+    candidate = application.candidate
+    application_dto = ApplicationDTO(applicationId=application.application_id,
+                                     candidate=CandidateDTO(name=candidate.name, email=candidate.email, phone=candidate.phone),
                                      positionId=application.position_id,
-                                     cvFile=application.cv,
+                                     cvFile=candidate.cv,
                                      creationDate=creation_date)
 
-    analysis: ResumeAnalysisDTO = None
-    if is_detail and application.resume_analysis is not None:
-        analysis: ResumeAnalysisDTO = ResumeAnalysisDTO(
-            summary=application.resume_analysis.summary,
-            strengths=[strength.strength for strength in application.strengths],
-            concerns=[concern.concern for concern in application.concerns],
-            hardSkills=[SkillDTO(skill=hard_skill.skill, level=hard_skill.level) for hard_skill in application.hard_skills],
-            softSkills=[SkillDTO(skill=soft_skill.skill, level=soft_skill.level) for soft_skill in application.soft_skills],
-            keyResponsibilities=[responsibility.responsibility for responsibility in application.key_responsibilities],
-            interviewQuestions=[question.question for question in application.interview_questions],
-            totalYearsExperience=application.resume_analysis.total_years_experience,
-            averagePermanency=application.resume_analysis.average_permanency,
-            tags=[tag.tag for tag in application.tags]
-        )
-    else:
-        analysis: ResumeAnalysisDTO = ResumeAnalysisDTO(
-            summary="",
-            strengths=[],
-            concerns=[],
-            hardSkills=[],
-            softSkills=[],
-            keyResponsibilities=[],
-            interviewQuestions=[],
-            totalYearsExperience=0,
-            averagePermanency=0,
-            tags=[tag.tag for tag in application.tags]
-        )
+    return application_dto
 
-    application_dto.add_analysis(analysis)
+def build_application_dto_from_detail(application: ApplicationDetail) -> ApplicationDTO:
+    creation_date = application.created_at.isoformat()
+    candidate_dto: CandidateDTO = CandidateDTO(name=application.candidate.name, email=application.candidate.email, phone=application.candidate.phone)
+    application_dto = ApplicationDTO(applicationId=application.application_id,
+                                     candidate=candidate_dto,
+                                     positionId=application.position_id,
+                                     cvFile=application.candidate.cv,
+                                     creationDate=creation_date)
 
-    if application.scoring is not None:
-        scoring: ScoringDTO = ScoringDTO(
-            score=application.scoring.score,
-            descScore=application.scoring.desc_score,
-            requirementScore=application.scoring.requirement_score,
-            tasksScore=application.scoring.tasks_score,
-            timeSpent=application.scoring.time_spent,
-            explanation=application.scoring.explanation
-        )
-        application_dto.add_scoring(scoring)
+    analysis = application.candidate.analysis
+    analysis_dto: ResumeAnalysisDTO = ResumeAnalysisDTO(
+        summary=application.candidate.analysis.summary,
+        strengths=[strength for strength in analysis.strengths],
+        concerns=[concern for concern in analysis.concerns],
+        hardSkills=[SkillDTO(skill=hard_skill.skill, level=hard_skill.level) for hard_skill in analysis.hard_skills],
+        softSkills=[SkillDTO(skill=soft_skill.skill, level=soft_skill.level) for soft_skill in analysis.soft_skills],
+        keyResponsibilities=[responsibility for responsibility in analysis.key_responsibilities],
+        interviewQuestions=[question for question in analysis.interview_questions],
+        totalYearsExperience=analysis.total_years_xperience,
+        averagePermanency=analysis.average_permanency,
+        tags=[tag for tag in analysis.tags]
+    )
+
+    application_dto.add_analysis(analysis_dto)
+
+    scoring: ScoringDTO = ScoringDTO(
+        score=application.scoring.score,
+        descScore=application.scoring.desc_score,
+        requirementScore=application.scoring.requirement_score,
+        tasksScore=application.scoring.tasks_score,
+        timeSpent=application.scoring.time_spent,
+        explanation=application.scoring.explanation
+    )
+    application_dto.add_scoring(scoring)
 
     return application_dto

@@ -1,12 +1,13 @@
 import logging
 from dataclasses import asdict
 
+from opentelemetry import trace
+
 from src.application.api.input.dto.application_analyzed_event_dto import ResumeAnalysisDTO, SkillDTO
 from src.application.api.output.dto.application_scored_event_dto import ApplicationScoredEventDTO, \
     ScoringDTO
 from src.domain.model.application_analysis import ResumeAnalysis
 from src.domain.model.application_scoring import ApplicationScoring, Scoring
-from opentelemetry import trace
 
 logger = logging.getLogger(__name__)
 tracer = trace.get_tracer(__name__)
@@ -53,6 +54,7 @@ class ApplicationScoringPublisher():
         return ApplicationScoredEventDTO(
             applicationId=application_scoring.application_id,
             positionId=application_scoring.position_id,
+            candidateId=application_scoring.candidate_id,
             analysis=analysis_dto,
             scoring=scoring_dto
         )

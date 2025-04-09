@@ -1,7 +1,7 @@
 package com.jaruiz.casarrubios.recruiters.services.adapters.outbox;
 
 import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.OutboxRepository;
-import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.dto.NewApplicationReceivedDTO;
+import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.dto.NewApplicationReceivedEventDTO;
 import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.entitites.OutboxEntity;
 import com.jaruiz.casarrubios.recruiters.services.business.model.Application;
 import com.jaruiz.casarrubios.recruiters.services.business.ports.NewApplicationReceivedEventPublisherPort;
@@ -31,17 +31,14 @@ public class OutboxService implements NewApplicationReceivedEventPublisherPort {
         logger.info("Published new application received event. Application ID: " + application.getId());
     }
 
-    private NewApplicationReceivedDTO buildOutboxPayload(Application application) {
-        final NewApplicationReceivedDTO newApplicationReceivedDTO = new NewApplicationReceivedDTO();
-        newApplicationReceivedDTO.setId(application.getId());
-        newApplicationReceivedDTO.setName(application.getName());
-        newApplicationReceivedDTO.setEmail(application.getEmail());
-        newApplicationReceivedDTO.setPhone(application.getPhone());
-        newApplicationReceivedDTO.setCv(application.getCv());
-        newApplicationReceivedDTO.setPositionId(application.getPositionId());
-        newApplicationReceivedDTO.setCreatedAt(application.getCreatedAt());
+    private NewApplicationReceivedEventDTO buildOutboxPayload(Application application) {
+        final NewApplicationReceivedEventDTO newApplicationReceivedEventDTO = new NewApplicationReceivedEventDTO();
+        newApplicationReceivedEventDTO.setId(application.getId());
+        newApplicationReceivedEventDTO.setCandidateId(application.getCandidate().getId());
+        newApplicationReceivedEventDTO.setPositionId(application.getPositionId());
+        newApplicationReceivedEventDTO.setCreatedAt(application.getCreatedAt());
 
 
-        return newApplicationReceivedDTO;
+        return newApplicationReceivedEventDTO;
     }
 }

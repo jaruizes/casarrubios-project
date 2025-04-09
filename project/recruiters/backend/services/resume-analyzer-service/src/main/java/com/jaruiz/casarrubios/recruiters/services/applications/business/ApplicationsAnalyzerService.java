@@ -37,12 +37,13 @@ public class ApplicationsAnalyzerService {
     @WithSpan("analyzing-application")
     public void analyzeApplication(Application application) {
         final UUID applicationId = application.getId();
+        final UUID candidateId = application.getCandidateId();
         try {
             final String cvText = getTextFromCv(application.getId());
             final ResumeAnalysis analysis = cvAnalyzerService.analyze(applicationId, cvText);
             logger.info("Analyzed CV with id {} successfully", applicationId);
 
-            this.eventPublisher.sendApplicationAnalysedEvent(applicationId, application.getPositionId(), analysis);
+            this.eventPublisher.sendApplicationAnalysedEvent(applicationId, application.getPositionId(), candidateId, analysis);
             logger.info("Sent application analyzed event for application with id {}", applicationId);
         } catch (AnalysingException e) {
             logger.error("Error analysing application from LLM[key = {}]", applicationId);

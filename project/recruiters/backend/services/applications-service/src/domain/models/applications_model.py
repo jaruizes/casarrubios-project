@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 from uuid import UUID
 
 
@@ -41,11 +42,43 @@ class Scoring:
         return self[item]
 
 @dataclass
-class ApplicationScoring:
-    application_id: UUID
-    position_id: int
-    analysis: ResumeAnalysis
-    scoring: Scoring
+class Candidate:
+    candidate_id: UUID
+    name: Optional[str]
+    email: Optional[str]
+    phone: Optional[str]
+    cv: Optional[str]
 
     def __getitem__(self, item):
         return self[item]
+
+@dataclass
+class CandidateDetail(Candidate):
+    analysis: ResumeAnalysis
+
+
+@dataclass
+class ApplicationDetail:
+    application_id: UUID
+    position_id: int
+    candidate: CandidateDetail
+    scoring: Scoring
+    created_at: Optional[datetime] = None
+
+    def __getitem__(self, item):
+        return self[item]
+
+@dataclass
+class CandidateApplication:
+    application_id: UUID
+    position_id: int
+    candidate: Candidate
+    created_at: datetime
+
+    def __getitem__(self, item):
+        return self[item]
+
+class PaginatedResult:
+    def __init__(self, applications: List[CandidateApplication], total_elements: int):
+        self.data = applications
+        self.total_elements = total_elements

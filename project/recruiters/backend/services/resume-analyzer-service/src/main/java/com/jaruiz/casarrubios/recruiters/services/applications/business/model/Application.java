@@ -12,10 +12,7 @@ import lombok.NoArgsConstructor;
 public class Application {
 
     private UUID id;
-    private String name;
-    private String email;
-    private String phone;
-    private String cv;
+    private UUID candidateId;
     private long positionId;
     private long createdAt;
 

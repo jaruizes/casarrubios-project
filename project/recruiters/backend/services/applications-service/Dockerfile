@@ -43,7 +43,6 @@ RUN useradd -m -u 1000 appuser
 
 # Copiar el código de la aplicación
 COPY --chown=appuser:appuser ./src ./src
-COPY --chown=appuser:appuser ./tests/sql ./tests/sql
 
 # Cambiar al usuario no root
 USER appuser

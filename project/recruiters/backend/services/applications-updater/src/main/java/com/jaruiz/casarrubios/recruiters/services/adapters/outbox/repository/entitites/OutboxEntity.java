@@ -3,7 +3,7 @@ package com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.en
 import java.time.Instant;
 import java.util.UUID;
 
-import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.dto.NewApplicationReceivedDTO;
+import com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.dto.NewApplicationReceivedEventDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -28,12 +28,12 @@ public class OutboxEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "payload", columnDefinition = "jsonb", nullable = false)
-    private NewApplicationReceivedDTO payload;
+    private NewApplicationReceivedEventDTO payload;
 
     @Column(name = "timestamp", nullable = false)
     private Instant timestamp;
 
-    public OutboxEntity(String aggregateType, String aggregateId, String type, NewApplicationReceivedDTO payload) {
+    public OutboxEntity(String aggregateType, String aggregateId, String type, NewApplicationReceivedEventDTO payload) {
         this.id = UUID.randomUUID();
         this.aggregateType = aggregateType;
         this.aggregateId = aggregateId;
@@ -60,7 +60,7 @@ public class OutboxEntity {
         return type;
     }
 
-    public NewApplicationReceivedDTO getPayload() {
+    public NewApplicationReceivedEventDTO getPayload() {
         return payload;
     }
 

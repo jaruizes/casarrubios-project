@@ -4,9 +4,9 @@ from typing import Any
 from uuid import UUID
 
 from src.api.input.message.dto.application_scored_event_dto import ApplicationScoredEventDTO
-from src.infrastructure.kafka.kafka_consumer import KafkaConsumer
 from src.domain.services.application_service import ApplicationService
-from src.domain.models.application_scoring import Scoring, ApplicationScoring, ResumeAnalysis, Skill
+from src.domain.models.applications_model import Scoring, ResumeAnalysis, Skill, ApplicationDetail, \
+    CandidateDetail
 
 logger = logging.getLogger(__name__)
 
@@ -17,18 +17,18 @@ class ApplicationScoredEventHandler():
     def handle_application_scored_event(self, message: Any):
         logger.info("Received application scored event....")
         try:
-            application_analysed_event_dto = json.loads(message.value())
-            application_id = application_analysed_event_dto["applicationId"]
+            application_scored_event_dto = json.loads(message.value())
+            application_id = application_scored_event_dto["applicationId"]
 
             logger.info(f"Processing application {application_id}")
-            application_scoring = self.__map_to_application_scoring(application_analysed_event_dto)
+            application_scoring = self.__map_to_application_model(application_scored_event_dto)
             self.applications_service.save_application_scoring(application_scoring)
 
             logger.info(f"Application {application_id} has been processed")
         except Exception as e:
             logger.exception(f"Error processing application scored event: {str(e)}")
 
-    def __map_to_application_scoring(self, application_scored_event: ApplicationScoredEventDTO) -> ApplicationScoring:
+    def __map_to_application_model(self, application_scored_event: ApplicationScoredEventDTO) -> ApplicationDetail:
         scoring_dto = application_scored_event["scoring"]
         analysis_dto = application_scored_event["analysis"]
 
@@ -55,10 +55,19 @@ class ApplicationScoredEventHandler():
             tags=analysis_dto["tags"]
         )
 
-        return ApplicationScoring(
+        candidate = CandidateDetail(
+            candidate_id=UUID(application_scored_event["candidateId"]),
+            analysis=analysis,
+            name="",
+            email="",
+            phone="",
+            cv=""
+        )
+
+        return ApplicationDetail(
             application_id=UUID(application_scored_event["applicationId"]),
             position_id=application_scored_event["positionId"],
-            analysis=analysis,
+            candidate=candidate,
             scoring=scoring
         )
 

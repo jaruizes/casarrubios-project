@@ -19,8 +19,8 @@ class ScoringServiceAsyncAPI():
             application_analysed_event_dto = ApplicationAnalysedEventDTO(**message)
 
         application_analysed = self.__map_to_business_model(application_analysed_event_dto)
-
         logger.info(f"Processing application {application_analysed.application_id}")
+
         self.scoring_service.score(application_analysis=application_analysed)
 
     def __map_to_business_model(self, application_analysed_event_dto: ApplicationAnalysedEventDTO) -> ApplicationAnalysis:
@@ -41,6 +41,7 @@ class ScoringServiceAsyncAPI():
 
         return ApplicationAnalysis(
             application_id=application_analysed_event_dto.applicationId,
+            candidate_id=application_analysed_event_dto.candidateId,
             position_id=application_analysed_event_dto.positionId,
             analysis=analysis
         )

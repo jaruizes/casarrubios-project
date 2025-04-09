@@ -1,24 +1,27 @@
-package com.jaruiz.casarrubios.recruiters.services.adapters.outbox.repository.dto;
+package com.jaruiz.casarrubios.recruiters.services.adapters.persistence.repository.entities;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
-public class NewApplicationReceivedDTO implements Serializable {
+@Entity
+@Table(name = "candidates")
+public class CandidateEntity {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
-    @JsonProperty("position_id")
-    private Long positionId;
     private String name;
     private String email;
     private String phone;
     private String cv;
-    @JsonProperty("created_at")
-    private Long createdAt;
+
+    @Column(name = "created_at")
+    private Timestamp createdAt;
+
+    public CandidateEntity() { }
 
     public UUID getId() {
         return id;
@@ -26,14 +29,6 @@ public class NewApplicationReceivedDTO implements Serializable {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public Long getPositionId() {
-        return positionId;
-    }
-
-    public void setPositionId(Long positionId) {
-        this.positionId = positionId;
     }
 
     public String getName() {
@@ -68,11 +63,11 @@ public class NewApplicationReceivedDTO implements Serializable {
         this.cv = cv;
     }
 
-    public Long getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Long createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 }

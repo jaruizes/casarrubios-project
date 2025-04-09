@@ -35,8 +35,8 @@ public class ApplicationsProcessedProducer {
         publishApplicationReceivedEvent(applicationId, buildWrongApplicationReceivedEvent(applicationId, positionId));
     }
 
-    public void publishApplicationReceivedEvent(UUID applicationId, long positionId) {
-        publishApplicationReceivedEvent(applicationId, buildApplicationReceivedEvent(applicationId, positionId));
+    public void publishApplicationReceivedEvent(UUID applicationId, long positionId, UUID candidateId) {
+        publishApplicationReceivedEvent(applicationId, buildApplicationReceivedEvent(applicationId, positionId, candidateId));
     }
 
     private void publishApplicationReceivedEvent(UUID applicationId, String applicationReceivedEvent) {
@@ -58,15 +58,12 @@ public class ApplicationsProcessedProducer {
                    Objects.requireNonNull(kafkaListenerEndpointRegistry.getListenerContainer("application-dlq-listener")).isRunning());
     }
 
-    private String buildApplicationReceivedEvent(UUID applicationId, long positionId) {
+    private String buildApplicationReceivedEvent(UUID applicationId, long positionId, UUID candidateId) {
         return "{\n" +
             "    \"id\": \"" + applicationId + "\",\n" +
-            "    \"name\": \"" + APPLICATION_NAME + "\",\n" +
-            "    \"email\": \"" + APPLICATION_EMAIL + "\",\n" +
-            "    \"phone\": \"" + APPLICATION_PHONE + "\",\n" +
-            "    \"cv\": \"" + APPLICATION_CV + "\",\n" +
-            "    \"position_id\": " + positionId + ",\n" +
-            "    \"created_at\": " + APPLICATION_CREATED_AT + "\n" +
+            "    \"candidateId\": \"" + candidateId + "\",\n" +
+            "    \"positionId\": " + positionId + ",\n" +
+            "    \"createdAt\": " + APPLICATION_CREATED_AT + "\n" +
             "}";
     }
 

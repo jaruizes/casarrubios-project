@@ -95,7 +95,8 @@ class ApplicationsAnalyzerAppTests {
     void givenAnApplicationResumeSavedInStorageSystem_whenTheApplicationReceivedEventIsConsumed_ThenAnalysisIsDoneAndApplicationAnalysedEventIsPublished() throws Exception {
         when(openAiChatModel.call(anyString())).thenReturn(SetupOpenAI.getFakeResponse());
         final UUID applicationId = uploadCV("src/test/resources/cv.pdf");
-        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L);
+        final UUID candidateId = UUID.randomUUID();
+        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L, candidateId);
 
         await()
             .pollInterval(Duration.ofSeconds(3))
@@ -106,6 +107,7 @@ class ApplicationsAnalyzerAppTests {
 
                 assertNotNull(applicationAnalysedEventDTO);
                 assertEquals(applicationId, applicationAnalysedEventDTO.getApplicationId());
+                assertEquals(candidateId, applicationAnalysedEventDTO.getCandidateId());
                 assertEquals(7L, applicationAnalysedEventDTO.getPositionId());
                 assertNotNull(applicationAnalysedEventDTO.getAnalysis());
                 assertTrue(applicationAnalysedEventDTO.getAnalysis().getConcerns() != null && !applicationAnalysedEventDTO.getAnalysis().getConcerns().isEmpty());
@@ -124,7 +126,8 @@ class ApplicationsAnalyzerAppTests {
     @Test
     void givenAnApplicationResumeNotSavedInStorageSystem_whenTheApplicationReceivedEventIsConsumed_ThenAnalysisIsNotDoneAndAnErrorEventIsReceived() throws Exception {
         final UUID applicationId = UUID.randomUUID();
-        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L);
+        final UUID candidateId = UUID.randomUUID();
+        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L, candidateId);
 
         await()
             .pollInterval(Duration.ofSeconds(3))
@@ -145,7 +148,8 @@ class ApplicationsAnalyzerAppTests {
     void givenAnApplicationReceivedEvent_whenTheApplicationReceivedEventIsConsumedAndOpenAIAnswerIsEmpty_ThenAnalysisIsNotDoneAndAnErrorEventIsPublishedToDLQ() throws Exception {
         when(openAiChatModel.call(anyString())).thenReturn(null);
         final UUID applicationId = uploadCV("src/test/resources/cv.pdf");
-        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L);
+        final UUID candidateId = UUID.randomUUID();
+        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L, candidateId);
 
         await()
             .pollInterval(Duration.ofSeconds(3))
@@ -166,7 +170,8 @@ class ApplicationsAnalyzerAppTests {
     void givenAnApplicationReceivedEvent_whenTheEventIsConsumedButOpenAIAnswerIsWrong_ThenAnalysisIsNotDoneAndAnErrorEventIsPublishedToDLQ() throws Exception {
         when(openAiChatModel.call(anyString())).thenReturn(SetupOpenAI.getWrongFakeResponse());
         final UUID applicationId = uploadCV("src/test/resources/cv.pdf");
-        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L);
+        final UUID candidateId = UUID.randomUUID();
+        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L, candidateId);
 
         await()
             .pollInterval(Duration.ofSeconds(3))
@@ -206,7 +211,8 @@ class ApplicationsAnalyzerAppTests {
     @Test
     void givenAnApplicationReceivedEventWithACorruptedFileStored_whenTheEventIsProcessed_ThenAnErrorEventIsPublishedToDLQ() throws Exception {
         final UUID applicationId = uploadCV("src/test/resources/cv_corrupted.pdf");
-        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L);
+        final UUID candidateId = UUID.randomUUID();
+        applicationsProcessedProducer.publishApplicationReceivedEvent(applicationId, 7L, candidateId);
 
         await()
             .pollInterval(Duration.ofSeconds(3))

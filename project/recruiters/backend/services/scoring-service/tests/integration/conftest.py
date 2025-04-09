@@ -1,18 +1,15 @@
-# tests/conftest.py
 import logging
 import os
 import threading
 import time
 from pathlib import Path
+from unittest.mock import patch, MagicMock
 
 import pytest
 from confluent_kafka import Consumer, KafkaException
-from qdrant_client import QdrantClient
 from testcontainers.core.container import DockerContainer
 from testcontainers.kafka import KafkaContainer
 from testcontainers.postgres import PostgresContainer
-from unittest.mock import patch, MagicMock
-import pytest
 
 from src.main import main
 
@@ -30,10 +27,6 @@ def postgres_container(request):
                 .with_volume_mapping(host=str(script), container=f"/docker-entrypoint-initdb.d/{script.name}"))
 
     postgres.start()
-
-    def remove_container():
-        postgres.stop()
-    # request.addfinalizer(remove_container)
 
     logger.info(f"PostgreSQL container started: {postgres.get_connection_url()}")
     yield postgres

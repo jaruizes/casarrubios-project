@@ -49,63 +49,6 @@ CREATE TABLE APPLICATIONS.APPLICATIONS
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-/*INSERT INTO APPLICATIONS.POSITIONS (title, description, tags)
-VALUES
-    ('Software Engineer', 'Desarrollo y mantenimiento de aplicaciones web.', 'Java, Spring, Angular'),
-    ('Data Scientist', 'Análisis de datos y modelos de Machine Learning.', 'Python, TensorFlow, SQL'),
-    ('DevOps Engineer', 'Automatización e infraestructura en la nube.', 'AWS, Docker, Kubernetes'),
-    ('Product Manager', 'Gestión de producto y estrategias de negocio.', 'Agile, Scrum, UX'),
-    ('QA Engineer', 'Pruebas automatizadas y control de calidad.', 'Selenium, Cypress, Jest'),
-    ('Backend Developer', 'Desarrollo de microservicios escalables.', 'Node.js, Express, PostgreSQL'),
-    ('Frontend Developer', 'Implementación de interfaces web responsivas.', 'React, Vue, TypeScript'),
-    ('Cloud Architect', 'Diseño de arquitectura cloud.', 'AWS, Azure, GCP'),
-    ('Security Analyst', 'Análisis y mitigación de vulnerabilidades.', 'SIEM, Firewalls, PenTesting'),
-    ('Blockchain Developer', 'Desarrollo de aplicaciones descentralizadas.', 'Ethereum, Solidity, Web3'),
-    ('AI Researcher', 'Investigación en inteligencia artificial.', 'Deep Learning, PyTorch, NLP'),
-    ('Cybersecurity Engineer', 'Seguridad ofensiva y defensiva.', 'SOC, IDS, Threat Intelligence'),
-    ('Database Administrator', 'Gestión y optimización de bases de datos.', 'PostgreSQL, MySQL, MongoDB'),
-    ('Game Developer', 'Desarrollo de videojuegos.', 'Unity, Unreal Engine, C#'),
-    ('Business Analyst', 'Análisis de requerimientos y procesos.', 'Power BI, Tableau, SQL'),
-    ('Network Engineer', 'Administración de redes y seguridad.', 'Cisco, TCP/IP, VPN'),
-    ('Embedded Systems Engineer', 'Desarrollo de sistemas embebidos.', 'C, ARM, IoT'),
-    ('Full Stack Developer', 'Desarrollo completo de aplicaciones.', 'MERN, LAMP, MEAN'),
-    ('IoT Specialist', 'Desarrollo de soluciones IoT.', 'Arduino, Raspberry Pi, MQTT'),
-    ('ERP Consultant', 'Consultoría e implementación de ERP.', 'SAP, Oracle, Dynamics'),
-    ('AI Ethics Researcher', 'Estudio del impacto ético de la IA.', 'Filosofía, Derecho, IA'),
-    ('UX/UI Designer', 'Diseño de interfaces y experiencia de usuario.', 'Figma, Adobe XD, HTML/CSS'),
-    ('Robotics Engineer', 'Desarrollo de sistemas robóticos.', 'ROS, C++, Python'),
-    ('Site Reliability Engineer', 'Mantenimiento y escalabilidad de sistemas.', 'GCP, Kubernetes, Terraform'),
-    ('Marketing Data Analyst', 'Análisis de datos para marketing.', 'Google Analytics, Python, R'),
-    ('Systems Administrator', 'Administración de sistemas IT.', 'Linux, Windows Server, Bash'),
-    ('Mobile Developer', 'Desarrollo de aplicaciones móviles.', 'Swift, Kotlin, Flutter'),
-    ('CRM Specialist', 'Gestión de clientes y automatización.', 'Salesforce, HubSpot, Zoho'),
-    ('Cloud Security Engineer', 'Seguridad en la nube.', 'AWS Security, IAM, SIEM');
-
--- Insertar requisitos variados para cada posición
-INSERT INTO APPLICATIONS.REQUIREMENTS (position_id, key, value, description, mandatory)
-SELECT id, 'Experience', '3+ years', 'Relevant experience in the field.', true FROM APPLICATIONS.POSITIONS
-UNION ALL
-SELECT id, 'Certifications', 'Industry Standard', 'Preferred certifications for the role.', false FROM APPLICATIONS.POSITIONS
-UNION ALL
-SELECT id, 'Soft Skills', 'Communication & Teamwork', 'Required for effective collaboration.', true FROM APPLICATIONS.POSITIONS;
-
--- Insertar condiciones variadas para cada posición
-INSERT INTO APPLICATIONS.CONDITIONS (position_id, description)
-SELECT id, 'Trabajo remoto disponible' FROM APPLICATIONS.POSITIONS
-UNION ALL
-SELECT id, 'Horario flexible' FROM APPLICATIONS.POSITIONS
-UNION ALL
-SELECT id, 'Oportunidad de crecimiento profesional' FROM APPLICATIONS.POSITIONS;
-
--- Insertar tareas variadas para cada posición
-INSERT INTO APPLICATIONS.TASKS (position_id, description)
-SELECT id, 'Desarrollo de nuevas funcionalidades' FROM APPLICATIONS.POSITIONS
-UNION ALL
-SELECT id, 'Optimización de código existente' FROM APPLICATIONS.POSITIONS
-UNION ALL
-SELECT id, 'Colaboración con equipos multidisciplinarios' FROM APPLICATIONS.POSITIONS;
-*/
 -----------------------------------------------------------------------------------------------------------------------
 --- RECRUITERS ---
 
@@ -157,18 +100,28 @@ CREATE TABLE RECRUITERS.benefits
     description TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.applications (
-    id UUID PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS recruiters.candidates (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(255) NOT NULL,
     cv VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX idx_unique_lower_email ON recruiters.candidates (LOWER(email));
+
+CREATE TABLE IF NOT EXISTS recruiters.candidate_applications (
+    id UUID PRIMARY KEY,
+    candidate_id UUID NOT NULL REFERENCES recruiters.candidates(id) ON DELETE CASCADE,
     position_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.scoring (
-    application_id UUID PRIMARY KEY REFERENCES recruiters.applications(id),
+CREATE INDEX idx_candidate_applications_position_id ON recruiters.candidate_applications (position_id);
+
+
+CREATE TABLE IF NOT EXISTS recruiters.application_scoring (
+    application_id UUID PRIMARY KEY REFERENCES recruiters.candidate_applications(id),
     score FLOAT NOT NULL,
     desc_score FLOAT NOT NULL,
     requirement_score FLOAT NOT NULL,
@@ -178,64 +131,64 @@ CREATE TABLE IF NOT EXISTS recruiters.scoring (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.resume_analysis (
-    application_id UUID PRIMARY KEY REFERENCES recruiters.applications(id),
+CREATE TABLE IF NOT EXISTS recruiters.candidate_analysis (
+    candidate_id UUID PRIMARY KEY REFERENCES recruiters.candidates(id),
     summary TEXT,
     total_years_experience INT,
     average_permanency FLOAT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.strengths (
+CREATE TABLE IF NOT EXISTS recruiters.candidate_strengths (
     id SERIAL PRIMARY KEY,
-    application_id UUID REFERENCES recruiters.applications(id),
+    candidate_id UUID REFERENCES recruiters.candidates(id),
     strength TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.concerns (
+CREATE TABLE IF NOT EXISTS recruiters.candidate_concerns (
     id SERIAL PRIMARY KEY,
-    application_id UUID REFERENCES recruiters.applications(id),
+    candidate_id UUID REFERENCES recruiters.candidates(id),
     concern TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.hard_skills (
+CREATE TABLE IF NOT EXISTS recruiters.candidate_hard_skills (
     id SERIAL PRIMARY KEY,
-    application_id UUID REFERENCES recruiters.applications(id),
+    candidate_id UUID REFERENCES recruiters.candidates(id),
     skill VARCHAR(255) NOT NULL,
     level VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.soft_skills (
+CREATE TABLE IF NOT EXISTS recruiters.candidate_soft_skills (
     id SERIAL PRIMARY KEY,
-    application_id UUID REFERENCES recruiters.applications(id),
+    candidate_id UUID REFERENCES recruiters.candidates(id),
     skill VARCHAR(255) NOT NULL,
     level VARCHAR(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.key_responsibilities (
+CREATE TABLE IF NOT EXISTS recruiters.candidate_key_responsibilities (
     id SERIAL PRIMARY KEY,
-    application_id UUID REFERENCES recruiters.applications(id),
+    candidate_id UUID REFERENCES recruiters.candidates(id),
     responsibility TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS recruiters.interview_questions (
+CREATE TABLE IF NOT EXISTS recruiters.candidate_interview_questions (
     id SERIAL PRIMARY KEY,
-    application_id UUID REFERENCES recruiters.applications(id),
+    candidate_id UUID REFERENCES recruiters.candidates(id),
     question TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    );
 
-CREATE TABLE IF NOT EXISTS recruiters.tags (
+CREATE TABLE IF NOT EXISTS recruiters.candidate_tags (
     id SERIAL PRIMARY KEY,
-    application_id UUID REFERENCES recruiters.applications(id),
+    candidate_id UUID REFERENCES recruiters.candidates(id),
     tag VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
- );
+    );
 
 
 -- Insertar posiciones
