@@ -11,7 +11,7 @@ from src.domain.exceptions.ApplicationNotFoundException import ApplicationNotFou
 
 from src.domain.exceptions.CVException import CVException
 from src.domain.exceptions.CVFileNotFoundException import CVFileNotFoundException
-from src.domain.models.applications_model import ApplicationDetail, CandidateApplication
+from src.domain.models.applications_model import ApplicationDetail, CandidateApplication, PaginatedResult
 from src.domain.services.application_service import ApplicationService
 
 from src.infrastructure.app.dependencies import get_application_service
