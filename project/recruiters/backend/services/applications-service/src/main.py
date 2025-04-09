@@ -62,62 +62,66 @@ def configFastAPIApp():
     return app
 
 def startup():
-    setup_logging('INFO')
-    logger = logging.getLogger(__name__)
-    logger.info('Starting up')
+    try:
+        setup_logging('INFO')
+        logger = logging.getLogger(__name__)
+        logger.info('Starting up')
 
-    config = load_config()
-    app = configFastAPIApp()
+        config = load_config()
+        app = configFastAPIApp()
 
-    if config.tracing_enabled:
-        configure_tracer(app)
+        if config.tracing_enabled:
+            configure_tracer(app)
 
-    logger.info('Starting up database connection')
-    db_connection = SQLAlchemyConnection(
-        host=config.host,
-        port=config.port,
-        user=config.user,
-        password=config.password,
-        database=config.database
-    )
-    session_factory = db_connection.connect()
-    application_repository = ApplicationRepository(session_factory)
+        logger.info('Starting up database connection')
+        db_connection = SQLAlchemyConnection(
+            host=config.host,
+            port=config.port,
+            user=config.user,
+            password=config.password,
+            database=config.database
+        )
+        session_factory = db_connection.connect()
+        application_repository = ApplicationRepository(session_factory)
 
-    logger.info('Starting up Minio client')
-    minio_client = MinioClient(
-        endpoint=config.minio_url,
-        access_key=config.minio_access_name,
-        secret_key=config.minio_access_secret
-    )
-    cv_service = MinioCVService(minio_client, config.minio_bucket_name)
+        logger.info('Starting up Minio client')
+        minio_client = MinioClient(
+            endpoint=config.minio_url,
+            access_key=config.minio_access_name,
+            secret_key=config.minio_access_secret
+        )
+        cv_service = MinioCVService(minio_client, config.minio_bucket_name)
 
-    logger.info('Starting up application service')
-    application_service = ApplicationService(repository=application_repository, cv_service=cv_service)
-    application_scored_event_handler = ApplicationScoredEventHandler(
-        applications_service=application_service
-    )
+        logger.info('Starting up application service')
+        application_service = ApplicationService(repository=application_repository, cv_service=cv_service)
 
-    consumer = KafkaConsumer(
-        bootstrap_servers=config.bootstrap_servers,
-        topic=config.input_topic,
-        group_id=config.consumer_group
-    )
-    
-    consumer.start(application_scored_event_handler.handle_application_scored_event)
-
-    
-
-    loop = asyncio.get_running_loop()
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(
-            sig,
-            lambda: asyncio.create_task(shutdown_handler(consumer, db_connection))
+        logger.info('Starting up application scored event handler')
+        application_scored_event_handler = ApplicationScoredEventHandler(
+            applications_service=application_service
         )
 
-    logger.info("Application Scoring Service started successfully")
+        logger.info('Starting up Kafka Consumer')
+        consumer = KafkaConsumer(
+            bootstrap_servers=config.bootstrap_servers,
+            topic=config.input_topic,
+            group_id=config.consumer_group
+        )
+        consumer.start(application_scored_event_handler.handle_application_scored_event)
+
+        logger.info('Starting up running loop')
+        loop = asyncio.get_running_loop()
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(
+                sig,
+                lambda: asyncio.create_task(shutdown_handler(consumer, db_connection))
+            )
+
+        logger.info("Applications Service started successfully")
     
-    # Retornar la app de FastAPI para que uvicorn la pueda iniciar
-    return app
+        return app
+    except Exception as e:
+        print(f"Application error: {str(e)}")
+        raise e
 
 def main():
     try:
