@@ -46,7 +46,7 @@ def startup():
     logger = logging.getLogger(__name__)
     logger.info("Starting Application Scoring Service")
 
-    if config.telemetry.enabled:
+    if config.tracing_enabled:
         logger.info("Setting up OpenTelemetry...")
         setup_telemetry()
 
