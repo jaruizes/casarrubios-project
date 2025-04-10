@@ -34,7 +34,7 @@ def setup_telemetry():
     HTTPXClientInstrumentor().instrument()
     KafkaInstrumentor().instrument()
 
-    logger.info(f"Tracing started (endpoint = {otel_endpoint_complete})")
+    logger.info(f"Tracing started (endpoint = {otlp_endpoint}/v1/traces)")
 
     return tracer_provider
 
