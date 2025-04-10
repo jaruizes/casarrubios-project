@@ -58,12 +58,6 @@ class ApplicationDetailDTO(BaseModel):
     analysis: Optional[ResumeAnalysisDTO] = None
     scoring: Optional[ScoringDTO] = None
 
-    def add_analysis(self, analysis: ResumeAnalysisDTO):
-        self.analysis = analysis
-
-    def add_scoring(self, scoring: ScoringDTO):
-        self.scoring = scoring
-
 
 class PaginatedApplicationsDTO(BaseModel):
     applications: Optional[List[ApplicationDTO]] = None

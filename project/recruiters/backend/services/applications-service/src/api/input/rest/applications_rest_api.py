@@ -3,6 +3,7 @@ from typing import List
 from uuid import UUID
 import io
 from fastapi import APIRouter, Depends, Query, HTTPException
+from pydantic import ValidationError
 from starlette.responses import StreamingResponse
 
 from src.api.input.rest.dto.application_rest_api_dto import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO, \
@@ -49,7 +50,7 @@ def get_applications(
                                     number=page)
 
 @router.get(
-    '/applications/{application_id}', response_model=ApplicationDTO, tags=['applicationDTO']
+    '/applications/{application_id}', response_model=ApplicationDetailDTO, tags=['applicationDTO']
 )
 def get_application_by_id(application_id: UUID, application_service: ApplicationService = Depends(get_application_service)) -> ApplicationDetailDTO:
     logger.info(f"Getting application by ID {application_id}")
@@ -106,12 +107,6 @@ def build_application_detail_dto(application: ApplicationDetail) -> ApplicationD
                                                name=candidate.name,
                                                email=candidate.email,
                                                phone=candidate.phone)
-    application_dto = ApplicationDetailDTO(applicationId=application.application_id,
-                                           candidate=candidate_dto,
-                                           positionId=application.position_id,
-                                           cvFile=candidate.cv,
-                                           creationDate=creation_date)
-
     analysis = candidate.analysis
     analysis_dto: ResumeAnalysisDTO = ResumeAnalysisDTO(
         summary=candidate.analysis.summary,
@@ -126,9 +121,7 @@ def build_application_detail_dto(application: ApplicationDetail) -> ApplicationD
         tags=[tag for tag in analysis.tags]
     )
 
-    application_dto.add_analysis(analysis_dto)
-
-    scoring: ScoringDTO = ScoringDTO(
+    scoring_dto: ScoringDTO = ScoringDTO(
         score=application.scoring.score,
         descScore=application.scoring.desc_score,
         requirementScore=application.scoring.requirement_score,
@@ -136,6 +129,13 @@ def build_application_detail_dto(application: ApplicationDetail) -> ApplicationD
         timeSpent=application.scoring.time_spent,
         explanation=application.scoring.explanation
     )
-    application_dto.add_scoring(scoring)
+
+    application_dto = ApplicationDetailDTO(applicationId=application.application_id,
+                                           candidate=candidate_dto,
+                                           positionId=application.position_id,
+                                           cvFile=candidate.cv,
+                                           analysis=analysis_dto,
+                                           scoring=scoring_dto,
+                                           creationDate=creation_date)
 
     return application_dto
