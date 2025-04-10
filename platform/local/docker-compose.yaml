@@ -71,9 +71,6 @@ services:
 #      timeout: 10s
 #      retries: 5
 
-
-
-
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     hostname: zookeeper
@@ -425,8 +422,8 @@ services:
         condition: service_started
       broker:
         condition: service_healthy
-#      kafka-init:
-#        condition: service_completed_successfully
+      kafka-init:
+        condition: service_completed_successfully
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -492,8 +489,8 @@ services:
         condition: service_started
       broker:
         condition: service_healthy
-#      kafka-init:
-#        condition: service_completed_successfully
+      kafka-init:
+        condition: service_completed_successfully
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
@@ -509,7 +506,7 @@ services:
       - VECTOR_STORAGE_HOST=qdrant
       - VECTOR_STORAGE_PORT=6333
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-      - TRACING_ENABLED=true
+      - TELEMETRY_ENABLED=true
 
   recruitment-global-position-service:
     image: "ghcr.io/jaruizes/recruitment/global-position-service:1.0.0"
