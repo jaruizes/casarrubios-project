@@ -60,7 +60,7 @@ def get_application_by_id(application_id: UUID, application_service: Application
         logger.error(f"Application with ID {application_id} not found")
         raise HTTPException(status_code=404, detail=f"Application with ID {application_id} not found")
 
-    return build_application_dto_from_detail(application_detail)
+    return build_application_detail_dto(application_detail)
 
 
 @router.get('/applications/{application_id}/cv')
