@@ -19,6 +19,7 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 from src.infrastructure.minio.MinioClient import MinioClient
 
+logger = logging.getLogger(__name__)
 
 def setup_logging(log_level: str):
     logging.basicConfig(
@@ -34,7 +35,7 @@ async def shutdown_handler(consumer: KafkaConsumer, db_connection: SQLAlchemyCon
     db_connection.disconnect()
     logging.info("Application shutdown complete")
 
-def configFastAPIApp():
+def config_fastapi_app():
     app = FastAPI(
         title="Recruiters API",
         version="1.0.0",
@@ -58,20 +59,14 @@ def configFastAPIApp():
     @app.get("/")
     def health_check():
         return {"status": "running"}
-    
-    return app
 
-def startup():
-    try:
-        setup_logging('INFO')
-        logger = logging.getLogger(__name__)
-        logger.info('Starting up')
+    @app.on_event("startup")
+    def init_async_backend():
+        logger.info(f"Initializing application service....")
 
-        app = configFastAPIApp()
         config = load_config()
-
-
         if config.tracing_enabled:
+            logger.info("Tracing enabled...")
             configure_tracer(app)
 
         logger.info('Starting up database connection')
@@ -118,6 +113,69 @@ def startup():
             )
 
         logger.info("Applications Service started successfully")
+
+
+    return app
+
+
+def startup():
+    try:
+        setup_logging('INFO')
+        logger = logging.getLogger(__name__)
+        logger.info('Starting up')
+
+        app = config_fastapi_app()
+
+
+
+
+
+
+
+        # logger.info('Starting up database connection')
+        # db_connection = SQLAlchemyConnection(
+        #     host=config.host,
+        #     port=config.port,
+        #     user=config.user,
+        #     password=config.password,
+        #     database=config.database
+        # )
+        # session_factory = db_connection.connect()
+        # application_repository = ApplicationRepository(session_factory)
+        #
+        # logger.info('Starting up Minio client')
+        # minio_client = MinioClient(
+        #     endpoint=config.minio_url,
+        #     access_key=config.minio_access_name,
+        #     secret_key=config.minio_access_secret
+        # )
+        # cv_service = MinioCVService(minio_client, config.minio_bucket_name)
+        #
+        # logger.info('Starting up application service')
+        # application_service = ApplicationService(repository=application_repository, cv_service=cv_service)
+        #
+        # logger.info('Starting up application scored event handler')
+        # application_scored_event_handler = ApplicationScoredEventHandler(
+        #     applications_service=application_service
+        # )
+        #
+        # logger.info('Starting up Kafka Consumer')
+        # consumer = KafkaConsumer(
+        #     bootstrap_servers=config.bootstrap_servers,
+        #     topic=config.input_topic,
+        #     group_id=config.consumer_group
+        # )
+        # consumer.start(application_scored_event_handler.handle_application_scored_event)
+        #
+        # logger.info('Starting up running loop')
+        # loop = asyncio.get_running_loop()
+        # for sig in (signal.SIGINT, signal.SIGTERM):
+        #     loop.add_signal_handler(
+        #         sig,
+        #         lambda: asyncio.create_task(shutdown_handler(consumer, db_connection))
+        #     )
+        #
+        # logger.info("Applications Service started successfully")
     
         return app
     except Exception as e:
@@ -130,7 +188,7 @@ def main():
         import os
         
         # Usar el puerto de la variable de entorno o 8000 por defecto
-        port = int(os.environ.get("PORT", 8000))
+        port = int(os.environ.get("PORT", 9081))
 
         uvicorn.run(
             "src.main:startup",

@@ -29,7 +29,6 @@ class KafkaProducer():
 
     def close(self):
         if self.producer:
-            self.producer.close()
             logger.info("Kafka producer closed")
 
     def __acked(err, msg):

@@ -33,12 +33,65 @@ class KafkaConsumer():
             'auto.offset.reset': 'earliest'
         })
 
-    def start(self, processor):
+    # def start(self, processor):
+    #     try:
+    #         self.consumer.subscribe(self.topic)
+    #         while True:
+    #             msg = self.consumer.poll(timeout=1.0)
+    #             if msg is None: continue
+    #
+    #             if msg.error():
+    #                 manage_errors(msg)
+    #             else:
+    #                 from opentelemetry.propagate import extract
+    #                 from opentelemetry.context import attach, detach
+    #                 from opentelemetry import trace
+    #
+    #                 headers_list = msg.headers() or []
+    #                 headers_dict = {
+    #                     safe_decode(k): safe_decode(v)
+    #                     for k, v in headers_list if k and v
+    #                 }
+    #
+    #                 tracer = trace.get_tracer(__name__)
+    #                 ctx = extract(headers_dict)
+    #                 token = attach(ctx)
+    #
+    #                 with tracer.start_as_current_span("kafka-consume"):
+    #                     processor(msg)
+    #
+    #                 detach(token)
+    #                 self.consumer.commit(asynchronous=False)
+    #     finally:
+    #         self.stop()
+    #
+    # def stop(self):
+    #     self.consumer.close()
+
+
+    def start(self, processor: Callable):
+        if self.running:
+            logger.warning("Consumer already running")
+            return
+
+        self.running = True
+        self.consumer_thread = threading.Thread(
+            target=self._consume_loop,
+            args=(processor,),
+            daemon=True
+        )
+        self.consumer_thread.start()
+        logger.info(f"Started Kafka consumer for topics {self.topic}")
+
+    def _consume_loop(self, processor: Callable):
         try:
             self.consumer.subscribe(self.topic)
-            while True:
+            logger.info(f"Subscribed to topics: {self.topic}")
+
+            while self.running:
                 msg = self.consumer.poll(timeout=1.0)
-                if msg is None: continue
+                if msg is None:
+                    continue
 
                 if msg.error():
                     manage_errors(msg)
@@ -62,66 +115,24 @@ class KafkaConsumer():
 
                     detach(token)
                     self.consumer.commit(asynchronous=False)
+        except Exception as e:
+            logger.exception(f"Error in Kafka consumer loop: {str(e)}")
         finally:
-            self.stop()
+            if self.consumer:
+                self.consumer.close()
+                logger.info("Kafka consumer closed")
 
     def stop(self):
-        self.consumer.close()
+        if not self.running:
+            return
 
+        logger.info("Stopping Kafka consumer...")
+        self.running = False
 
-    # def start(self, handler: Callable):
-    #     if self.running:
-    #         logger.warning("Consumer already running")
-    #         return
-    #
-    #     self.running = True
-    #     self.consumer_thread = threading.Thread(
-    #         target=self._consume_loop,
-    #         args=(handler,),
-    #         daemon=True
-    #     )
-    #     self.consumer_thread.start()
-    #     logger.info(f"Started Kafka consumer for topics {self.topic}")
-    #
-    # def _consume_loop(self, handler: Callable):
-    #     try:
-    #         self.consumer.subscribe(self.topic)
-    #         logger.info(f"Subscribed to topics: {self.topic}")
-    #
-    #         while self.running:
-    #             msg = self.consumer.poll(timeout=1.0)
-    #             if msg is None:
-    #                 continue
-    #
-    #             if msg.error():
-    #                 manage_errors(msg)
-    #             else:
-    #                 try:
-    #                     logger.info(f"Received message on topic {msg.topic()}")
-    #                     handler(msg)
-    #                     self.consumer.commit(asynchronous=False)
-    #                     logger.info("Message processed and committed")
-    #                 except Exception as e:
-    #                     logger.exception(f"Error processing message: {str(e)}")
-    #     except Exception as e:
-    #         logger.exception(f"Error in Kafka consumer loop: {str(e)}")
-    #     finally:
-    #         if self.consumer:
-    #             self.consumer.close()
-    #             logger.info("Kafka consumer closed")
+        if self.consumer_thread and self.consumer_thread.is_alive():
+            self.consumer_thread.join(timeout=5)
+            logger.info("Kafka consumer thread joined")
 
-    # def stop(self):
-    #     """Detiene el consumidor y espera a que el hilo termine"""
-    #     if not self.running:
-    #         return
-    #
-    #     logger.info("Stopping Kafka consumer...")
-    #     self.running = False
-    #
-    #     if self.consumer_thread and self.consumer_thread.is_alive():
-    #         self.consumer_thread.join(timeout=5)
-    #         logger.info("Kafka consumer thread joined")
-    #
-    #     if self.consumer:
-    #         self.consumer.close()
-    #         logger.info("Kafka consumer closed")
+        if self.consumer:
+            self.consumer.close()
+            logger.info("Kafka consumer closed")
