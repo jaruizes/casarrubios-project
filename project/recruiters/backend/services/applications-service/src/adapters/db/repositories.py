@@ -42,7 +42,8 @@ class ApplicationRepository:
                     name=candidate_db.name,
                     email=candidate_db.email,
                     phone=candidate_db.phone,
-                    candidate_id=candidate_db.id
+                    candidate_id=candidate_db.id,
+                    cv=candidate_db.cv
                 ),
                 created_at=candidate_application_db.created_at
             )
