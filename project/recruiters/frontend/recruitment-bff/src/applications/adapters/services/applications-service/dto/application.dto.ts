@@ -1,4 +1,5 @@
 interface CandidateDataDTO {
+  id: string
   name: string;
   email: string;
   phone: string;
@@ -32,6 +33,16 @@ interface ServiceAnalysisDTO {
 }
 
 export interface ServiceApplicationDTO {
+  applicationId: string;
+  positionId: number;
+  candidate: CandidateDataDTO;
+  cvFile: string;
+  creationDate: string;
+  tags?: string[];
+  scoring?: number;
+}
+
+export interface ServiceApplicationDetailDTO {
   applicationId: string;
   positionId: number;
   candidate: CandidateDataDTO;

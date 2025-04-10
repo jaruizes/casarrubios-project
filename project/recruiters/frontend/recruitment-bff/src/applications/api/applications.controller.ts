@@ -20,7 +20,7 @@ import {
 import { ApplicationsService } from '../adapters/services/applications-service/applications.service';
 import { ErrorDTO } from '../../shared/api/dto/error.dto';
 import { ApplicationsBackendNotAvailableException } from '../exceptions/applications-backend-not-available.exception';
-import { ServiceApplicationDTO } from '../adapters/services/applications-service/dto/application.dto';
+import { ServiceApplicationDetailDTO, ServiceApplicationDTO } from '../adapters/services/applications-service/dto/application.dto';
 import { PositionsService } from '../../positions/adapters/services/position-service/positions.service';
 import { PositionServiceDTO } from '../../positions/adapters/services/position-service/dto/service-positions.dto';
 import * as crypto from 'crypto';
@@ -44,12 +44,8 @@ export class ApplicationsController {
     );
 
     try {
-      const applicationServiceDTO: ServiceApplicationDTO | undefined =
-        await this.applicationsService.getApplicationById(applicationId);
-      const position: PositionServiceDTO =
-        await this.positionsService.getPositionById(
-          applicationServiceDTO.positionId,
-        );
+      const applicationServiceDTO: ServiceApplicationDetailDTO | undefined = await this.applicationsService.getApplicationById(applicationId);
+      const position: PositionServiceDTO = await this.positionsService.getPositionById(applicationServiceDTO.positionId);
 
       if (applicationServiceDTO && position) {
         this.logger.log(`Found application with id: ${applicationId}`);
@@ -151,11 +147,7 @@ export class ApplicationsController {
     );
 
     const paginatedPositions =
-      await this.applicationsService.getAllApplicationsByPositionId(
-        positionId,
-        page,
-        pageSize,
-      );
+      await this.applicationsService.getAllApplicationsByPositionId(positionId, page, pageSize);
     this.logger.log(
       `Found ${paginatedPositions.totalElements} applications. Returning page ${paginatedPositions.number} of ${paginatedPositions.totalPages}`,
     );
@@ -189,19 +181,12 @@ export class ApplicationsController {
       cvFile: serviceApplicationDTO.cvFile,
       creationDate: serviceApplicationDTO.creationDate,
       positionsApplied: positionsApplied,
-      scoring: serviceApplicationDTO.scoring
-        ? serviceApplicationDTO.scoring.score
-        : undefined,
-      tags: serviceApplicationDTO.analysis
-        ? serviceApplicationDTO.analysis.tags.join(', ')
-        : '',
+      scoring: serviceApplicationDTO.scoring ? serviceApplicationDTO.scoring : undefined,
+      tags: serviceApplicationDTO.tags ? serviceApplicationDTO.tags.join(', ') : ''
     };
   }
 
-  private toApplicationDetailDTO(
-    applicationDTO: ServiceApplicationDTO,
-    positionDTO: PositionServiceDTO,
-  ): ApplicationDetailDTO {
+  private toApplicationDetailDTO(applicationDTO: ServiceApplicationDetailDTO, positionDTO: PositionServiceDTO): ApplicationDetailDTO {
     const candidateDataDTO: CandidateDataDTO = {
       name: applicationDTO.candidate.name,
       email: applicationDTO.candidate.email,

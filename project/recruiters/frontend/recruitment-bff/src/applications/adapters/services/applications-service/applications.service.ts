@@ -1,8 +1,9 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import {
+  ServiceApplicationDetailDTO,
   ServiceApplicationDTO,
-  ServicePaginatedApplicationsDTO,
+  ServicePaginatedApplicationsDTO
 } from './dto/application.dto';
 import { ApplicationsBackendNotAvailableException } from '../../../exceptions/applications-backend-not-available.exception';
 import { firstValueFrom } from 'rxjs';
@@ -25,15 +26,13 @@ export class ApplicationsService {
 
   async getApplicationById(
     applicationId: string,
-  ): Promise<ServiceApplicationDTO> {
+  ): Promise<ServiceApplicationDetailDTO> {
     const url = `${this.backendUrl}/applications/${applicationId}`;
-    this.logger.debug(
-      `[Applications Service] Trying to fetch application from: ${url}`,
-    );
+    this.logger.debug(`[Applications Service] Trying to fetch application from: ${url}`);
 
     try {
       const response = await firstValueFrom(
-        this.httpService.get<ServiceApplicationDTO>(url),
+        this.httpService.get<ServiceApplicationDetailDTO>(url),
       );
       this.logger.debug(
         `[Applications Service] Received response: ${JSON.stringify(response.data)}`,
@@ -42,9 +41,7 @@ export class ApplicationsService {
       return response.data;
     } catch (error) {
       if (error.isAxiosError && error.response.status === 404) {
-        throw new NotFoundException(
-          `Application with id ${applicationId} not found`,
-        );
+        throw new NotFoundException(`Application with id ${applicationId} not found`);
       }
 
       if (error.isAxiosError && error.code === 'ECONNREFUSED') {
