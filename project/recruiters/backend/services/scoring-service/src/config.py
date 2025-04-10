@@ -25,20 +25,15 @@ class VectorStorageConfig:
     port: int
 
 
-@dataclass
-class TelemetryConfig:
-    enabled: bool
-    otlp_endpoint: str
-
 
 @dataclass
 class ApplicationConfig:
     log_level: str
     openai_key: str
+    tracing_enabled: bool
     db: DatabaseConfig = field(default_factory=DatabaseConfig)
     kafka: KafkaConfig = field(default_factory=KafkaConfig)
     vector_storage: VectorStorageConfig = field(default_factory=VectorStorageConfig)
-    telemetry: TelemetryConfig = field(default_factory=TelemetryConfig)
 
 
 def load_config() -> ApplicationConfig:
@@ -57,16 +52,13 @@ def load_config() -> ApplicationConfig:
             input_topic=os.getenv("KAFKA_INPUT_TOPIC", "application-analysed-events"),
             output_topic=os.getenv("KAFKA_OUTPUT_TOPIC", "application-scored-events")
         ),
-        telemetry=TelemetryConfig(
-            enabled=os.getenv("TELEMETRY_ENABLED", "true").lower() == "false",
-            otlp_endpoint=os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
-        ),
         vector_storage=VectorStorageConfig(
             host=os.getenv("VECTOR_STORAGE_HOST", "localhost"),
             port=int(os.getenv("VECTOR_STORAGE_PORT", "6333"))
         ),
         log_level=os.getenv("LOG_LEVEL", "INFO"),
-        openai_key=os.getenv("OPENAI_API_KEY")
+        openai_key=os.getenv("OPENAI_API_KEY"),
+        tracing_enabled=os.getenv("TRACING_ENABLED", "false").lower() == "true"
     )
 
     return appconfig

@@ -17,8 +17,11 @@ resource = Resource.create({
 })
 tracer_provider = TracerProvider(resource=resource, sampler=ALWAYS_ON)
 
-def setup_telemetry(otlp_endpoint):
+def setup_telemetry():
+    logger.info("Setting up telemetry")
+
     trace.set_tracer_provider(tracer_provider)
+    otel_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
 
     if otlp_endpoint:
         otel_endpoint_complete = otlp_endpoint + "/v1/traces"
