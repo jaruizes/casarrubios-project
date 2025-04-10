@@ -25,9 +25,8 @@ def setup_telemetry():
     otlp_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://localhost:4318")
 
     if otlp_endpoint:
-        otel_endpoint_complete = otlp_endpoint + "/v1/traces"
-        otlp_exporter = OTLPSpanExporter(endpoint=otel_endpoint_complete)
-        span_processor = BatchSpanProcessor(otlp_exporter)
+        span_exporter = OTLPSpanExporter(endpoint=otel_endpoint + "/v1/traces")
+        span_processor = BatchSpanProcessor(span_exporter)
         tracer_provider.add_span_processor(span_processor)
 
     AsyncPGInstrumentor().instrument()
