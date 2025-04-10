@@ -170,7 +170,6 @@ class ApplicationRepository:
                 total_years_experience=analysis.total_years_xperience,
                 average_permanency=analysis.average_permanency
             )
-            self.db.delete(resume_analysis)
             self.db.add(resume_analysis)
 
             self.db.commit()
