@@ -45,7 +45,9 @@ class ApplicationRepository:
                     candidate_id=candidate_db.id,
                     cv=candidate_db.cv
                 ),
-                created_at=candidate_application_db.created_at
+                created_at=candidate_application_db.created_at,
+                tags=[tag.tag for tag in candidate_db.tags],
+                scoring=candidate_application_db.scoring.score if candidate_application_db.scoring else None
             )
             for candidate_db, candidate_application_db  in db_results
         ]

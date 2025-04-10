@@ -74,6 +74,8 @@ class CandidateApplication:
     position_id: int
     candidate: Candidate
     created_at: datetime
+    tags: Optional[List[str]] = None
+    scoring: Optional[float] = None
 
     def __getitem__(self, item):
         return self[item]

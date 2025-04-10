@@ -14,11 +14,31 @@ client = TestClient(app)
 
 logger = logging.getLogger(__name__)
 
-def test_get_applications_empty(setup_config):
+def test_get_applications_empty_when_page_is_greater_than_total_pages(setup_config):
     response = client.get("/applications?positionId=1&pageSize=5&page=10")
     assert response.status_code == 200
     assert response.json()["applications"] == []
     assert response.json()["totalElements"] == 22
+
+def test_get_applications(setup_config):
+    response = client.get("/applications?positionId=1&pageSize=5&page=1")
+    assert response.status_code == 200
+    assert response.json()["totalElements"] == 22
+    assert len(response.json()["applications"]) == 5
+
+    for application in response.json()["applications"]:
+        assert application["applicationId"] is not None
+        assert application["candidate"]["id"] is not None
+        assert application["candidate"]["name"] is not None
+        assert application["candidate"]["email"] is not None
+        assert application["candidate"]["phone"] is not None
+        assert application["positionId"] is not None
+        assert application["cvFile"] is not None
+
+        if application["candidate"]["id"] == "d99ed287-87e5-45cc-9b28-750f37523202":
+            assert application["tags"] is not None
+            assert application["scoring"] is not None
+
 
 def test_get_application_by_id_right(db_session):
     application_stored: CandidateApplicationsDB = db_session.query(CandidateApplicationsDB).filter(CandidateApplicationsDB.position_id == 1).first()

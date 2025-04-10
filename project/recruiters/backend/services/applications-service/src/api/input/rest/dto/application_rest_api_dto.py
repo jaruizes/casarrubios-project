@@ -34,12 +34,22 @@ class ScoringDTO(BaseModel):
     explanation: str
 
 class CandidateDTO(BaseModel):
+    id: UUID
     name: str
     email: str
     phone: str
 
 
 class ApplicationDTO(BaseModel):
+    applicationId: UUID
+    candidate: CandidateDTO
+    positionId: int
+    cvFile: str
+    creationDate: str = Field()
+    tags: Optional[List[str]] = None
+    scoring: Optional[float] = None
+
+class ApplicationDetailDTO(BaseModel):
     applicationId: UUID
     candidate: CandidateDTO
     positionId: int

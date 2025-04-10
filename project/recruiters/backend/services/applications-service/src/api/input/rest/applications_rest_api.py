@@ -5,8 +5,9 @@ import io
 from fastapi import APIRouter, Depends, Query, HTTPException
 from starlette.responses import StreamingResponse
 
-from src.api.input.rest.dto.application_rest_api_dto import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO, ResumeAnalysisDTO, \
-    SkillDTO, ScoringDTO
+from src.api.input.rest.dto.application_rest_api_dto import PaginatedApplicationsDTO, ApplicationDTO, CandidateDTO, \
+    ResumeAnalysisDTO, \
+    SkillDTO, ScoringDTO, ApplicationDetailDTO
 from src.domain.exceptions.ApplicationNotFoundException import ApplicationNotFoundException
 
 from src.domain.exceptions.CVException import CVException
@@ -50,7 +51,7 @@ def get_applications(
 @router.get(
     '/applications/{application_id}', response_model=ApplicationDTO, tags=['applicationDTO']
 )
-def get_application_by_id(application_id: UUID, application_service: ApplicationService = Depends(get_application_service)) -> ApplicationDTO:
+def get_application_by_id(application_id: UUID, application_service: ApplicationService = Depends(get_application_service)) -> ApplicationDetailDTO:
     logger.info(f"Getting application by ID {application_id}")
 
     try:
@@ -88,25 +89,32 @@ def build_application_dto(application: CandidateApplication) -> ApplicationDTO:
     creation_date = application.created_at.isoformat()
     candidate = application.candidate
     application_dto = ApplicationDTO(applicationId=application.application_id,
-                                     candidate=CandidateDTO(name=candidate.name, email=candidate.email, phone=candidate.phone),
+                                     candidate=CandidateDTO(id=candidate.candidate_id, name=candidate.name, email=candidate.email, phone=candidate.phone),
                                      positionId=application.position_id,
                                      cvFile=candidate.cv,
+                                     tags=application.tags,
+                                     scoring=application.scoring,
                                      creationDate=creation_date)
+
 
     return application_dto
 
-def build_application_dto_from_detail(application: ApplicationDetail) -> ApplicationDTO:
+def build_application_detail_dto(application: ApplicationDetail) -> ApplicationDetailDTO:
     creation_date = application.created_at.isoformat()
-    candidate_dto: CandidateDTO = CandidateDTO(name=application.candidate.name, email=application.candidate.email, phone=application.candidate.phone)
-    application_dto = ApplicationDTO(applicationId=application.application_id,
-                                     candidate=candidate_dto,
-                                     positionId=application.position_id,
-                                     cvFile=application.candidate.cv,
-                                     creationDate=creation_date)
+    candidate = application.candidate
+    candidate_dto: CandidateDTO = CandidateDTO(id=candidate.candidate_id,
+                                               name=candidate.name,
+                                               email=candidate.email,
+                                               phone=candidate.phone)
+    application_dto = ApplicationDetailDTO(applicationId=application.application_id,
+                                           candidate=candidate_dto,
+                                           positionId=application.position_id,
+                                           cvFile=candidate.cv,
+                                           creationDate=creation_date)
 
-    analysis = application.candidate.analysis
+    analysis = candidate.analysis
     analysis_dto: ResumeAnalysisDTO = ResumeAnalysisDTO(
-        summary=application.candidate.analysis.summary,
+        summary=candidate.analysis.summary,
         strengths=[strength for strength in analysis.strengths],
         concerns=[concern for concern in analysis.concerns],
         hardSkills=[SkillDTO(skill=hard_skill.skill, level=hard_skill.level) for hard_skill in analysis.hard_skills],
