@@ -54,13 +54,14 @@ CREATE TABLE APPLICATIONS.APPLICATIONS
 
 CREATE SCHEMA IF NOT EXISTS RECRUITERS;
 
-CREATE TABLE RECRUITERS.outbox (
+CREATE TABLE recruiters.outbox (
    id UUID PRIMARY KEY,
    aggregatetype VARCHAR(255) NOT NULL,
    aggregateid VARCHAR(255) NOT NULL,
    type VARCHAR(255) NOT NULL,
-   payload JSONB NOT NULL,
-   timestamp TIMESTAMP DEFAULT now()
+   payload TEXT NOT NULL,
+   timestamp TIMESTAMP DEFAULT now(),
+   tracingspancontext TEXT
 );
 
 
