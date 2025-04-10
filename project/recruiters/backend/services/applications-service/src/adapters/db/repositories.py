@@ -90,10 +90,12 @@ class ApplicationRepository:
 
             for strength_text in analysis.strengths:
                 strength = CandidateStrengthDB(candidate_id=candidate_id, strength=strength_text)
+                self.db.delete(strength)
                 self.db.add(strength)
 
             for concern_text in analysis.concerns:
                 concern = CandidateConcernDB(candidate_id=candidate_id, concern=concern_text)
+                self.db.delete(concern)
                 self.db.add(concern)
 
             for skill_data in analysis.hard_skills:
@@ -102,6 +104,7 @@ class ApplicationRepository:
                     skill=skill_data.skill,
                     level=skill_data.level
                 )
+                self.db.delete(hard_skill)
                 self.db.add(hard_skill)
 
             for skill_data in analysis.soft_skills:
@@ -110,6 +113,7 @@ class ApplicationRepository:
                     skill=skill_data.skill,
                     level=skill_data.level
                 )
+                self.db.delete(soft_skill)
                 self.db.add(soft_skill)
 
             for responsibility_text in analysis.key_responsibilities:
@@ -117,6 +121,7 @@ class ApplicationRepository:
                     candidate_id=candidate_id,
                     responsibility=responsibility_text
                 )
+                self.db.delete(responsibility)
                 self.db.add(responsibility)
 
             for question_text in analysis.interview_questions:
@@ -124,10 +129,12 @@ class ApplicationRepository:
                     candidate_id=candidate_id,
                     question=question_text
                 )
+                self.db.delete(question)
                 self.db.add(question)
 
             for tag_text in analysis.tags:
                 tag = CandidateTagDB(candidate_id=candidate_id, tag=tag_text)
+                self.db.delete(tag)
                 self.db.add(tag)
 
             scoring_db = ApplicationScoreDB(
@@ -139,6 +146,7 @@ class ApplicationRepository:
                 explanation=scoring.explanation,
                 time_spent=scoring.time_spent
             )
+            self.db.delete(scoring_db)
             self.db.add(scoring_db)
 
             resume_analysis = CandidateAnalysisDB(
@@ -147,7 +155,9 @@ class ApplicationRepository:
                 total_years_experience=analysis.total_years_xperience,
                 average_permanency=analysis.average_permanency
             )
+            self.db.delete(resume_analysis)
             self.db.add(resume_analysis)
+
             self.db.commit()
             return True
         except Exception as e:
