@@ -134,44 +134,82 @@ services:
       timeout: 10s
       retries: 5
 
+#  cdc-service:
+#    image: quay.io/debezium/connect:3.0
+#    hostname: connect
+#    container_name: infrastructure.cdc-service
+#    depends_on:
+#      broker:
+#        condition: service_healthy
+#    ports:
+#      - "8083:8083"
+#    volumes:
+#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
+#    environment:
+#      BOOTSTRAP_SERVERS: 'broker:29092'
+#      ADVERTISED_HOST_NAME: connect
+#      GROUP_ID: debezium-connect-group
+#      CONFIG_STORAGE_TOPIC: dbz-connect-configs
+#      CONFIG_STORAGE_REPLICATION_FACTOR: 1
+#      OFFSET_FLUSH_INTERVAL_MS: 10000
+#      OFFSET_STORAGE_TOPIC: dbz-connect-offsets
+#      OFFSET_STORAGE_REPLICATION_FACTOR: 1
+#      STATUS_STORAGE_TOPIC: docker-connect-status
+#      STATUS_STORAGE_REPLICATION_FACTOR: 1
+#      KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+#      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+#      ENABLE_DEBEZIUM_SCRIPTING: 'true'
+#      ENABLE_OTEL: 'true'
+#      JAVA_TOOL_OPTIONS: '-javaagent:/otel/opentelemetry-javaagent.jar'
+#      OTEL_SERVICE_NAME: 'cdc-service'
+#      OTEL_TRACES_EXPORTER: 'otlp'
+#      OTEL_METRICS_EXPORTER: 'none'
+#      OTEL_LOGS_EXPORTER: 'none'
+#      OTEL_EXPORTER_OTLP_ENDPOINT: 'http://otel-collector:4318'
+#      OTEL_TRACES_SAMPLER: 'always_on'
+#    healthcheck:
+#      test: [ "CMD", "curl", "http://localhost:8083" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 10
+
   cdc-service:
-    image: quay.io/debezium/connect:3.0
-    hostname: connect
+    image: debezium/strimzi-connect
     container_name: infrastructure.cdc-service
+    ports:
+      - 8083:8083
     depends_on:
       broker:
         condition: service_healthy
-    ports:
-      - "8083:8083"
-    volumes:
-      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
-      BOOTSTRAP_SERVERS: 'broker:29092'
-      ADVERTISED_HOST_NAME: connect
-      GROUP_ID: debezium-connect-group
-      CONFIG_STORAGE_TOPIC: dbz-connect-configs
-      CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      OFFSET_FLUSH_INTERVAL_MS: 10000
-      OFFSET_STORAGE_TOPIC: dbz-connect-offsets
-      OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      STATUS_STORAGE_TOPIC: docker-connect-status
-      STATUS_STORAGE_REPLICATION_FACTOR: 1
-      KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
-      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      ENABLE_DEBEZIUM_SCRIPTING: 'true'
-      ENABLE_OTEL: 'true'
-      JAVA_TOOL_OPTIONS: '-javaagent:/otel/opentelemetry-javaagent.jar'
-      OTEL_SERVICE_NAME: 'cdc-service'
-      OTEL_TRACES_EXPORTER: 'otlp'
-      OTEL_METRICS_EXPORTER: 'none'
-      OTEL_LOGS_EXPORTER: 'none'
-      OTEL_EXPORTER_OTLP_ENDPOINT: 'http://otel-collector:4318'
-      OTEL_TRACES_SAMPLER: 'always_on'
+      - KAFKA_LOG4J_OPTS=-Dlog4j.configuration=file:/opt/kafka/config/connect-log4j.properties
+      - KAFKA_CONNECT_BOOTSTRAP_SERVERS=broker:29092
+      - |
+        KAFKA_CONNECT_CONFIGURATION=
+        key.converter=org.apache.kafka.connect.storage.StringConverter
+        value.converter=org.apache.kafka.connect.json.JsonConverter
+        key.converter.schemas.enable=false
+        value.converter.schemas.enable=false
+        group.id=debezium-connect
+        offset.storage.topic=connect-offsets
+        offset.storage.replication.factor=1
+        config.storage.topic=connect-configs
+        config.storage.replication.factor=1
+        status.storage.topic=connect-status
+        status.storage.replication.factor=1
+        producer.interceptor.classes=io.debezium.tracing.DebeziumTracingProducerInterceptor
+      - OTEL_SERVICE_NAME=cdc-service
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_TRACES_SAMPLER=always_on
+      - STRIMZI_TRACING=opentelemetry
+    command: /opt/kafka/kafka_connect_run.sh
     healthcheck:
       test: [ "CMD", "curl", "http://localhost:8083" ]
       interval: 30s
-      timeout: 60s
-      retries: 5
+      timeout: 10s
+      retries: 10
 
   cdc-service-init:
     image: curlimages/curl:latest
@@ -199,6 +237,7 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector:latest
+    container_name: infrastructure.otel-collector
     command: [ "--config=/etc/otel-collector-config.yaml" ]
     volumes:
       - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:Z
@@ -211,6 +250,7 @@ services:
 
   jaeger:
     image: jaegertracing/jaeger:2.4.0
+    container_name: infrastructure.jaeger
     ports:
       - "16686:16686"
     environment:
@@ -506,7 +546,7 @@ services:
       - VECTOR_STORAGE_HOST=qdrant
       - VECTOR_STORAGE_PORT=6333
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
-      - TELEMETRY_ENABLED=true
+      - TRACING_ENABLED=true
 
   recruitment-global-position-service:
     image: "ghcr.io/jaruizes/recruitment/global-position-service:1.0.0"
@@ -546,20 +586,24 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
-    volumes:
-      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
+#    volumes:
+#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MP_MESSAGING_OUTGOING_NOTIFICATIONS-PUBLISHER_TOPIC=recruitment.notifications
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_TOPIC=recruitment.applications-scored
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_GROUP_ID=notifications-manager-service
-      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
-      - OTEL_SERVICE_NAME=recruitment-notifications-manager-service
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-      - OTEL_METRICS_EXPORTER=none
-      - OTEL_LOGS_EXPORTER=none
+#      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
+#      - OTEL_SERVICE_NAME=recruitment-notifications-manager-service
+#      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+#      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+#      - OTEL_METRICS_EXPORTER=none
+#      - OTEL_LOGS_EXPORTER=none
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
+      - QUARKUS_OTEL_ENABLED=true
+      - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
+      - QUARKUS_OTEL_SERVICE_NAME=recruitment-notifications-manager-service
+      - QUARKUS_APPLICATION_NAME=recruitment-applications-updater-service
 
 volumes:
   minio_data:
