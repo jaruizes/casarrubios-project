@@ -174,7 +174,7 @@ services:
 #      retries: 10
 
   cdc-service:
-    image: debezium/strimzi-connect
+    image: ghcr.io/jaruizes/infrastructure/cdc-service:1.0.0
     container_name: infrastructure.cdc-service
     ports:
       - 8083:8083
