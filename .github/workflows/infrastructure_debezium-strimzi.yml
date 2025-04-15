@@ -1,4 +1,4 @@
-name: Debezium Strimzi
+name: (Infrastructure) CDC Service
 
 on:
   workflow_dispatch:
