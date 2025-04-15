@@ -6,7 +6,7 @@ For this reason, the solutions shown in this repository may be more complex than
 
 
 
-:warning: ​**<u>And, also for this reason, this repository is constantly evolving, so solutions shown here could not be completed or can have some errors.</u>**
+:warning: ​ **And, also for this reason, this repository is constantly evolving, so solutions shown here could not be completed or can have some errors.**
 
 
 
