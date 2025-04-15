@@ -12,6 +12,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: platform/local/debezium-strimzi
     permissions:
       contents: read
       packages: write
