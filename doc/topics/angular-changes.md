@@ -12,7 +12,7 @@ Traditionally, Angular applications were built around NgModules. Since Angular 1
 
 According to [Angular's official documentation](https://angular.dev/guide/ngmodules/overview), it is now recommended to use standalone components instead of modules.
 
-![ngmodules-not-recommended](img/ngmodules-not-recommended.jpg)
+![ngmodules-not-recommended](../img/ngmodules-not-recommended.jpg)
 
 
 

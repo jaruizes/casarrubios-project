@@ -54,7 +54,7 @@ Once we have added the dependencies, we can configure an script to initialize Po
 
 
 
-![schema-sql](img/schema-sql.jpg)
+![schema-sql](../img/schema-sql.jpg)
 
 
 
@@ -126,7 +126,7 @@ public void givenSomePositions_whenGetAllPositions_thenListOfPositionsIsReturned
 
 The first time the test is executed, the image will be downloaded:
 
-![testcontainers-download-image](img/testcontainers-download-image.jpg)
+![testcontainers-download-image](../img/testcontainers-download-image.jpg)
 
 
 
@@ -152,7 +152,7 @@ As the Testcontainers documentation said: "is responsible for container removal 
 
 It's funny because it doesn't remove itself...
 
-![ryuk_container](img/ryuk_container.jpg)
+![ryuk_container](../img/ryuk_container.jpg)
 
 
 

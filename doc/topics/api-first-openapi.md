@@ -27,13 +27,13 @@ You can import this file in the [Swagger Editor](https://editor.swagger.io/) to 
 
 - **Operational contract**
 
-  ![operational-contract](img/operational-contract.jpg)
+  ![operational-contract](../img/operational-contract.jpg)
 
 
 
 - **Informational contract**
 
-  ![informational-contract](img/informational-contract.jpg)
+  ![informational-contract](../img/informational-contract.jpg)
 
 
 
@@ -103,7 +103,7 @@ mvn clean compile
 
 Code will be generated in the folder /generated-sources/openapi/ :
 
-![openapi-classes](img/openapi-classes.jpg)
+![openapi-classes](../img/openapi-classes.jpg)
 
 
 

@@ -92,4 +92,4 @@ The mutation testing results are generated in the target/pit-reports directory. 
 
 To access the visual report, open the index.html file located in the target/pit-reports directory in a web browser. This report provides a comprehensive view of the mutation testing results, including the mutation coverage and details of each mutation:
 
-![mutation-testing](img/mutation-testing.jpg)
+![mutation-testing](../img/mutation-testing.jpg)

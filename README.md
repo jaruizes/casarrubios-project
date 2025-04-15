@@ -1,33 +1,56 @@
-# Casarrubios' Project (Work in Progress "forever")
+# Casarrubios' Project 
 
-This repository will serve as a personal portfolio, showcasing various topics in architecture, software development and artificial intelligence through a use case. 
+This repository will serve as a personal portfolio, showcasing various topics and concepts about architecture, software development and artificial intelligence through a use case. 
 
 For this reason, the solutions shown in this repository may be more complex than it should be but, as I mentioned, the goal of this repository is to use it as a didactical and playground tool.
 
 
 
-**<u>And, also for this reason, this repository is constantly evolving, so solutions shown here could not be completed or can have some errors.</u>**
+:warning: ​**<u>And, also for this reason, this repository is constantly evolving, so solutions shown here could not be completed or can have some errors.</u>**
 
 
 
-# How to execute it?
+## Project Structure
 
-### Requirements
+The structure of the project is the following:
 
-The only software you must have is:
+- :open_book: ​**doc/** → Documentation
+- :rocket: **platform/**
+  - **local/** → Folders and files associated with docker-compose runtime environment
+  - **k8s/** → Folders and files associated with Kubernetes runtime environment (in progress)
+- :gear: ​**project/**
+  - :student: **candidates/** → all the components (frontend, backend, cdc) associated to candidates context
+  - :office_worker: **recruitment/**  → all the components (frontend, backend, cdc) associated to recruitment context
+
+
+
+## How to execute it?
+
+#### Requirements
+
+The only requirements are:
 
 - Docker
 - Docker Compose
+- An OpenAI API Key
 
-You don't need to build any service or image. All the necessary images are published as [Github (Public) Packages](https://github.com/jaruizes?tab=packages).
+(*) You don't need to build any service or image. All the necessary images are published as [Github (Public) Packages](https://github.com/jaruizes?tab=packages).
 
 
 
-### Execution
+#### Execution
 
-In a terminal, execute:
+You need set an environment variable for the OpenAI API Key. Open a Terminal and execute:
 
+```shell
+export OPENAI_API_KEY=<your openai key>
 ```
+
+
+
+In the same terminal, execute:
+
+```shell
 cd platform/local
 docker-compose up -d 
 ```
@@ -46,7 +69,7 @@ Once everything is up and running, the main URLs are:
 
 
 
-# The use case?
+## The use case?
 
 The use case implemented in this repository is a recruitment process. The context is a company that publishes positions in its career portal and people interested on these open positions can apply to them and send theirs resumes:
 
@@ -66,7 +89,7 @@ I've participated in many recruitment processes from the recruiter’s side, rea
 
 
 
-# Architecture (What? -> How? -> With What?)
+## Architecture (What? -> How? -> With What?)
 
 In the following sections we are going to desing and define the project architecture starting from the business architecture and ending with the physical architecture.
 
@@ -74,7 +97,7 @@ In the following sections we are going to desing and define the project architec
 
 
 
-## Business and Information Architecture (What?)
+### Business and Information Architecture (What?)
 
 In this section we are going to define the business (or functional) architecture of the project. 
 
@@ -133,7 +156,7 @@ As we can see in the diagram, there are entities like "Position" and "Applicatio
 
 
 
-# Logical Architecture (How?) 
+### Logical Architecture (How?) 
 
 The following picture illustrates the logical architecture of the MVP:
 
@@ -141,7 +164,7 @@ The following picture illustrates the logical architecture of the MVP:
 
 
 
-# Physical Architectures (With What?)
+### Physical Architectures (With What?)
 
 In this section I'll expose several alternatives to implement each logical component.
 
@@ -151,18 +174,18 @@ In this section I'll expose several alternatives to implement each logical compo
 
 
 
-# Some topics implemented
+## Some topics implemented
 
 This section is dedicated to explain different concepts, patterns, technology,...,etc associated with the implementation of the project:
 
-- [Testcontainers](doc/testcontainers.md)
-- [API Contract First - OpenAPI](doc/api-first-openapi.md)
-- [Mutation Testing](doc/mutation-tests.md)
-- [Hibernate - Eager/Lazy loading](doc/hibernate-lazy-eager.md)
-- [Spring Boot - Exceptions Handler](doc/spring-exceptions-handler.md)
-- [Changes in "Modern Angular" (WIP)](doc/angular-changes.md)
-- [Typespec (TODO)](doc/typespec.md)
-- [Testing in Quarkus (TODO)](doc/testing-quarkus.md)
+- [Testcontainers](doc/topics/testcontainers.md)
+- [API Contract First - OpenAPI](doc/topics/api-first-openapi.md)
+- [Mutation Testing](doc/topics/mutation-tests.md)
+- [Hibernate - Eager/Lazy loading](doc/topics/hibernate-lazy-eager.md)
+- [Spring Boot - Exceptions Handler](doc/topics/spring-exceptions-handler.md)
+- [Changes in "Modern Angular" (WIP)](doc/topics/angular-changes.md)
+- [Typespec (TODO)](doc/topics/typespec.md)
+- [Testing in Quarkus (TODO)](doc/topics/testing-quarkus.md)
 - K3D/K3S (TODO)
 - [CDC using Debezium (TODO)](https://github.com/jaruizes/debezium)
 - Spring AI (TODO)

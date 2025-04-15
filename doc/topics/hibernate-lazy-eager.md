@@ -19,7 +19,7 @@ We have to choose between two options related to load data from database:
 
 Let's see in practice. I'm going to use the "positions service" for candidates. Positions are modeled the following way:
 
-![positions_model](img/positions_model.png)
+![positions_model](../img/positions_model.png)
 
 
 

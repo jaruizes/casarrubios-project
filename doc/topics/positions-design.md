@@ -2,7 +2,7 @@ POSITIONS
 
 This document contains the design about "positions".  The following picture shows how a "position" is composed:
 
-![positions-design](img/positions-design.jpg)
+![positions-design](../img/positions-design.jpg)
 
 Let's see in detail:
 
