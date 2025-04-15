@@ -1,54 +1,100 @@
-# Casarrubios project (WIP)
+# Casarrubios' Project (Work in Progress "forever")
 
-![wip](doc/img/wip.jpg)
+This repository will serve as a personal portfolio, showcasing various topics in architecture, software development and artificial intelligence through a use case. 
 
-
-
-This repository will serve as a portfolio, showcasing various topics in architecture, software development, and more through a use case. For this reason, the solutions in this repository may be more complex than it should be but, as I mentioned, the goal of this repository is to use it as a didactical and playground tool.
-
-The aim is to include the most of these topics:
-
-- Front: Angular, Vue, React
-- Backend: Spring Boot, Quarkus, Node
-- Authorization, Authentication
-- APIs: 
-  - Synchronous: Api first, BFF, OpenAPI
-  - Asynchronous: Event first, AsyncAPI, Cloud Events
-  - Schema Registry
-  - Management
-- Databases: SQL and NoSQL
-- GenAI
-- Kafka, Kafka Connect, KStreams
-- CDC: Debezium
-- Testcontainers
-- CI/CD
-- Monitoring & Observability: OpenTelemetry, Prometheus, Grafana, Jaeger, ELK
+For this reason, the solutions shown in this repository may be more complex than it should be but, as I mentioned, the goal of this repository is to use it as a didactical and playground tool.
 
 
 
-Initially, all the infrastructure will be local, based on Docker and Docker Compose. 
-
-Later on, I'll include Kubernetes (local) and, eventually, cloud infrastructure to cover:
-
-- IaC: Terraform & CDK
-- AWS: EKS, Lambda, Fargate, RDS, DMS, Cognito, Bedrock
-
-
-To explore:
-- jwt-cli (https://github.com/mike-engel/jwt-cli)
-- jwtui (https://jwtui.cli.rs/)
-- DevToys (https://devtoys.app/)
-
-
-# Use case (What?)
-
-The use case selected is the recruitment process. We are a company that publishes positions in a portal and people interested on these open positions can apply to them.
-
-The aim is to leverage artificial intelligence to be more efficient during the screening phase and automate the process of selecting the best resumes for each open position. The following picture shows the process:
+**<u>And, also for this reason, this repository is constantly evolving, so solutions shown here could not be completed or can have some errors.</u>**
 
 
 
-![what_usecase](doc/img/what_usecase.jpg)
+
+# The use case?
+
+The use case implemented in this repository is a recruitment process. The context is a company that publishes positions in its career portal and people interested on these open positions can apply to them and send theirs resumes:
+
+![what_usecase](doc/img/use_case.jpg)
+
+
+
+I've participated in many recruitment processes from the recruiter’s side, reading and evaluating a large number of resumes. I know how difficult it is to select the best candidates objectively and without bias. And, obviously, it takes a long time.
+
+**By this reason, the ("revolutionary") idea, applied to this process, consists of performing an scoring algorithm, using artificial intelligence, to get the matching percentage between the candidate and the position applied.**
+
+
+
+![use_case_ai](doc/img/use_case_ai.jpg)
+
+
+
+
+
+# Architecture (What? -> How? -> With What?)
+
+In the following sections we are going to desing and define the project architecture starting from the business architecture and ending with the physical architecture.
+
+
+
+
+
+## Business and Information Architecture (What?)
+
+In this section we are going to define the business (or functional) architecture of the project. 
+
+In the following diagram we can see two different contexts (candidates and recruitment) and the different use cases identified and how they are supported by services:
+
+
+
+![business-achitecture](doc/img/business-achitecture.png)
+
+
+
+We also have to define the **information architecture** supporting both contexts:
+
+
+
+![information-architecture](doc/img/information-architecture.png)
+
+
+
+As we can see in the diagram, there are entities like "Position" and "Application" that exist in both contexts. The idea is to keep both contexts separated in order to be able to evolve them independenly. We have to talk about "masters" and "replicated data" or "projections". Let's see that:
+
+- **Candidates context**:
+
+  - **Position**: represents job offers. it's a projection from the recruitment context. Within the candidate context, positions only are read, never created.
+
+  - **Application**: corresponds to the applications to job offers. Candidates is the owner of this information structure. Applications to positions are created in candidates context and propagated to recruitment context. An application contains a key, a candidate information (name, email, phone) and a CV file. 
+
+    
+
+- **Recruitment context**:
+
+  - **Position**:  represents job offers. Recruitment is the owner. 
+
+    Positions are created  in this context and they are propagated to candidates context. A position contains a key, a title, a description, a list of requirements, a list of responsibilities and a list of benefits. Each requirement contains:
+
+    - key: identify the requirement, for instance "Java", "Python", "Project Management", "Agile"
+    - value: set the level of expertise between 1-3 (1=Beginner, 2=Intermediate, 3=Advanced )
+    - description: used to give more detail about key and level
+    - mandatory: true or false wether the requirement is mandatory or it's opcional
+
+    
+
+    Responsabilities (for instance: "development solutions based on Microservices and Kafka") and Benefits (for instance, "remote work") only contains a description.
+
+    
+
+  - **Application**: it's a projection of "applications" from candidates side. In this case, an application is the set of candidate, position and scoring, meaning that a candidate has applied to a position and an scoring between candidate and position has been calculated 
+
+  - **Candidate**: in this case, I've prefered to extact an independent structure to manage candidates instead of keeping inside the application itself. Keeping separated allows me to analyse them independently of the position applied and being able to include more capabilities in the future like finding the best candidate stored in the system to cover a concrete position
+
+  - **Candidate analysis**: it's the analysis performed from the candidate resume. This structure could evolve in the future, adding more fields to the analysis
+
+  - **Scoring:** represents the percentage of matching between the candidate and the position applied (application). This structure could evolve in the future including more fields related to score.
+
+
 
 
 
@@ -56,69 +102,7 @@ The aim is to leverage artificial intelligence to be more efficient during the s
 
 The following picture illustrates the logical architecture of the MVP:
 
-![how_logical_architecture](doc/img/how_logical_architecture.jpg)
-
-
-
-Let's dive into the details. 
-
-We can see two different contexts in order to clearly separate concerns:
-
-- Candidates
-
-  This is the context related to candidates. This context is the owner of applications and a candidate can perform the following actions:
-
-  -  check open positions
-  - apply to a position and uploading their resume
-
-  
-
-  This context has the following components or pieces:
-
-  - Frontend
-
-    - Candidates App: this is the contact point for candidates. There are two views or options: view the list of open positions and select one and apply.
-
-    - Candidates BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all requests to backend (business) services
-
-  - Backend services:
-
-    - Applications: this service implements the logic associated with apply to a position and upload a resume. 
-    - Applications publisher: it's in charge of detecting new applications and publishing in order to notify to recruiter context
-    - Positions: this service implements the logic associated with get the open positions.
-    - Positions Updater: this service updates the open positions database when a new position is published or closed from the recruiter context.
-
-  
-
-  
-
-- Recruiters
-
-  This is the context related to recruiters and the owner of positions. In this context, recruiters can perform the following actions:
-
-  - manage positions: create, open, update, close or delete positions
-  - check candidates: view candidates registered in the system (because they are applied to a some position)
-
-  
-
-  This context has the following components or pieces:
-
-  - Frontend
-
-    - Recruitment App: this the contact point for recruiters. There are three views or options: manage positions, view candidates registered and check matches between candidates and positions.
-
-    - Recruitment BFF: this is the Backend For Frontend associated to the app. By this component, encapsulates all requests to backend (business) services
-
-  - Backend services:
-
-    - Positions: it implements the logic associated with positions (create, open, update, close or delete)
-    - Positions Publisher: when a position is opened or closed, it's responsible for notifying to candidates context in order to update its position list
-    - Applications: this service implements the logic associated with check candidates and resumes. 
-    - Applications updater: it's in charge of updating the database associated with candidatos and resumes
-    - Scoring: when a new application is received, it's responsible of evaluating it and assigning scores related to the open positions registered
-    - Matching: this service implements the logic associated with get the matches saved in the database, associated with candidates and positions.
-
-  
+![how_logical_architecture](doc/img/logical_architecture.png)
 
 
 
@@ -126,17 +110,7 @@ We can see two different contexts in order to clearly separate concerns:
 
 In this section I'll expose several alternatives to implement each logical component.
 
-
-
-## Alternative 1
-
-
-
-![physical_arch](doc/img/physical_arch.jpg)
-
-
-
-(WIP) I'll add more alternatives in the future 
+![physical_arch](doc/img/physical_arch.png)
 
 
 
