@@ -10,6 +10,28 @@ For this reason, the solutions shown in this repository may be more complex than
 
 
 
+## The "business case"
+
+I've selected a recruitment process for this side project. The context could be a company that publishes job positions in its portal where people interested in these positions can apply and submit their resumes:
+
+![what_usecase](doc/img/use_case.jpg)
+
+
+
+I've participated in many recruitment processes from the recruiter’s side, reading and evaluating a large number of resumes. I know how difficult it is to select the best candidates objectively and without bias. And, obviously, it takes a long time.
+
+**By this reason, the ("revolutionary") idea, applied to this process, consists of performing an scoring algorithm, using artificial intelligence, to get the matching percentage between the candidate and the position applied.**
+
+
+
+![use_case_ai](doc/img/use_case_ai.jpg)
+
+
+
+
+
+
+
 ## Project Structure
 
 The structure of the project is the following:
@@ -66,24 +88,6 @@ Once everything is up and running, the main URLs are:
 | Kafka UI                      | http://localhost:8001/             |
 | Jaeger                        | http://localhost:16686/search      |
 | Minio (minioadmin/minioadmin) | http://localhost:9001/login        |
-
-
-
-## The use case?
-
-The use case implemented in this repository is a recruitment process. The context is a company that publishes positions in its career portal and people interested on these open positions can apply to them and send theirs resumes:
-
-![what_usecase](doc/img/use_case.jpg)
-
-
-
-I've participated in many recruitment processes from the recruiter’s side, reading and evaluating a large number of resumes. I know how difficult it is to select the best candidates objectively and without bias. And, obviously, it takes a long time.
-
-**By this reason, the ("revolutionary") idea, applied to this process, consists of performing an scoring algorithm, using artificial intelligence, to get the matching percentage between the candidate and the position applied.**
-
-
-
-![use_case_ai](doc/img/use_case_ai.jpg)
 
 
 
