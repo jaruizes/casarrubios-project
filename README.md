@@ -10,6 +10,41 @@ For this reason, the solutions shown in this repository may be more complex than
 
 
 
+# How to execute it?
+
+### Requirements
+
+The only software you must have is:
+
+- Docker
+- Docker Compose
+
+You don't need to build any service or image. All the necessary images are published as [Github (Public) Packages](https://github.com/jaruizes?tab=packages).
+
+
+
+### Execution
+
+In a terminal, execute:
+
+```
+cd platform/local
+docker-compose up -d 
+```
+
+Be patient, it takes some minutes until all the data and services are available and running.
+
+Once everything is up and running, the main URLs are:
+
+| Application                   | URL                                |
+| ----------------------------- | ---------------------------------- |
+| Recruitment App               | http://localhost:9070/private/home |
+| Candidates App                | http://localhost:8081/home         |
+| Kafka UI                      | http://localhost:8001/             |
+| Jaeger                        | http://localhost:16686/search      |
+| Minio (minioadmin/minioadmin) | http://localhost:9001/login        |
+
+
 
 # The use case?
 
