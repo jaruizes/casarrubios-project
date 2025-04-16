@@ -218,9 +218,9 @@ services:
       cdc-service:
         condition: service_healthy
     volumes:
-      - ../../project/applications/cdc/connectors/applications-cdc-postgresql-connector.json:/connectors/applications-cdc-postgresql-connector.json
-      - ../../project/recruiters/cdc/connectors/recruiters-positions-cdc-connector.json:/connectors/recruiters-positions-cdc-connector.json
-      - ../../project/recruiters/cdc/connectors/recruiters-new-applications-outbox-connector.json:/connectors/recruiters-new-applications-outbox-connector.json
+      - ../../project/candidates/cdc/connectors/applications-cdc-postgresql-connector.json:/connectors/applications-cdc-postgresql-connector.json
+      - ../../project/recruitment/cdc/connectors/recruiters-positions-cdc-connector.json:/connectors/recruiters-positions-cdc-connector.json
+      - ../../project/recruitment/cdc/connectors/recruiters-new-applications-outbox-connector.json:/connectors/recruiters-new-applications-outbox-connector.json
       - ./cdc/register-connectors.sh:/register-connectors.sh
     entrypoint: [ "sh", "/register-connectors.sh" ]
 
