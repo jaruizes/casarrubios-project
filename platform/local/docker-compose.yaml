@@ -41,36 +41,6 @@ services:
       timeout: 10s
       retries: 5
 
-#  broker:
-#    image: confluentinc/cp-kafka:7.9.0
-#    hostname: broker
-#    container_name: broker
-#    ports:
-#      - "9092:9092"
-#      - "9101:9101"
-#    environment:
-#      KAFKA_NODE_ID: 1
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
-#      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092'
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-#      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
-#      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-#      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-#      KAFKA_JMX_PORT: 9101
-#      KAFKA_JMX_HOSTNAME: localhost
-#      KAFKA_PROCESS_ROLES: 'broker,controller'
-#      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:29093'
-#      KAFKA_LISTENERS: 'PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092'
-#      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
-#      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-#      KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
-#      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
-#    healthcheck:
-#      test: [ "CMD", "curl", "http://localhost:8090/kafka/v3/clusters" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
-
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     hostname: zookeeper
@@ -133,45 +103,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
-#  cdc-service:
-#    image: quay.io/debezium/connect:3.0
-#    hostname: connect
-#    container_name: infrastructure.cdc-service
-#    depends_on:
-#      broker:
-#        condition: service_healthy
-#    ports:
-#      - "8083:8083"
-#    volumes:
-#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
-#    environment:
-#      BOOTSTRAP_SERVERS: 'broker:29092'
-#      ADVERTISED_HOST_NAME: connect
-#      GROUP_ID: debezium-connect-group
-#      CONFIG_STORAGE_TOPIC: dbz-connect-configs
-#      CONFIG_STORAGE_REPLICATION_FACTOR: 1
-#      OFFSET_FLUSH_INTERVAL_MS: 10000
-#      OFFSET_STORAGE_TOPIC: dbz-connect-offsets
-#      OFFSET_STORAGE_REPLICATION_FACTOR: 1
-#      STATUS_STORAGE_TOPIC: docker-connect-status
-#      STATUS_STORAGE_REPLICATION_FACTOR: 1
-#      KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
-#      VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-#      ENABLE_DEBEZIUM_SCRIPTING: 'true'
-#      ENABLE_OTEL: 'true'
-#      JAVA_TOOL_OPTIONS: '-javaagent:/otel/opentelemetry-javaagent.jar'
-#      OTEL_SERVICE_NAME: 'cdc-service'
-#      OTEL_TRACES_EXPORTER: 'otlp'
-#      OTEL_METRICS_EXPORTER: 'none'
-#      OTEL_LOGS_EXPORTER: 'none'
-#      OTEL_EXPORTER_OTLP_ENDPOINT: 'http://otel-collector:4318'
-#      OTEL_TRACES_SAMPLER: 'always_on'
-#    healthcheck:
-#      test: [ "CMD", "curl", "http://localhost:8083" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 10
 
   cdc-service:
     image: ghcr.io/jaruizes/infrastructure/cdc-service:1.0.0
@@ -429,8 +360,6 @@ services:
         condition: service_started
       broker:
         condition: service_healthy
-#    volumes:
-#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgresql:5432/applications
       - QUARKUS_DATASOURCE_USERNAME=postgres
@@ -444,12 +373,6 @@ services:
       - QUARKUS_OTEL_SERVICE_NAME=recruitment-applications-updater-service
       - QUARKUS_APPLICATION_NAME=recruitment-applications-updater-service
       - QUARKUS_DATASOURCE_JDBC_TELEMETRY=true
-#      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
-#      - OTEL_SERVICE_NAME=recruitment-applications-updater-service
-#      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-#      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-#      - OTEL_METRICS_EXPORTER=none
-#      - OTEL_LOGS_EXPORTER=none
 
   recruitment-applications-service:
     image: "ghcr.io/jaruizes/recruitment/applications-service:1.0.0"
@@ -498,8 +421,6 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
-#    volumes:
-#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - SERVER_PORT=9082
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/applications
@@ -511,7 +432,6 @@ services:
       - MINIO_ACCESS_SECRET=minioadmin
       - SPRING_KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - SPRING_AI_OPENAI_API_KEY=${OPENAI_API_KEY}
-#      - JAVA_TOOL_OPTIONS=-javaagent:/otel/opentelemetry-javaagent.jar -XX:+IgnoreUnrecognizedVMOptions --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED
       - OTEL_SERVICE_NAME=recruitment-applications-analyzer-service
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
@@ -586,19 +506,11 @@ services:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
-#    volumes:
-#      - ./otel/java-agent/opentelemetry-javaagent.jar:/otel/opentelemetry-javaagent.jar
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - MP_MESSAGING_OUTGOING_NOTIFICATIONS-PUBLISHER_TOPIC=recruitment.notifications
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_TOPIC=recruitment.applications-scored
       - MP_MESSAGING_INCOMING_APPLICATION-SCORED_GROUP_ID=notifications-manager-service
-#      - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
-#      - OTEL_SERVICE_NAME=recruitment-notifications-manager-service
-#      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-#      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-#      - OTEL_METRICS_EXPORTER=none
-#      - OTEL_LOGS_EXPORTER=none
       - QUARKUS_LOG_CONSOLE_FORMAT=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
       - QUARKUS_OTEL_ENABLED=true
       - QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4317
