@@ -325,7 +325,7 @@ The MVP is deployed using Docker Compose. Next releases will cover IaC and AWS /
 
 
 
-## Additional topics covered
+## Some additional topics covered
 
 This section is dedicated to explain different concepts, patterns, technology,...,etc associated with the implementation of the project:
 
