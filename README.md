@@ -204,6 +204,39 @@ The following picture illustrates the logical architecture of the MVP:
 
 
 
+Let's see more detail about each component and its context:
+
+##### 🧑‍💼 Candidates Context
+
+| Component                    | Description                                                  |
+| ---------------------------- | ------------------------------------------------------------ |
+| Candidates App               | Frontend application for candidates. It allows candidates to browse available positions and apply to them. |
+| Candidates BFF               | Backend for Frontend (BFF) for the Candidates App. It manages interactions between the frontend and backend services. |
+| Applications Manager Service | Manages applications submitted by candidates. Provides endpoints to submit applications.<br />Resumés are stored in a File Storage Service |
+| Positions Service            | Provides APIs to retrieve positions and their details.       |
+| Applications Database        | Stores data related to submitted applications.               |
+| Positions Database           | Stores positions data, including requirements, tasks, and benefits.<br />This data is replicated from the Recruitment context. |
+| Applications Replicator      | Captures changes in the Applications Database and publishes them to a message broker |
+
+
+
+##### 🧑‍💻 Recruitment Context
+
+| Component                  | Description                                                  |
+| -------------------------- | ------------------------------------------------------------ |
+| Recruitment App            | Frontend application for recruiters. It allows them to manage positions, view them as candidates would, and review applications with associated scoring and analysis. |
+| Recruitment BFF            | Backend for Frontend (BFF) for the Recruitment App. It orchestrates calls between the frontend and backend services. |
+| Positions Manager Service  | Provides APIs to create, update, and retrieve positions and their details. |
+| Positions Database         | Stores data related to positions, requirements, tasks and benefits |
+| Positions Replicator       | Captures changes in the Positions Database (positions, requirements, tasks, benefits) and publishes them to a message broker |
+| Applications Service       | Provides APIs to retrieve applications and their associated score and analysis. |
+| Applications Database      | Stores data related to applications, candidates, analysis and scoring |
+| Insights Service           | Consumes topics like positions and scoring, maintains an internal storage with insights and exposes it via REST API. |
+| Notifications Service      | Consumes scoring topics and, when a score exceeds a threshold, publishes a notification to a message broker. These events are consumed by the BFF and pushed to the frontend |
+| New Applications Processor | Consumes change data from applications CDC topics, processes them, and updates application tables. Implements the Outbox Pattern to publish “New Application Received” events and triggers the scoring and analysis pipeline. |
+| Positions Analyzer Service | Processes “New Application Received” events, retrieves candidate data and resumés, extracts text from resumés, and prompts an LLM to extract insights. Once completed, it publishes a “Resumé Analyzed” event. |
+| Scoring Service            | Processes “Resumé Analyzed” events and evaluates candidates against positions using embeddings (cosine similarity). It also prompts an LLM to generate a natural language explanation of the score. |
+
 <br>
 
 ### Physical Architectures (With What?)
@@ -212,13 +245,85 @@ In this section I'll expose several alternatives to implement each logical compo
 
 ![physical_arch](doc/img/physical_arch.png)
 
+<br>
 
+In the picture above we can see some business components and some infrastructure components supporting them. Let's start with business components:
+
+##### 🧑‍💼 Candidates Context
+
+| Logical Component            | Physical Component           | Technology    |
+| ---------------------------- | ---------------------------- | ------------- |
+| Candidates App               | Candidates App               | Angular       |
+| Candidates BFF               | Candidates BFF               | NestJS (Node) |
+| Applications Manager Service | Applications Manager Service | Spring Boot   |
+| Positions Service            | Positions Service            | Spring Boot   |
+| Applications Database        | Applications Database        | PostgreSQL    |
+| Positions Database           | Positions Database           | PostgreSQL    |
+| Applications Replicator      | Applications Publisher       | Debezium      |
+
+
+
+🧑‍💻 **Recruitment Context**
+
+| Context                    | Component                  | Technology              |
+| -------------------------- | -------------------------- | ----------------------- |
+| Recruitment App            | Recruitment App            | Angular                 |
+| Recruitment BFF            | Recruitment BFF            | NestJS (Node)           |
+| Positions Manager Service  | Positions Manager Service  | Quarkus                 |
+| Positions Database         | Positions Database         | PostgreSQL              |
+| Positions Replicator       | Positions CDC Service      | Debezium                |
+| Positions Replicator       | Positions Publisher        | Quarkus (Kafka Streams) |
+| Applications Service       | Applications Service       | Python                  |
+| Applications Database      | Applications Database      | PostgreSQL              |
+| Insights Service           | Insights Service           | Quarkus (Kafka Streams) |
+| Notifications Service      | Notifications Service      | Quarkus                 |
+| New Applications Processor | Applications Updater       | Quarkus (Outbox)        |
+| New Applications Processor | Outbox CDC Service         | Debezium                |
+| New Applications Processor | Outbox table               | PostgreSQL              |
+| Positions Analyzer Service | Positions Analyzer Service | Spring Boot             |
+| Scoring Service            | Scoring Service            | Python                  |
+
+
+
+Now, let's check **infrastructure components**:
+
+| Component               | Technology     | Description                                                  |
+| ----------------------- | -------------- | ------------------------------------------------------------ |
+| Streaming Tool          | Kafka          | It allows publishing and consuming messages between components and provides streaming capabilities |
+| Change Data Capture     | Debezium       | It detects changes in databases and publishes them to Kafka  |
+| Relational Database     | PostgreSQL     | It stores relational information                             |
+| File Storage            | Minio          | It used to store resumé files                                |
+| LLM                     | Open AI        | It uses to analyse resumés and get score explanations        |
+| Embeddings Generator    | Open AI        | It generates embeddings from texts                           |
+| Embeddings Database     | Qdrant         | It stores embeddings calculated                              |
+| Observability collector | OTEL Collector | It receives, processes and exports telemetry data            |
+| Tracing tool            | Jaeger         | It shows traces within executions                            |
 
 <br>
 
 <br>
 
-## Some topics implemented
+## CI/CD
+
+The current CI/CD pipelines is based on **Github Actions** to build, create image and publish images in **Github Packages**:
+
+
+
+![cicd](doc/img/cicd.png)
+
+
+
+
+
+The MVP is deployed using Docker Compose. Next releases will cover IaC and AWS / Azure.
+
+<br>
+
+<br>
+
+
+
+## Additional topics covered
 
 This section is dedicated to explain different concepts, patterns, technology,...,etc associated with the implementation of the project:
 
