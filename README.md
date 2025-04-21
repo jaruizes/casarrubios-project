@@ -337,8 +337,6 @@ This section is dedicated to explain different concepts, patterns, technology,..
 - [Changes in "Modern Angular" (WIP)](doc/topics/angular-changes.md)
 - [Typespec (TODO)](doc/topics/typespec.md)
 - [Testing in Quarkus (TODO)](doc/topics/testing-quarkus.md)
-- K3D/K3S (TODO)
 - [CDC using Debezium (TODO)](https://github.com/jaruizes/debezium)
-- Spring AI (TODO)
-- Quarkus and Langchain (TODO)
+
 
