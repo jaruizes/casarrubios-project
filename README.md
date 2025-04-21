@@ -30,19 +30,25 @@ I've participated in many recruitment processes from the recruiter’s side, rea
 
 
 
-
-
 ## Project Structure
 
 The structure of the project is the following:
 
 - :open_book: ​**doc/** → Documentation
 - :rocket: **platform/**
-  - **local/** → Folders and files associated with docker-compose runtime environment
-  - **k8s/** → Folders and files associated with Kubernetes runtime environment (in progress)
+  - **local/** → folders and files associated with docker-compose runtime environment
+  - **k8s/** → folders and files associated with Kubernetes runtime environment (in progress)
 - :gear: ​**project/**
   - :student: **candidates/** → all the components (frontend, backend, cdc) associated to candidates context
+    - frontend →  includes the application and its backend for frontend
+    - backend → business services
+    - cdc → connectors for change data capture
   - :office_worker: **recruitment/**  → all the components (frontend, backend, cdc) associated to recruitment context
+    - frontend →  includes the application and its backend for frontend
+    - backend → business services
+    - cdc → connectors for change data capture
+
+
 
 
 
@@ -91,13 +97,31 @@ Once everything is up and running, the main URLs are:
 
 
 
+## The "applications"
+
+There are **two fully functional applications**:
 
 
-## Architecture (What? -> How? -> With What?)
+
+- **Candidates**: http://localhost:8081/
+
+  ![candidates_app_map](doc/img/candidates_app_map.png)
+
+  
+
+- **Recruitment**: http://localhost:9070/
+
+  ![recruitment_app_map](doc/img/recruitment_app_map.png)
+
+
+
+A detailed section about functionality is [here](doc/core/functional/funtional.md)
+
+
+
+## Architecture
 
 In the following sections we are going to desing and define the project architecture starting from the business architecture and ending with the physical architecture.
-
-
 
 
 
