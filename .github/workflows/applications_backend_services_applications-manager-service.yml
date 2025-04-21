@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'project/applications/backend/services/applications-manager-service/**'
+      - 'project/candidates/backend/services/applications-manager-service/**'
   pull_request:
     paths:
-      - 'project/applications/backend/services/applications-manager-service/**'
+      - 'project/candidates/backend/services/applications-manager-service/**'
 
 permissions:
   contents: read
