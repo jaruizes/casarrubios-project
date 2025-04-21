@@ -218,7 +218,7 @@ Let's see more detail about each component and its context:
 | Positions Database           | Stores positions data, including requirements, tasks, and benefits.<br />This data is replicated from the Recruitment context. |
 | Applications Replicator      | Captures changes in the Applications Database and publishes them to a message broker |
 
-
+<br>
 
 ##### 🧑‍💻 Recruitment Context
 
@@ -236,6 +236,8 @@ Let's see more detail about each component and its context:
 | New Applications Processor | Consumes change data from applications CDC topics, processes them, and updates application tables. Implements the Outbox Pattern to publish “New Application Received” events and triggers the scoring and analysis pipeline. |
 | Positions Analyzer Service | Processes “New Application Received” events, retrieves candidate data and resumés, extracts text from resumés, and prompts an LLM to extract insights. Once completed, it publishes a “Resumé Analyzed” event. |
 | Scoring Service            | Processes “Resumé Analyzed” events and evaluates candidates against positions using embeddings (cosine similarity). It also prompts an LLM to generate a natural language explanation of the score. |
+
+<br>
 
 <br>
 
@@ -261,7 +263,7 @@ In the picture above we can see some business components and some infrastructure
 | Positions Database           | Positions Database           | PostgreSQL    |
 | Applications Replicator      | Applications Publisher       | Debezium      |
 
-
+<br>
 
 🧑‍💻 **Recruitment Context**
 
@@ -283,7 +285,7 @@ In the picture above we can see some business components and some infrastructure
 | Positions Analyzer Service | Positions Analyzer Service | Spring Boot             |
 | Scoring Service            | Scoring Service            | Python                  |
 
-
+<br>
 
 Now, let's check **infrastructure components**:
 
