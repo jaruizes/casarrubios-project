@@ -267,7 +267,7 @@ In the picture above we can see some business components and some infrastructure
 
 🧑‍💻 **Recruitment Context**
 
-| Context                    | Component                  | Technology              |
+| Logical Component          | Physical Component         | Technology              |
 | -------------------------- | -------------------------- | ----------------------- |
 | Recruitment App            | Recruitment App            | Angular                 |
 | Recruitment BFF            | Recruitment BFF            | NestJS (Node)           |
@@ -338,5 +338,4 @@ This section is dedicated to explain different concepts, patterns, technology,..
 - [Typespec (TODO)](doc/topics/typespec.md)
 - [Testing in Quarkus (TODO)](doc/topics/testing-quarkus.md)
 - [CDC using Debezium (TODO)](https://github.com/jaruizes/debezium)
-
 
