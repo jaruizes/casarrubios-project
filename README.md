@@ -10,6 +10,8 @@ For this reason, the solutions shown in this repository may be more complex than
 
 
 
+<br>
+
 ## The "business case"
 
 I've selected a recruitment process for this side project. The context could be a company that publishes job positions in its portal where people interested in these positions can apply and submit their resumes:
@@ -28,7 +30,9 @@ I've participated in many recruitment processes from the recruiter’s side, rea
 
 
 
+<br>
 
+<br>
 
 ## Project Structure
 
@@ -50,7 +54,9 @@ The structure of the project is the following:
 
 
 
+<br>
 
+<br>
 
 ## How to execute it?
 
@@ -97,6 +103,10 @@ Once everything is up and running, the main URLs are:
 
 
 
+<br>
+
+<br>
+
 ## The "applications"
 
 There are **two fully functional applications**:
@@ -119,6 +129,10 @@ A detailed section about functionality is [here](doc/core/functional/funtional.m
 
 
 
+<br>
+
+<br>
+
 ## Architecture
 
 In the following sections we are going to desing and define the project architecture starting from the business architecture and ending with the physical architecture.
@@ -135,15 +149,13 @@ In the following diagram we can see two different contexts (candidates and recru
 
 ![business-achitecture](doc/img/business-achitecture.png)
 
-
+<br>
 
 We also have to define the **information architecture** supporting both contexts:
 
 
 
 ![information-architecture](doc/img/information-architecture.png)
-
-
 
 As we can see in the diagram, there are entities like "Position" and "Application" that exist in both contexts. The idea is to keep both contexts separated in order to be able to evolve them independenly. We have to talk about "masters" and "replicated data" or "projections". Let's see that:
 
@@ -182,7 +194,7 @@ As we can see in the diagram, there are entities like "Position" and "Applicatio
 
 
 
-
+<br>
 
 ### Logical Architecture (How?) 
 
@@ -192,6 +204,8 @@ The following picture illustrates the logical architecture of the MVP:
 
 
 
+<br>
+
 ### Physical Architectures (With What?)
 
 In this section I'll expose several alternatives to implement each logical component.
@@ -200,7 +214,9 @@ In this section I'll expose several alternatives to implement each logical compo
 
 
 
+<br>
 
+<br>
 
 ## Some topics implemented
 
