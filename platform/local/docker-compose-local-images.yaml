@@ -264,7 +264,7 @@ services:
       - NOTIFICATIONS=http://localhost:4000
       - APPLICATIONS=http://localhost:4000/applications
       - POSITIONS=http://localhost:4000/positions
-      - GLOBAL_POSITION=http://localhost:4000/global-position
+      - GLOBAL_POSITION=http://localhost:4000/insights
 
   recruitment-recruitment-bff:
     image: "recruitment/recruitment-bff:1.0.0"
@@ -276,7 +276,7 @@ services:
         condition: service_healthy
     environment:
       - POSITIONS_SERVICE_URL=http://recruitment-positions-service:9080
-      - GLOBAL_POSITION_SERVICE_URL=http://recruitment-global-position-service:9090
+      - GLOBAL_POSITION_SERVICE_URL=http://recruitment-insights-service:9090
       - APPLICATIONS_SERVICE_URL=http://recruitment-applications-service:9081
       - PORT=4000
       - KAFKA_BROKERS=broker:29092
@@ -409,9 +409,9 @@ services:
       - KAFKA_OUTPUT_TOPIC=recruitment.applications-scored
       - OPENAI_API_KEY=${OPENAI_API_KEY}
 
-  recruitment-global-position-service:
-    image: "recruitment/global-position-service:1.0.0"
-    container_name: recruitment.global-position-service
+  recruitment-insights-service:
+    image: "recruitment/insights-service:1.0.0"
+    container_name: recruitment.insights-service
     ports:
       - "9090:9090"
     depends_on:
@@ -422,7 +422,7 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - QUARKUS.KAFKA-STREAMS.TOPICS=recruitment.new-positions-published,recruitment.applications-received,recruitment.applications-scored
-      - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-global-position-service
+      - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-insights-service
       - NEW-POSITIONS_TOPIC=recruitment.new-positions-published
       - NEW-APPLICATIONS_TOPIC=recruitment.applications-received
       - SCORING_TOPIC=recruitment.applications-scored

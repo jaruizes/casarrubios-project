@@ -279,7 +279,7 @@ services:
       - NOTIFICATIONS=http://localhost:4000
       - APPLICATIONS=http://localhost:4000/applications
       - POSITIONS=http://localhost:4000/positions
-      - GLOBAL_POSITION=http://localhost:4000/global-position
+      - GLOBAL_POSITION=http://localhost:4000/insights
 
   recruitment-recruitment-bff:
     image: "ghcr.io/jaruizes/recruitment/recruitment-bff:1.0.0"
@@ -294,11 +294,11 @@ services:
         condition: service_started
       recruitment-applications-service:
         condition: service_started
-      recruitment-global-position-service:
+      recruitment-insights-service:
         condition: service_started
     environment:
       - POSITIONS_SERVICE_URL=http://recruitment-positions-service:9080
-      - GLOBAL_POSITION_SERVICE_URL=http://recruitment-global-position-service:9090
+      - GLOBAL_POSITION_SERVICE_URL=http://recruitment-insights-service:9090
       - APPLICATIONS_SERVICE_URL=http://recruitment-applications-service:9081
       - PORT=4000
       - KAFKA_BROKERS=broker:29092
@@ -468,10 +468,10 @@ services:
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
       - TRACING_ENABLED=true
 
-  recruitment-global-position-service:
-    image: "ghcr.io/jaruizes/recruitment/global-position-service:1.0.0"
+  recruitment-insights-service:
+    image: "ghcr.io/jaruizes/recruitment/insights-service:1.0.0"
     pull_policy: always
-    container_name: recruitment.global-position-service
+    container_name: recruitment.insights-service
     ports:
       - "9090:9090"
     depends_on:
@@ -484,13 +484,13 @@ services:
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=broker:29092
       - QUARKUS.KAFKA-STREAMS.TOPICS=recruitment.new-positions-published,recruitment.applications-received,recruitment.applications-scored
-      - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-global-position-service
+      - QUARKUS_KAFKA-STREAMS_APPLICATION-ID=recruitment-insights-service
       - NEW-POSITIONS_TOPIC=recruitment.new-positions-published
       - NEW-APPLICATIONS_TOPIC=recruitment.applications-received
       - SCORING_TOPIC=recruitment.applications-scored
       - QUARKUS_HTTP_PORT=9090
       - JAVA_TOOL_OPTIONS="-javaagent:/otel/opentelemetry-javaagent.jar"
-      - OTEL_SERVICE_NAME=recruitment-global-position-service
+      - OTEL_SERVICE_NAME=recruitment-insights-service
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
       - OTEL_METRICS_EXPORTER=none
