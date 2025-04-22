@@ -1,4 +1,4 @@
-name: (Recruitment) Global Position Service
+name: (Recruitment) Insights Service
 
 on:
   workflow_dispatch:
