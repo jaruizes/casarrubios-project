@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'project/recruiters/backend/services/resume-analyzer-service/**'
+      - 'project/recruitment/backend/services/resume-analyzer-service/**'
   pull_request:
     paths:
-      - 'project/recruiters/backend/services/resume-analyzer-service/**'
+      - 'project/recruitment/backend/services/resume-analyzer-service/**'
 
 permissions:
   contents: read
@@ -21,5 +21,5 @@ jobs:
     with:
       domain: recruitment
       service-name: applications-analyzer-service
-      service-path: project/recruiters/backend/services/resume-analyzer-service
+      service-path: project/recruitment/backend/services/resume-analyzer-service
     secrets: inherit

@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'project/recruiters/backend/services/positions-manager-service/**'
+      - 'project/recruitment/backend/services/positions-manager-service/**'
   pull_request:
     paths:
-      - 'project/recruiters/backend/services/positions-manager-service/**'
+      - 'project/recruitment/backend/services/positions-manager-service/**'
 
 permissions:
   contents: read
@@ -21,5 +21,5 @@ jobs:
     with:
       domain: recruitment
       service-name: positions-manager-service
-      service-path: project/recruiters/backend/services/positions-manager-service
+      service-path: project/recruitment/backend/services/positions-manager-service
     secrets: inherit
