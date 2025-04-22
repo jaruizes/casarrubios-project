@@ -317,7 +317,7 @@ The current CI/CD pipelines is based on **Github Actions** to build, create imag
 
 
 
-The MVP is deployed using Docker Compose. Next releases will cover IaC and AWS / Azure.
+*The MVP is deployed using Docker Compose. Next releases will cover IaC and AWS / Azure.*
 
 <br>
 

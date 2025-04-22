@@ -3,7 +3,7 @@ import { PositionsModule } from './positions/positions.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { ConfigModule } from '@nestjs/config';
 import { SharedModule } from './shared/shared.module';
-import { GlobalPositionModule } from './global-position/global-position.module';
+import { InsightsModule } from './insights/insights.module';
 import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
@@ -11,7 +11,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     ConfigModule.forRoot({ isGlobal: true }),
     PositionsModule,
     ApplicationsModule,
-    GlobalPositionModule,
+    InsightsModule,
     NotificationsModule,
     SharedModule
   ],

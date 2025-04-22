@@ -6,8 +6,8 @@ import {Router} from "@angular/router";
 import {PositionsService} from "../../services/positions/positions.service";
 import {Position} from "../../model/position";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
-import {GlobalPositionsService} from "../../services/global-position/global-position.service";
-import {GlobalPosition} from "../../model/global-position";
+import {InsightsService} from "../../services/insights/insights.service";
+import {Insights} from "../../model/insights";
 
 
 @Component({
@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
   page: number = 1;
   positions: Position[] = [];
   positionToDelete?: Position;
-  globalPosition?: GlobalPosition;
+  insights?: Insights;
 
 
   @ViewChild('deletePositionModal')
@@ -34,11 +34,11 @@ export class HomeComponent implements OnInit {
   private deletePositionModalRef!: NgbModalRef;
 
   constructor(private router: Router, private positionService: PositionsService,
-              private globalPositionService: GlobalPositionsService,
+              private insightsService: InsightsService,
               private modalService: NgbModal) {
     this.router = router;
     this.positionService = positionService;
-    this.globalPositionService = globalPositionService;
+    this.insightsService = insightsService;
     this.modalService = modalService;
   }
 
@@ -91,8 +91,8 @@ export class HomeComponent implements OnInit {
       this.pageSize = paginatedPosition.size;
     });
 
-    this.globalPositionService.getGlobalPosition().subscribe((globalPosition) => {
-      this.globalPosition = globalPosition;
+    this.insightsService.getInsights().subscribe((insights) => {
+      this.insights = insights;
     });
   }
 }

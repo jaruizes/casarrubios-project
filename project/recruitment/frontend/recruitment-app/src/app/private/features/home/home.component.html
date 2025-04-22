@@ -1,5 +1,5 @@
 <div class="card  bg-transparent">
-  @if (globalPosition) {
+  @if (insights) {
     <div class="card border border-secondary">
       <div class="card-header bg-blue-subtle">
         <div class="row align-items-center">
@@ -14,15 +14,15 @@
             <div class="d-flex ">
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-1 text-center">
                 <p class="text-muted mb-0 fw-medium">Posiciones totales</p>
-                <h5 class="fw-semibold fs-22 mt-1">{{ globalPosition.totalPositions }}</h5>
+                <h5 class="fw-semibold fs-22 mt-1">{{ insights.totalPositions }}</h5>
               </div>
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
                 <p class="text-muted mb-0 fw-medium">Candidaturas / Posición</p>
-                <h5 class="fw-semibold fs-22 mt-1">{{ globalPosition.averageApplications }}</h5>
+                <h5 class="fw-semibold fs-22 mt-1">{{ insights.averageApplications }}</h5>
               </div>
               <div class="border rounded border-info p-2 me-2 flex-grow-1 flex-basis-0 text-center">
                 <p class="text-muted mb-0 fw-medium">Scoring medio</p>
-                <h5 class="fw-semibold fs-22 mt-1">{{ globalPosition.averageApplications }}</h5>
+                <h5 class="fw-semibold fs-22 mt-1">{{ insights.averageApplications }}</h5>
               </div>
             </div>
           </div>

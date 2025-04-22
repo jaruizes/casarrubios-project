@@ -1,7 +1,7 @@
 export const environment = {
   api: {
     positions: 'http://localhost:4000/positions',
-    global_position: 'http://localhost:4000/global-position',
+    insights: 'http://localhost:4000/insights',
     applications: 'http://localhost:4000/applications',
     notifications: 'http://localhost:4000'
   }
