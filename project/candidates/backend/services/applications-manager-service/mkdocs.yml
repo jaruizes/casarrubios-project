@@ -1,0 +1,8 @@
+site_name: Applications Manager Service
+
+nav:
+  - Home: README.md
+
+docs_dir: .
+plugins:
+  - techdocs-core
