@@ -1,38 +1,38 @@
 # Casarrubios' Project 
 
-This repository will serve as a personal portfolio, showcasing various topics and concepts about architecture, software development and artificial intelligence through a use case. 
+This repository serves as a personal portfolio, showcasing various topics and concepts about architecture, software development, and artificial intelligence through a practical use case. 
 
-For this reason, the solutions shown in this repository may be more complex than it should be but, as I mentioned, the goal of this repository is to use it as a didactical and playground tool.
+For this reason, the solutions shown in this repository may be more complex than they should be in a production environment, but as mentioned, the goal of this repository is to use it as a didactical and playground tool.
 
+:warning: **This repository is constantly evolving, so solutions shown here may not be complete or might contain some errors.**
 
-
-:warning: ​ **And, also for this reason, this repository is constantly evolving, so solutions shown here could not be completed or can have some errors.**
-
-
-
-<br>
-
-## The "business case"
-
-I've selected a recruitment process for this side project. The context could be a company that publishes job positions in its portal where people interested in these positions can apply and submit their resumes:
-
-![what_usecase](doc/img/use_case.jpg)
-
-
-
-I've participated in many recruitment processes from the recruiter’s side, reading and evaluating a large number of resumes. I know how difficult it is to select the best candidates objectively and without bias. And, obviously, it takes a long time.
-
-**By this reason, the ("revolutionary") idea, applied to this process, consists of performing an scoring algorithm, using artificial intelligence, to get the matching percentage between the candidate and the position applied.**
-
-
-
-![use_case_ai](doc/img/use_case_ai.jpg)
+## Table of Contents
+- [The Business Case](#the-business-case)
+- [Project Structure](#project-structure)
+- [How to Execute It](#how-to-execute-it)
+- [The Applications](#the-applications)
+- [Architecture](#architecture)
+- [CI/CD](#cicd)
+- [Additional Topics Covered](#additional-topics-covered)
+- [Contributing](#contributing)
 
 
 
 <br>
 
-<br>
+## The Business Case
+
+For this project, I've selected a recruitment process as the business case. The scenario involves a company that publishes job positions on its portal where interested candidates can apply and submit their resumes:
+
+![Recruitment Process Use Case](doc/img/use_case.jpg)
+
+Having participated in many recruitment processes from the recruiter's perspective, I understand the challenges of objectively evaluating a large number of resumes without bias. This process is typically time-consuming and labor-intensive.
+
+**The innovative solution implemented in this project uses an AI-powered scoring algorithm to calculate the matching percentage between candidates and the positions they apply for.**
+
+![AI-Enhanced Recruitment Process](doc/img/use_case_ai.jpg)
+
+This approach helps streamline the recruitment process by automatically identifying the most suitable candidates based on their qualifications and the job requirements.
 
 ## Project Structure
 
@@ -58,139 +58,154 @@ The structure of the project is the following:
 
 <br>
 
-## How to execute it?
+## How to Execute It
 
-#### Requirements
+### Prerequisites
 
-The only requirements are:
+Before you begin, ensure you have the following installed:
 
-- Docker
-- Docker Compose
-- An OpenAI API Key
+- Docker (latest stable version)
+- Docker Compose (latest stable version)
+- An OpenAI API Key (required for the AI-powered scoring functionality)
 
-(*) You don't need to build any service or image. All the necessary images are published as [Github (Public) Packages](https://github.com/jaruizes?tab=packages).
+> **Note:** You don't need to build any services or images manually. All necessary images are pre-built and published as [GitHub Public Packages](https://github.com/jaruizes?tab=packages).
 
+### Setup and Execution
 
+1. **Set up your OpenAI API Key**
 
-#### Execution
+   Open a terminal and set the environment variable:
 
-You need set an environment variable for the OpenAI API Key. Open a Terminal and execute:
+   ```shell
+   export OPENAI_API_KEY=<your OpenAI API key>
+   ```
 
-```shell
-export OPENAI_API_KEY=<your openai key>
-```
+2. **Start the application**
 
+   In the same terminal, navigate to the local platform directory and start the services:
 
+   ```shell
+   cd platform/local
+   docker-compose up -d 
+   ```
 
-In the same terminal, execute:
+   > **Note:** The initial startup may take several minutes as all services and data are being initialized. Please be patient.
 
-```shell
-cd platform/local
-docker-compose up -d 
-```
+3. **Access the applications**
 
-Be patient, it takes some minutes until all the data and services are available and running.
+   Once all services are up and running, you can access the following applications:
 
-Once everything is up and running, the main URLs are:
-
-| Application                   | URL                                |
-| ----------------------------- | ---------------------------------- |
-| Recruitment App               | http://localhost:9070/private/home |
-| Candidates App                | http://localhost:8081/home         |
-| Kafka UI                      | http://localhost:8001/             |
-| Jaeger                        | http://localhost:16686/search      |
-| Minio (minioadmin/minioadmin) | http://localhost:9001/login        |
-
-
-
-<br>
-
-<br>
-
-## The "applications"
-
-There are **two fully functional applications**:
+   | Application                   | URL                                | Description |
+   | ----------------------------- | ---------------------------------- | ----------- |
+   | Recruitment App               | http://localhost:9070/private/home | Application for recruiters to manage positions and review applications |
+   | Candidates App                | http://localhost:8081/home         | Application for candidates to browse positions and submit applications |
+   | Kafka UI                      | http://localhost:8001/             | Interface to monitor Kafka topics and messages |
+   | Jaeger                        | http://localhost:16686/search      | Distributed tracing system to monitor and troubleshoot transactions |
+   | Minio                         | http://localhost:9001/login        | Object storage service (credentials: minioadmin/minioadmin) |
 
 
 
-- **Candidates**: http://localhost:8081/
+<br />
 
-  ![candidates_app_map](doc/img/candidates_app_map.png)
+### Troubleshooting
 
-  
+If you encounter any issues:
 
-- **Recruitment**: http://localhost:9070/
-
-  ![recruitment_app_map](doc/img/recruitment_app_map.png)
-
-
-
-A detailed section about functionality is [here](doc/core/functional/funtional.md)
+1. Check that all containers are running with `docker ps`
+2. View container logs with `docker logs <container_name>`
+3. Ensure your OpenAI API key is valid and has sufficient credits
 
 
 
-<br>
+<br />
 
-<br>
+## The Applications
+
+The project includes **two fully functional applications** that work together to create a complete recruitment ecosystem:
+
+<br />
+
+### Candidates Portal
+
+**URL:** http://localhost:8081/
+
+This application allows candidates to browse available positions and submit their applications with resumes.
+
+![Candidates Application Map](doc/img/candidates_app_map.png)
+
+<br />
+
+### Recruitment Portal
+
+**URL:** http://localhost:9070/
+
+This application enables recruiters to manage job positions, review applications, and see AI-generated scoring and analysis.
+
+![Recruitment Application Map](doc/img/recruitment_app_map.png)
+
+For detailed information about the functionality of both applications, please refer to the [functional documentation](doc/core/functional/funtional.md).
+
+<br />
+
+<br />
 
 ## Architecture
 
-In the following sections we are going to desing and define the project architecture starting from the business architecture and ending with the physical architecture.
+The project architecture is presented in a layered approach, starting from the business architecture and progressing to the physical implementation.
 
-
+<br />
 
 ### Business and Information Architecture (What?)
 
-In this section we are going to define the business (or functional) architecture of the project. 
+This section defines the business (or functional) architecture of the project.
 
-In the following diagram we can see two different contexts (candidates and recruitment) and the different use cases identified and how they are supported by services:
+The following diagram illustrates the two distinct contexts (candidates and recruitment), the identified use cases, and how they are supported by various services:
 
+![Business Architecture](doc/img/business-achitecture.png)
 
+<br />
 
-![business-achitecture](doc/img/business-achitecture.png)
+The **information architecture** supporting both contexts is defined as follows:
 
-<br>
+![Information Architecture](doc/img/information-architecture.png)
 
-We also have to define the **information architecture** supporting both contexts:
+<br />
 
+As shown in the diagram, entities like "Position" and "Application" exist in both contexts. The design intentionally keeps these contexts separated to allow them to evolve independently. This approach uses concepts of "master data" and "replicated data" (or "projections"):
 
+- **Candidates Context**:
 
-![information-architecture](doc/img/information-architecture.png)
+  - **Position**: Represents job offers. This is a projection from the recruitment context. Within the candidate context, positions are read-only and never created here.
 
-As we can see in the diagram, there are entities like "Position" and "Application" that exist in both contexts. The idea is to keep both contexts separated in order to be able to evolve them independenly. We have to talk about "masters" and "replicated data" or "projections". Let's see that:
+  - **Application**: Corresponds to applications for job positions. The Candidates context is the owner of this information structure. Applications are created in the Candidates context and propagated to the Recruitment context. An application contains a key, candidate information (name, email, phone), and a CV file.
 
-- **Candidates context**:
+- **Recruitment Context**:
 
-  - **Position**: represents job offers. it's a projection from the recruitment context. Within the candidate context, positions only are read, never created.
+  - **Position**: Represents job offers. The Recruitment context is the owner of this entity.
 
-  - **Application**: corresponds to the applications to job offers. Candidates is the owner of this information structure. Applications to positions are created in candidates context and propagated to recruitment context. An application contains a key, a candidate information (name, email, phone) and a CV file. 
+    Positions are created in this context and propagated to the Candidates context. A position contains:
+    - Key: Unique identifier
+    - Title: Position name
+    - Description: Detailed information about the position
+    - Requirements: List of skills and qualifications
+    - Responsibilities: List of job duties
+    - Benefits: List of perks offered
 
-    
+    Each requirement contains:
+    - Key: Identifies the requirement (e.g., "Java", "Python", "Project Management", "Agile")
+    - Value: Level of expertise (1=Beginner, 2=Intermediate, 3=Advanced)
+    - Description: Additional details about the requirement
+    - Mandatory: Boolean indicating whether the requirement is essential or optional
 
-- **Recruitment context**:
+    Responsibilities (e.g., "Develop solutions based on Microservices and Kafka") and Benefits (e.g., "Remote work") only contain descriptions.
 
-  - **Position**:  represents job offers. Recruitment is the owner. 
+  - **Application**: A projection of applications from the Candidates context. In this context, an application represents the relationship between a candidate, a position, and a scoring, indicating that a candidate has applied to a position and received a matching score.
 
-    Positions are created  in this context and they are propagated to candidates context. A position contains a key, a title, a description, a list of requirements, a list of responsibilities and a list of benefits. Each requirement contains:
+  - **Candidate**: An independent entity extracted from the application data. Keeping candidate information separate allows for analysis independent of the positions applied for and enables future capabilities such as finding the best candidate for a specific position.
 
-    - key: identify the requirement, for instance "Java", "Python", "Project Management", "Agile"
-    - value: set the level of expertise between 1-3 (1=Beginner, 2=Intermediate, 3=Advanced )
-    - description: used to give more detail about key and level
-    - mandatory: true or false wether the requirement is mandatory or it's opcional
+  - **Candidate Analysis**: Contains the analysis performed on the candidate's resume. This structure may evolve in the future to include additional analytical fields.
 
-    
-
-    Responsabilities (for instance: "development solutions based on Microservices and Kafka") and Benefits (for instance, "remote work") only contains a description.
-
-    
-
-  - **Application**: it's a projection of "applications" from candidates side. In this case, an application is the set of candidate, position and scoring, meaning that a candidate has applied to a position and an scoring between candidate and position has been calculated 
-
-  - **Candidate**: in this case, I've prefered to extact an independent structure to manage candidates instead of keeping inside the application itself. Keeping separated allows me to analyse them independently of the position applied and being able to include more capabilities in the future like finding the best candidate stored in the system to cover a concrete position
-
-  - **Candidate analysis**: it's the analysis performed from the candidate resume. This structure could evolve in the future, adding more fields to the analysis
-
-  - **Scoring:** represents the percentage of matching between the candidate and the position applied (application). This structure could evolve in the future including more fields related to score.
+  - **Scoring**: Represents the percentage match between a candidate and the position applied for. This structure may evolve to include more detailed scoring metrics in the future.
 
 
 
@@ -198,13 +213,13 @@ As we can see in the diagram, there are entities like "Position" and "Applicatio
 
 ### Logical Architecture (How?) 
 
-The following picture illustrates the logical architecture of the MVP:
+The following diagram illustrates the logical architecture of the Minimum Viable Product (MVP):
 
-![how_logical_architecture](doc/img/logical_architecture.png)
+![Logical Architecture Diagram](doc/img/logical_architecture.png)
 
+<br />
 
-
-Let's see more detail about each component and its context:
+Below is a detailed description of each component within its respective context:
 
 ##### 🧑‍💼 Candidates Context
 
@@ -307,35 +322,89 @@ Now, let's check **infrastructure components**:
 
 ## CI/CD
 
-The current CI/CD pipelines is based on **Github Actions** to build, create image and publish images in **Github Packages**:
+The project implements a Continuous Integration and Continuous Deployment (CI/CD) pipeline based on **GitHub Actions**. The pipeline automates the process of building, creating Docker images, and publishing them to **GitHub Packages**:
 
 
 
-![cicd](doc/img/cicd.png)
+![CI/CD Pipeline Diagram](doc/img/cicd.png)
+
+<br />
+
+This automation ensures consistent builds and deployments, making it easier to maintain and update the project components.
+
+> **Note:** Currently, the MVP is deployed using Docker Compose. Future releases will incorporate Infrastructure as Code (IaC) and deployment to cloud platforms such as AWS and Azure.
+
+<br />
+
+<br />
+
+## Additional Topics Covered
+
+This section explains various concepts, patterns, and technologies implemented in this project. Each topic includes a link to detailed documentation:
+
+#### Testing & Quality Assurance
+- [Testcontainers](doc/topics/testcontainers.md) - Integration testing with containerized dependencies
+- [Mutation Testing](doc/topics/mutation-tests.md) - Advanced testing technique to evaluate test suite effectiveness
+
+#### API Development
+- [API Contract First - OpenAPI](doc/topics/api-first-openapi.md) - Designing APIs before implementation
+
+#### Frameworks & Libraries
+- [Hibernate - Eager/Lazy loading](doc/topics/hibernate-lazy-eager.md) - Data loading strategies in Hibernate
+- [Spring Boot - Exceptions Handler](doc/topics/spring-exceptions-handler.md) - Centralized exception handling in Spring Boot
+- [Angular: Standalone Components vs Modules)](doc/topics/angular-changes.md) - Standalone Components vs Modules in Angular framework
+
+#### Data Integration
+- [CDC using Debezium](https://github.com/jaruizes/debezium) - Change Data Capture implementation with Debezium
+
+#### Google Colab & IA
+
+- [Colab "hypothesis" scoring candidates](https://github.com/jaruizes/AI-CVMatcher)
 
 
 
+<br />
+
+### Current Status
+
+This project is actively being developed as a **portfolio and learning platform**. The current version (MVP) includes:
+
+- ✅ Fully functional Candidates and Recruitment portals developed using Angular
+- ✅ AI-powered scoring and analysis of resumés
+- ✅ Business services developed in multiple technologies like Spring, Quarkus or Python
+- ✅ EDA and associated technologies like Kafka or Kafka Streams
+- ✅ OpenAPI
+- ✅ Traceability using OpenTelemetry and Jaeger
+- ✅ Testcontainers
+- ✅ Change Data Capture (CDC) using Debezium for data synchronization between contexts and managing transactions and multiple tables
+- ✅ Outbox pattern
+- ✅ Docker Compose deployment for local execution
+- ✅ CI/CD pipeline with GitHub Actions
 
 
-*The MVP is deployed using Docker Compose. Next releases will cover IaC and AWS / Azure.*
 
-<br>
+##### Roadmap
 
-<br>
+The following features and improvements are planned for future releases:
 
+#### Short-term Goals
+- 🔄 Complete Kubernetes deployment configuration and implement Infrastructure as Code (IaC) for cloud deployments (AWS and Azure)
+- 🔄 Include Schema Registry and Avro 
+- 🔄 AsyncAPI, Event Catalog / Apicurio
+- 🔄 Add an Internal Development Portal (Backstage)
+- 🔄 Authentication and authorization
+- 🔄 Improve test coverage and manage technical debt across all components
 
+#### Mid-term Goals
+- 📋 MCP (Model Context Protocol) and enhance the AI analysis capabilities with more detailed insights
 
-## Some additional topics covered
+- 📋 Develop a candidate recommendation system
 
-This section is dedicated to explain different concepts, patterns, technology,...,etc associated with the implementation of the project:
+- 📋 Add dashboard for recruitment analytics and KPIs
 
-- [Testcontainers](doc/topics/testcontainers.md)
-- [API Contract First - OpenAPI](doc/topics/api-first-openapi.md)
-- [Mutation Testing](doc/topics/mutation-tests.md)
-- [Hibernate - Eager/Lazy loading](doc/topics/hibernate-lazy-eager.md)
-- [Spring Boot - Exceptions Handler](doc/topics/spring-exceptions-handler.md)
-- [Changes in "Modern Angular" (WIP)](doc/topics/angular-changes.md)
-- [Typespec (TODO)](doc/topics/typespec.md)
-- [Testing in Quarkus (TODO)](doc/topics/testing-quarkus.md)
-- [CDC using Debezium (TODO)](https://github.com/jaruizes/debezium)
+- 📋 Implement configurable scoring algorithms
+
+  
+
+> **Note:** This roadmap is tentative and subject to change as the project evolves and new learning opportunities are identified.
 

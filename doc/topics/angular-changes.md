@@ -52,16 +52,3 @@ As we said before, NgModules and Standalone components can live together. For in
 })
 ```
 
-
-
-
-
-Setting up HttpClient (https://angular.dev/guide/http/setup)
-
-Interceptors
-
-https://angular.dev/guide/http/interceptors#di-based-interceptors
-
-
-
-Pipes (PositionStatus for instance)
