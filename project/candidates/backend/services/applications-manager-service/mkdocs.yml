@@ -1,8 +1,26 @@
+
 site_name: Applications Manager Service
+site_description: Applications Manager Service for Casarrubios Project
 
 nav:
   - Home: README.md
 
-docs_dir: .
 plugins:
   - techdocs-core
+
+# Theme customization
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.expand
+    - navigation.indexes
+    - toc.follow
+
+# Repository information
+repo_url: https://github.com/jaruizes/casarrubios-project
+edit_uri: edit/main/project/candidates/backend/services/applications-manager-service
+
+# Directories configuration
+docs_dir: .
