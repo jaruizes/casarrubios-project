@@ -7,4 +7,3 @@ spec:
   type: url
   targets:
     - ./candidates/backend/services/applications-manager-service/backstage.yaml
-    - ./services/banana-service/backstage.yaml
