@@ -21,5 +21,5 @@ jobs:
     with:
       domain: applications
       service-name: applications-app
-      service-path: project/applications/frontend/candidates-app
+      service-path: project/candidates/frontend/candidates-app
     secrets: inherit
