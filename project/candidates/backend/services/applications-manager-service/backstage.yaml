@@ -6,7 +6,7 @@ metadata:
   description: Applications Manager Service
   annotations:
     github.com/project-slug: jaruizes/casarrubios-project
-#    backstage.io/techdocs-ref: dir:.
+    backstage.io/techdocs-ref: dir:.
   tags:
     - springboot
 spec:
