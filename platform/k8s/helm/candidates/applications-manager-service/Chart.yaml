@@ -1,0 +1,6 @@
+apiVersion: v2
+name: applications-manager-service
+description: Helm chart for the applications manager service
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
