@@ -5,7 +5,7 @@ import {NgbPagination} from "@ng-bootstrap/ng-bootstrap";
 import {PositionStatusPipePipe} from "../../infrastructure/pipes/position-status-pipe.pipe";
 import {Position} from "../../model/position";
 import {Router} from "@angular/router";
-import {Application, PositionApplied} from "../../model/application";
+import {Application} from "../../model/application";
 import {ApplicationsService} from "../../services/applications/applications.service";
 
 @Component({
