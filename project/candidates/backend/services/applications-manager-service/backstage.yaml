@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: applications-manager-service
+  title: Applications Manager Service
+  description: Applications Manager Service
+  annotations:
+    github.com/project-slug: jaruizes/casarrubios-project
+#    backstage.io/techdocs-ref: dir:.
+  tags:
+    - springboot
+spec:
+  type: service
+  owner: unknown
+  lifecycle: experimental

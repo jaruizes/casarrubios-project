@@ -1,0 +1,10 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: casarrubios-project
+spec:
+  type: url
+  targets:
+    - ./candidates/backend/services/applications-manager-service/backstage.yaml
+    - ./services/banana-service/backstage.yaml
