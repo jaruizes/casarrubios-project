@@ -3,10 +3,17 @@ site_name: Applications Manager Service
 site_description: Applications Manager Service for Casarrubios Project
 
 nav:
-  - Home: README.md
+  - Home: index.md
+
 
 plugins:
   - techdocs-core
+  - search
+  - monorepo
+
+extra:
+  root_docs_path: README.md
+
 
 # Theme customization
 theme:
