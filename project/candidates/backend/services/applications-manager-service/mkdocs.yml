@@ -5,25 +5,9 @@ site_description: Applications Manager Service for Casarrubios Project
 nav:
   - Home: index.md
 
-
 plugins:
   - techdocs-core
-  - search
-  - monorepo
 
-extra:
-  root_docs_path: README.md
-
-
-# Theme customization
-theme:
-  name: material
-  features:
-    - navigation.instant
-    - navigation.tracking
-    - navigation.expand
-    - navigation.indexes
-    - toc.follow
 
 # Repository information
 repo_url: https://github.com/jaruizes/casarrubios-project
