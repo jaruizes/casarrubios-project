@@ -13,5 +13,3 @@ plugins:
 repo_url: https://github.com/jaruizes/casarrubios-project
 edit_uri: edit/main/project/candidates/backend/services/applications-manager-service
 
-# Directories configuration
-docs_dir: .
