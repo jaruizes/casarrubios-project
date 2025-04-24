@@ -3,7 +3,7 @@ site_name: Root docs
 nav:
   - Home: index.md
   - Subdirectory docs:
-      - Applications Manager Service: '!include ./project/candidates/backend/services/applications-manager-service/mkdocs.yml'
+      - Applications Manager Service: '!include ./candidates/backend/services/applications-manager-service/mkdocs.yml'
 
 plugins:
   - monorepo
