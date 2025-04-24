@@ -8,8 +8,3 @@ nav:
 plugins:
   - techdocs-core
 
-
-# Repository information
-repo_url: https://github.com/jaruizes/casarrubios-project
-edit_uri: edit/main/project/candidates/backend/services/applications-manager-service
-
