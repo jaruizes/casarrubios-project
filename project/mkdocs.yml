@@ -2,7 +2,7 @@ site_name: Root docs
 
 nav:
   - Home: index.md
-  - Subdirectory docs:
+  - Components:
       - Applications Manager Service: '!include ./candidates/backend/services/applications-manager-service/mkdocs.yml'
 
 plugins:
