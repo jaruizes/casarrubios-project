@@ -13,12 +13,9 @@ terraform {
   }
 }
 
-# Use data sources to get AWS account information
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
 
 locals {
-  region = data.aws_region.current.name
+  region = var.region
 
   tags = {
     Project     = "Casarrubios"
@@ -30,30 +27,23 @@ locals {
 module "vpc" {
   source = "./modules/vpc"
 
-  vpc_cidr           = var.vpc_cidr
-  availability_zones = var.availability_zones
-  name_prefix        = var.name_prefix
-  eks_cluster_name   = var.eks_cluster_name
-  tags               = local.tags
+  vpc_name   = "casarrubios"
+  aws_region = local.region
+  sg_name    = "casarrubios"
+  tags       = local.tags
 }
 
 # EKS Module
 module "eks" {
   source = "./modules/eks"
 
-  name_prefix        = var.name_prefix
-  cluster_name       = var.eks_cluster_name
-  cluster_version    = var.eks_cluster_version
-  subnet_ids         = concat(module.vpc.public_subnets, module.vpc.private_subnets)
-  private_subnet_ids = module.vpc.private_subnets
-  security_group_id  = module.vpc.
+  eks_cluster_name = "casarrubios"
+  eks_cluster_version = var.eks_cluster_version
+  eks_workers_instance_types = var.eks_workers_instance_types
+  eks_workers_desired_capacity = var.eks_workers_desired_capacity
+  vpc_id = module.vpc.id
+  vpc_private_subnets = module.vpc.private_subnets
 
-  node_group_instance_types = var.eks_node_group_instance_types
-  node_group_desired_size   = var.eks_node_group_desired_size
-  node_group_min_size       = var.eks_node_group_min_size
-  node_group_max_size       = var.eks_node_group_max_size
-
-  tags = local.tags
 }
 
 # S3 Module
@@ -68,15 +58,9 @@ module "s3" {
 module "rds" {
   source = "./modules/rds"
 
-  name_prefix     = var.name_prefix
-  subnet_ids      = module.vpc.private_subnet_ids
+  vpc_public_subnets = module.vpc.public_subnets
   security_group_id = module.vpc.rds_security_group_id
-
-  db_instance_class = var.db_instance_class
-  db_name           = var.db_name
-  db_username       = var.db_username
-  db_password       = var.db_password
-  db_init_script_path = var.db_init_script_path
+  db_name = "casarrubios"
 
   tags = local.tags
 }

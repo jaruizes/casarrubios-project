@@ -1,5 +1,24 @@
 # Variables for Casarrubios AWS infrastructure
 
+variable "region" {
+  description = "AWS region to deploy resources"
+  type        = string
+  default     = "eu-west-1"
+}
+
+variable "eks_workers_instance_types" {
+  description = "Workers instance types"
+  type        = list(string)
+  default     = ["m5.xlarge"]
+}
+
+variable "eks_workers_desired_capacity" {
+  description = "Number of workers (desired)"
+  type        = number
+  default     = 3
+}
+
+
 variable "environment" {
   description = "Environment name (e.g., dev, staging, prod)"
   type        = string
@@ -12,11 +31,7 @@ variable "name_prefix" {
   default     = "casarrubios"
 }
 
-variable "region" {
-  description = "AWS region to deploy resources"
-  type        = string
-  default     = "us-east-1"
-}
+
 
 # VPC Variables
 variable "vpc_cidr" {

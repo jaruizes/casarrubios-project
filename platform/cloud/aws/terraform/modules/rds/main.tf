@@ -38,14 +38,6 @@ module "postgresql" {
   skip_final_snapshot     = true
   deletion_protection     = false
 
-  parameters = [
-    {
-      name  = "enable_goldengate_replication"
-      value = "TRUE"
-    }
-  ]
-  character_set_name = "AL32UTF8"
-
   tags = merge(var.tags, {
     Name = "eks-cluster-sg"
   })

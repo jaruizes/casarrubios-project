@@ -3,39 +3,39 @@
 # VPC Outputs
 output "vpc_id" {
   description = "The ID of the VPC"
-  value       = module.vpc.vpc_id
+  value       = module.vpc.id
 }
 
 output "public_subnet_ids" {
   description = "The IDs of the public subnets"
-  value       = module.vpc.public_subnet_ids
+  value       = module.vpc.public_subnets
 }
 
 output "private_subnet_ids" {
   description = "The IDs of the private subnets"
-  value       = module.vpc.private_subnet_ids
+  value       = module.vpc.private_subnets
 }
 
-# EKS Outputs
-output "eks_cluster_endpoint" {
-  description = "Endpoint for EKS control plane"
-  value       = module.eks.cluster_endpoint
-}
-
-output "eks_cluster_certificate_authority_data" {
-  description = "Certificate authority data for EKS cluster"
-  value       = module.eks.cluster_certificate_authority_data
-}
-
-output "eks_cluster_name" {
-  description = "Name of the EKS cluster"
-  value       = module.eks.cluster_name
-}
-
-output "eks_node_group_id" {
-  description = "The ID of the EKS node group"
-  value       = module.eks.node_group_id
-}
+# # EKS Outputs
+# output "eks_cluster_endpoint" {
+#   description = "Endpoint for EKS control plane"
+#   value       = module.eks.cluster_endpoint
+# }
+#
+# output "eks_cluster_certificate_authority_data" {
+#   description = "Certificate authority data for EKS cluster"
+#   value       = module.eks.cluster_certificate_authority_data
+# }
+#
+# output "eks_cluster_name" {
+#   description = "Name of the EKS cluster"
+#   value       = module.eks.cluster_name
+# }
+#
+# output "eks_node_group_id" {
+#   description = "The ID of the EKS node group"
+#   value       = module.eks.node_group_id
+# }
 
 # S3 Outputs
 output "s3_resumes_bucket" {
@@ -73,16 +73,6 @@ output "cloudfront_domain_name" {
 output "rds_endpoint" {
   description = "The endpoint of the RDS instance"
   value       = module.rds.endpoint
-}
-
-output "rds_port" {
-  description = "The port of the RDS instance"
-  value       = module.rds.port
-}
-
-output "rds_database_name" {
-  description = "The database name of the RDS instance"
-  value       = module.rds.database_name
 }
 
 # Additional useful outputs
