@@ -1,9 +1,9 @@
 app:
-  title: Scaffolded Backstage App
+  title: Casarrubios Portal
   baseUrl: http://localhost:3000
 
 organization:
-  name: My Company
+  name: Casarrubios
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
@@ -58,7 +58,7 @@ proxy:
 techdocs:
   builder: 'local' # Alternatives - 'external'
   generator:
-    runIn: 'docker' # Alternatives - 'local'
+    runIn: 'local' # Alternatives - 'local' 'docker'
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
@@ -93,6 +93,9 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+    - type: url
+      target: https://github.com/jaruizes/casarrubios-project/tree/main/project/catalog-info.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url
