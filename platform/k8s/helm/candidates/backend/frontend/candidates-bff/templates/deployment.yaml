@@ -22,8 +22,6 @@ spec:
             - containerPort: {{ .Values.service.targetPort }}
           envFrom:
             - configMapRef:
-                name: {{ .Chart.Name }}-config
-            - secretRef:
-                name: {{ .Chart.Name }}-secrets
+                name: {{ .Chart.Name }}-configmap
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

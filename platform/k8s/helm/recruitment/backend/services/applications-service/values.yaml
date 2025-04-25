@@ -1,0 +1,41 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/applications-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 9081
+  targetPort: 9081
+
+config:
+  PORT: 9081
+  DB_HOST: postgresql
+  DB_PORT: 5432
+  DB_NAME: applications
+  DB_SCHEMA: recruiters
+  KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+  KAFKA_INPUT_TOPIC: "recruitment.applications-scored"
+  KAFKA_CONSUMER_GROUP: applications-service
+  KAFKA_CONSUMER_OFFSET_RESET: earliest
+  LOG_LEVEL: INFO
+  MINIO_URL: "minio:9000"
+  MINIO_BUCKET_NAME: resumes
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+  TRACING_ENABLED: "true"
+
+secrets:
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+  MINIO_ACCESS_NAME: minioadmin
+  MINIO_ACCESS_SECRET: minioadmin
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

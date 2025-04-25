@@ -1,0 +1,6 @@
+apiVersion: v2
+name: applications-analyzer-service
+description: Helm chart for the applications analyzer service
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

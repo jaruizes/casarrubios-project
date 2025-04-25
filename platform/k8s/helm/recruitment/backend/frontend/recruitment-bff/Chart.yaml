@@ -1,0 +1,6 @@
+apiVersion: v2
+name: recruitment-bff
+description: Helm chart for the recruitment-bff
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

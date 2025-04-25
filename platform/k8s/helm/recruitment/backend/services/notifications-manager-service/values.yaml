@@ -1,0 +1,30 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/notifications-manager-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+config:
+  KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+  MP_MESSAGING_OUTGOING_NOTIFICATIONS-PUBLISHER_TOPIC: "recruitment.notifications"
+  MP_MESSAGING_INCOMING_APPLICATION-SCORED_TOPIC: "recruitment.applications-scored"
+  MP_MESSAGING_INCOMING_APPLICATION-SCORED_GROUP_ID: notifications-manager-service
+  QUARKUS_LOG_CONSOLE_FORMAT: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+  QUARKUS_OTEL_ENABLED: "true"
+  QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://otel-collector:4317"
+  QUARKUS_OTEL_SERVICE_NAME: recruitment-notifications-manager-service
+  QUARKUS_APPLICATION_NAME: recruitment-notifications-manager-service
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

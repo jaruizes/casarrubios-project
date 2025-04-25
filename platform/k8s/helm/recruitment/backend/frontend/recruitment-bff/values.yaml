@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/recruitment-bff
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 4000
+  targetPort: 4000
+
+config:
+  PORT: 4000
+  POSITIONS_SERVICE_URL: "http://recruitment-positions-service:9080"
+  GLOBAL_POSITION_SERVICE_URL: "http://recruitment-insights-service:9090"
+  APPLICATIONS_SERVICE_URL: "http://recruitment-applications-service:9081"
+  KAFKA_BROKERS: "broker:29092"
+  KAFKA_NOTIFICATION_TOPIC: "recruitment.notifications"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

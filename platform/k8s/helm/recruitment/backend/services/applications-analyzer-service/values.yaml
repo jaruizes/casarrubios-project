@@ -1,0 +1,40 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/applications-analyzer-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 9082
+  targetPort: 9082
+
+config:
+  SERVER_PORT: 9082
+  SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: applications
+  MINIO_URL: "http://minio:9000"
+  MINIO_ACCESS_NAME: minioadmin
+  MINIO_ACCESS_SECRET: minioadmin
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+  OTEL_SERVICE_NAME: recruitment-applications-analyzer-service
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+  OTEL_EXPORTER_OTLP_PROTOCOL: "http/protobuf"
+  OTEL_TRACES_EXPORTER: otlp
+  OTEL_METRICS_EXPORTER: none
+  OTEL_LOGS_EXPORTER: none
+  OTEL_JAVAAGENT_ENABLED: "true"
+
+secrets:
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresql:5432/applications"
+  SPRING_DATASOURCE_USERNAME: postgres
+  SPRING_DATASOURCE_PASSWORD: postgres
+  SPRING_AI_OPENAI_API_KEY: "${OPENAI_API_KEY}"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

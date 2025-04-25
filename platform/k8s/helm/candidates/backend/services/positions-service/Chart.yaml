@@ -1,0 +1,6 @@
+apiVersion: v2
+name: positions-service
+description: Helm chart for the positions service
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

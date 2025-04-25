@@ -1,0 +1,34 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/applications/positions-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+config:
+  SERVER_PORT: 8090
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgresql:5432/applications"
+  SPRING_JPA_PROPERTIES_HIBERNATE_DEFAULT_SCHEMA: applications
+  SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+  NEW-POSITIONS-PUBLISHED_TOPIC: "recruitment.new-positions-published"
+  SPRING_KAFKA_CONSUMER_GROUP-ID: "positions-service"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
+  OTEL_SERVICE_NAME: "positions-service"
+  OTEL_METRICS_EXPORTER: "none"
+
+secrets:
+  SPRING_DATASOURCE_USERNAME: postgres
+  SPRING_DATASOURCE_PASSWORD: postgres
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

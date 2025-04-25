@@ -1,0 +1,33 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/insights-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 9090
+  targetPort: 9090
+
+config:
+  KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+  QUARKUS.KAFKA-STREAMS.TOPICS: "recruitment.new-positions-published,recruitment.applications-received,recruitment.applications-scored"
+  QUARKUS_KAFKA-STREAMS_APPLICATION-ID: recruitment-insights-service
+  NEW-POSITIONS_TOPIC: "recruitment.new-positions-published"
+  NEW-APPLICATIONS_TOPIC: "recruitment.applications-received"
+  SCORING_TOPIC: "recruitment.applications-scored"
+  QUARKUS_HTTP_PORT: 9090
+  QUARKUS_LOG_CONSOLE_FORMAT: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+  QUARKUS_OTEL_ENABLED: "true"
+  QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://otel-collector:4317"
+  QUARKUS_OTEL_SERVICE_NAME: recruitment-insights-service
+  QUARKUS_APPLICATION_NAME: recruitment-insights-service
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

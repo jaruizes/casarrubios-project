@@ -1,0 +1,38 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/scoring-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+config:
+  DB_HOST: postgresql
+  DB_PORT: 5432
+  DB_NAME: applications
+  KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+  KAFKA_CONSUMER_GROUP: scoring-service
+  KAFKA_CONSUMER_OFFSET_RESET: earliest
+  KAFKA_INPUT_TOPIC: "recruitment.applications-analyzed"
+  KAFKA_OUTPUT_TOPIC: "recruitment.applications-scored"
+  VECTOR_STORAGE_HOST: qdrant
+  VECTOR_STORAGE_PORT: 6333
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4317"
+  TRACING_ENABLED: "true"
+
+secrets:
+  DB_USER: postgres
+  DB_PASSWORD: postgres
+  OPENAI_API_KEY: "${OPENAI_API_KEY}"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

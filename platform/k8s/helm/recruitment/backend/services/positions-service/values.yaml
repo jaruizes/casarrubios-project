@@ -1,0 +1,30 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/positions-manager-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 9080
+  targetPort: 9080
+
+config:
+  QUARKUS_HTTP_PORT: 9080
+  QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgresql:5432/applications"
+  QUARKUS_HIBERNATE-ORM_DATABASE_DEFAULT_SCHEMA: recruiters
+  QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://otel-collector:4317"
+  QUARKUS_LOG_CONSOLE_FORMAT: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+
+secrets:
+  QUARKUS_DATASOURCE_USERNAME: postgres
+  QUARKUS_DATASOURCE_PASSWORD: postgres
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

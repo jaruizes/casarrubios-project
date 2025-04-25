@@ -1,0 +1,6 @@
+apiVersion: v2
+name: applications-updater-service
+description: Helm chart for the applications updater service
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

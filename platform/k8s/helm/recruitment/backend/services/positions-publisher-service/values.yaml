@@ -1,0 +1,34 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/jaruizes/recruitment/new-positions-publisher-service
+  tag: "1.0.0"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+config:
+  QUARKUS_KAFKA-STREAMS_BOOTSTRAP-SERVERS: "broker:29092"
+  CDC_RECRUITERS_POSITIONS_TOPIC: "cdc.recruiters.positions"
+  CDC_RECRUITERS_POSITIONS-REQUIREMENTS_TOPIC: "cdc.recruiters.requirements"
+  CDC_RECRUITERS_POSITIONS-BENEFITS_TOPIC: "cdc.recruiters.benefits"
+  CDC_RECRUITERS_POSITIONS-TASK_TOPIC: "cdc.recruiters.tasks"
+  RECRUITERS_NEW-POSITIONS-PUBLISHED_TOPIC: "recruitment.new-positions-published"
+  QUARKUS.KAFKA-STREAMS.TOPICS: "cdc.recruiters.positions,cdc.recruiters.requirements,cdc.recruiters.benefits,cdc.recruiters.tasks"
+  QUARKUS_KAFKA-STREAMS_APPLICATION-ID: recruitment-positions-publisher-service
+  QUARKUS_LOG_CONSOLE_FORMAT: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+  QUARKUS_OTEL_ENABLED: "true"
+  QUARKUS_OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://otel-collector:4317"
+  QUARKUS_OTEL_SERVICE_NAME: recruitment-positions-publisher-service
+  QUARKUS_APPLICATION_NAME: recruitment-positions-publisher-service
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
