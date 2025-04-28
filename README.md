@@ -6,7 +6,11 @@ For this reason, the solutions shown in this repository may be more complex than
 
 :warning: **This repository is constantly evolving, so solutions shown here may not be complete or might contain some errors.**
 
+
+
 ## Table of Contents
+
+- [Current Status](#current-status)
 - [The Business Case](#the-business-case)
 - [Project Structure](#project-structure)
 - [How to Execute It](#how-to-execute-it)
@@ -15,6 +19,50 @@ For this reason, the solutions shown in this repository may be more complex than
 - [CI/CD](#cicd)
 - [Additional Topics Covered](#additional-topics-covered)
 - [Contributing](#contributing)
+
+
+
+<br />
+
+<br />
+
+## Current Status
+
+This project is actively being developed as a **portfolio and learning platform**. The current version (MVP) includes:
+
+- ✅ Fully functional Candidates and Recruitment portals developed using Angular
+- ✅ AI-powered scoring (embeddings, cosine distance, LLM for explanation) and analysis of resumés (LLM)
+- ✅ Business services developed in multiple technologies like Spring, Quarkus or Python
+- ✅ EDA and associated technologies like Kafka or Kafka Streams
+- ✅ Change Data Capture (CDC) using Debezium for data synchronization between contexts and managing transactions and multiple tables
+- ✅ Outbox pattern implementation
+- ✅ OpenAPI
+- ✅ Traceability using OpenTelemetry and Jaeger
+- ✅ Testcontainers fot testing
+- ✅ Docker Compose deployment for local execution
+- ✅ CI/CD pipeline with GitHub Actions
+
+#### Short-term Goals
+
+- 🔄 Kubernetes deployment (Helm) and Infrastructure as Code (IaC) for cloud deployments (AWS and Azure)
+- 🔄 Include Schema Registry, Avro, AsyncAPI, Event Catalog / Apicurio
+- 🔄 Add an API Gateway (Kong for instance) to docker-compose runtime
+- 🔄 MCP (Model Context Protocol) and enhance the AI analysis capabilities with more detailed insights
+- 🔄 Add an Internal Development Portal (Backstage) 
+
+#### Mid-term Goals
+
+- 📋 Authentication and authorization (Keycloak)
+
+- 📋 Develop a candidate recommendation system
+
+- 📋 Add dashboard for recruitment analytics and KPIs
+
+- 📋 Implement configurable scoring algorithms
+
+  
+
+> **Note:** This roadmap is tentative and subject to change as the project evolves and new learning opportunities are identified.
 
 
 
@@ -365,46 +413,5 @@ This section explains various concepts, patterns, and technologies implemented i
 
 <br />
 
-### Current Status
-
-This project is actively being developed as a **portfolio and learning platform**. The current version (MVP) includes:
-
-- ✅ Fully functional Candidates and Recruitment portals developed using Angular
-- ✅ AI-powered scoring and analysis of resumés
-- ✅ Business services developed in multiple technologies like Spring, Quarkus or Python
-- ✅ EDA and associated technologies like Kafka or Kafka Streams
-- ✅ OpenAPI
-- ✅ Traceability using OpenTelemetry and Jaeger
-- ✅ Testcontainers
-- ✅ Change Data Capture (CDC) using Debezium for data synchronization between contexts and managing transactions and multiple tables
-- ✅ Outbox pattern
-- ✅ Docker Compose deployment for local execution
-- ✅ CI/CD pipeline with GitHub Actions
-
-
-
-##### Roadmap
-
-The following features and improvements are planned for future releases:
-
-#### Short-term Goals
-- 🔄 Complete Kubernetes deployment configuration and implement Infrastructure as Code (IaC) for cloud deployments (AWS and Azure)
-- 🔄 Include Schema Registry and Avro 
-- 🔄 AsyncAPI, Event Catalog / Apicurio
-- 🔄 Add an Internal Development Portal (Backstage)
-- 🔄 Authentication and authorization
-- 🔄 Improve test coverage and manage technical debt across all components
-
-#### Mid-term Goals
-- 📋 MCP (Model Context Protocol) and enhance the AI analysis capabilities with more detailed insights
-
-- 📋 Develop a candidate recommendation system
-
-- 📋 Add dashboard for recruitment analytics and KPIs
-
-- 📋 Implement configurable scoring algorithms
-
-  
-
-> **Note:** This roadmap is tentative and subject to change as the project evolves and new learning opportunities are identified.
+> 
 
