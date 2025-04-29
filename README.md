@@ -269,7 +269,7 @@ If you encounter any issues:
 
 <br />
 
-## Candidates and Recruitment Applications
+## Functional Overview: candidates and recruitment applications
 
 The project includes **two fully functional applications** that work together to create a complete recruitment ecosystem:
 
