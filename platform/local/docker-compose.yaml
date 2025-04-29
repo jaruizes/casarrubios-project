@@ -16,6 +16,18 @@ services:
       - "./postgresql/inventory.sql:/docker-entrypoint-initdb.d/1.sql"
       - "./postgresql/postgresql.conf:/etc/postgresql/postgresql.conf"
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: infrastructure.pgadmin
+    restart: always
+    ports:
+      - "5433:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgresql
+
   qdrant:
     image: qdrant/qdrant:v1.13.6
     container_name: infrastructure.qdrant
