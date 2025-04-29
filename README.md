@@ -1,3 +1,7 @@
+![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-green)![Version](https://img.shields.io/badge/Version-MVP-blue)![License](https://img.shields.io/badge/License-MIT-yellow)
+
+
+
 # Casarrubios' Project 
 
 This repository serves as a personal portfolio, showcasing various topics and concepts about architecture, software development, and artificial intelligence through a practical use case. 
