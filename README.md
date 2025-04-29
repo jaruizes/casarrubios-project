@@ -13,14 +13,13 @@ For this reason, the solutions shown in this repository may be more complex than
 - [Current Status](#current-status)
 - [The Business Case](#the-business-case)
 - [Project Structure](#project-structure)
+- [Requirements](#requirements)
 - [How to Execute It](#how-to-execute-it)
-- [The Applications](#the-applications)
+- [Candidates and Recruitment Applications](#candidates-and-rRecruitment-aApplications)
 - [Architecture](#architecture)
 - [CI/CD](#cicd)
 - [Additional Topics Covered](#additional-topics-covered)
-- [Contributing](#contributing)
-
-
+- 
 
 <br />
 
@@ -44,7 +43,7 @@ This project is actively being developed as a **portfolio and learning platform*
 
 #### Short-term Goals
 
-- 🔄 Kubernetes deployment (Helm) and Infrastructure as Code (IaC) for cloud deployments (AWS and Azure)
+- 🔄 Kubernetes deployment (Helm), Infrastructure as Code (IaC) for AWS and GitOps
 - 🔄 Include Schema Registry, Avro, AsyncAPI, Event Catalog / Apicurio
 - 🔄 Add an API Gateway (Kong for instance) to docker-compose runtime
 - 🔄 MCP (Model Context Protocol) and enhance the AI analysis capabilities with more detailed insights
@@ -54,33 +53,19 @@ This project is actively being developed as a **portfolio and learning platform*
 
 - 📋 Authentication and authorization (Keycloak)
 
+- 📋 Metrics and logs management
+
 - 📋 Develop a candidate recommendation system
 
 - 📋 Add dashboard for recruitment analytics and KPIs
 
 - 📋 Implement configurable scoring algorithms
 
-  
+
 
 > **Note:** This roadmap is tentative and subject to change as the project evolves and new learning opportunities are identified.
 
-
-
 <br>
-
-## The Business Case
-
-For this project, I've selected a recruitment process as the business case. The scenario involves a company that publishes job positions on its portal where interested candidates can apply and submit their resumes:
-
-![Recruitment Process Use Case](doc/img/use_case.jpg)
-
-Having participated in many recruitment processes from the recruiter's perspective, I understand the challenges of objectively evaluating a large number of resumes without bias. This process is typically time-consuming and labor-intensive.
-
-**The innovative solution implemented in this project uses an AI-powered scoring algorithm to calculate the matching percentage between candidates and the positions they apply for.**
-
-![AI-Enhanced Recruitment Process](doc/img/use_case_ai.jpg)
-
-This approach helps streamline the recruitment process by automatically identifying the most suitable candidates based on their qualifications and the job requirements.
 
 ## Project Structure
 
@@ -100,11 +85,128 @@ The structure of the project is the following:
     - backend → business services
     - cdc → connectors for change data capture
 
+<br />
+
+## The Business Case
+
+For this project, I've selected a recruitment process as the business case. The scenario involves a company that publishes job positions on its portal where interested candidates can apply and submit their resumes:
+
+![Recruitment Process Use Case](doc/img/use_case.jpg)
+
+Having participated in many recruitment processes from the recruiter's perspective, I understand the challenges of objectively evaluating a large number of resumes without bias. This process is typically time-consuming and labor-intensive.
+
+**The innovative solution implemented in this project uses an AI-powered scoring algorithm to calculate the matching percentage between candidates and the positions they apply for.**
+
+![AI-Enhanced Recruitment Process](doc/img/use_case_ai.jpg)
+
+This approach helps streamline the recruitment process by automatically identifying the most suitable candidates based on their qualifications and the job requirements.
+
+<br />
 
 
-<br>
 
-<br>
+## Requirements
+
+
+
+### Self Requirements
+
+In this section, we can find the personal requirements I've set for this project:
+
+- It must apply AI to a real-world case and integrate AI within a complex system.
+- It should allow me to apply and learn multiple technologies and patterns across all layers (frontend, backend, data, etc.).
+- Infrastructure as Code (IaC) is mandatory.
+- Observability is also mandatory.
+- It should be deployable in multiple ways and environments: local, cloud (AWS and Azure).
+- It should be evolvable, and every piece or component should be interchangeable at any time.
+
+
+
+### Functional Requirements
+
+This section outlines the key functional requirements of the system, organized by context.
+
+#### Candidates 
+
+##### Position Browsing and Application
+
+- **View Available Positions**: Candidates must be able to view a list of all available job positions.
+- **View Position Details**: Candidates must be able to view detailed information about a specific position, including:
+  - Position title and description
+  - Required skills and qualifications
+  - Responsibilities
+  - Benefits offered
+- **Apply to Positions**: Candidates must be able to apply to positions by:
+  - Submitting personal information (name, email, phone)
+  - Uploading a CV/resume (PDF format)
+  - Receiving confirmation of successful application submission
+
+
+
+#### Recruitment Context
+
+##### Position Management
+
+- **Create Positions**: Recruiters must be able to create new job positions with:
+  - Title and description
+  - Required skills with proficiency levels (Beginner/Intermediate/Advanced)
+  - Responsibilities
+  - Benefits
+- **Edit Positions**: Recruiters must be able to modify existing positions, updating any field.
+- **View Positions**: Recruiters must be able to view all created positions.
+- **Candidate View**: Recruiters must be able to preview how a position appears to candidates.
+
+
+
+##### Application Management
+
+- **View Applications**: Recruiters must be able to view all applications for a specific position.
+- **Application Analysis**: The system must automatically analyze candidate applications, including:
+  - Extracting relevant information from resumes
+  - Generating a matching score between candidate skills and position requirements
+  - Providing a natural language explanation of the score
+
+
+
+##### AI-Powered Analysis
+
+- **Candidate Scoring**: The system must calculate a matching percentage between candidates and positions using AI.
+- **Detailed Analysis**: For each candidate, the system must provide:
+  - Summary of candidate qualifications
+  - Strengths relative to the position
+  - Potential concerns or gaps
+  - Analysis of how well the candidate matches position responsibilities
+  - Detailed skill assessment
+  - Suggested interview questions
+
+##### Notifications and Insights
+
+- **High-Score Notifications**: Recruiters must receive notifications when candidates score above a certain threshold (e.g., 60%).
+- **Recruitment Insights**: The system must provide key metrics and insights about the recruitment process.
+
+
+
+#### Cross-Context Requirements
+
+- **Data Synchronization**: Changes in one context must be automatically propagated to the other context:
+  - New positions created in the Recruitment context must appear in the Candidates context
+  - Applications submitted in the Candidates context must appear in the Recruitment context
+
+For detailed information about the functionality of both applications, please refer to the [functional documentation](doc/core/functional/funtional.md).
+
+<br />
+
+
+
+### Technical requirements for working with this project
+
+The technical requirements for working with this project are detailed [here](doc/core/architecture/tech_reqs.md)
+
+
+
+<br />
+
+
 
 ## How to Execute It
 
@@ -167,13 +269,13 @@ If you encounter any issues:
 
 <br />
 
-## The Applications
+## Candidates and Recruitment Applications
 
 The project includes **two fully functional applications** that work together to create a complete recruitment ecosystem:
 
 <br />
 
-### Candidates Portal
+### Candidates App
 
 **URL:** http://localhost:8081/
 
@@ -183,7 +285,7 @@ This application allows candidates to browse available positions and submit thei
 
 <br />
 
-### Recruitment Portal
+### Recruitment App
 
 **URL:** http://localhost:9070/
 
@@ -200,6 +302,10 @@ For detailed information about the functionality of both applications, please re
 ## Architecture
 
 The project architecture is presented in a layered approach, starting from the business architecture and progressing to the physical implementation.
+
+
+
+![architecture-process](doc/img/architecture-process.png)
 
 <br />
 
@@ -261,15 +367,29 @@ As shown in the diagram, entities like "Position" and "Application" exist in bot
 
 ### Logical Architecture (How?) 
 
-The following diagram illustrates the logical architecture of the Minimum Viable Product (MVP):
+I designed this logical architecture showing the main pieces I need to develop and execute the "AI Recruitment System":
+
+![logical_architecture-components](doc/img/logical_architecture-components.png)
+
+
+
+> **Note:** From this diagram, several physical approaches or architectures can be built. Not all of them will include all the pieces shown or they will be added in the future. For instance, in the local runtime environment with Docker Compose, components like GitOps Tool or CDN are not included
+
+<br />
+
+
+
+Once we have seen all the different components we need, the next step I took was to create a diagram illustrating how the main components will interact with each other.:
+
+
 
 ![Logical Architecture Diagram](doc/img/logical_architecture.png)
 
 <br />
 
-Below is a detailed description of each component within its respective context:
+Below is a detailed description of the main components within its respective context:
 
-##### 🧑‍💼 Candidates Context
+##### Candidates Context
 
 | Component                    | Description                                                  |
 | ---------------------------- | ------------------------------------------------------------ |
@@ -283,7 +403,7 @@ Below is a detailed description of each component within its respective context:
 
 <br>
 
-##### 🧑‍💻 Recruitment Context
+##### Recruitment Context
 
 | Component                  | Description                                                  |
 | -------------------------- | ------------------------------------------------------------ |
@@ -314,7 +434,7 @@ In this section I'll expose several alternatives to implement each logical compo
 
 In the picture above we can see some business components and some infrastructure components supporting them. Let's start with business components:
 
-##### 🧑‍💼 Candidates Context
+##### **Candidates Context**
 
 | Logical Component            | Physical Component           | Technology    |
 | ---------------------------- | ---------------------------- | ------------- |
@@ -328,7 +448,7 @@ In the picture above we can see some business components and some infrastructure
 
 <br>
 
-🧑‍💻 **Recruitment Context**
+##### **Recruitment Context**
 
 | Logical Component          | Physical Component         | Technology              |
 | -------------------------- | -------------------------- | ----------------------- |
@@ -349,6 +469,8 @@ In the picture above we can see some business components and some infrastructure
 | Scoring Service            | Scoring Service            | Python                  |
 
 <br>
+
+
 
 Now, let's check **infrastructure components**:
 
@@ -414,4 +536,3 @@ This section explains various concepts, patterns, and technologies implemented i
 <br />
 
 > 
-
