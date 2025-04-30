@@ -150,6 +150,32 @@ And you can also **check candidates tables** (*using [PgAdmin tool](http://local
 
 <br />
 
+**What is happening behind the scenes?** 
+
+![demo-positions_replication-flow](img/demo/demo-positions_replication-flow.png)
+
+<br />
+
+Let's see in more detail. 
+
+When position data is saved (within a transaction) into the different tables, **Debezium detects those changes and publishes them into several Kafka topics**:
+
+![demo-positions-cdc_topics](img/demo/demo-positions-cdc_topics.jpg)
+
+<br />
+
+We need to aggregate the information contained in those topic into a single Position entity (position data, requirements, tasks and benefits). For getting this aggregation, we have options like the outbox pattern (we will talk about it later) but, for this use case, I've implemented a Kafka Stream (using Processor API):
+
+![demo-cdc_multiple_tables-to-event](img/demo/demo-cdc_multiple_tables-to-event.jpg)
+
+<br />
+
+The information is aggregated into an event that is consumed by "positions service" in the Candidates context to feed its positions view:
+
+![demo-position_data_aggregated](img/demo/demo-position_data_aggregated.jpg)
+
+<br />
+
 ### Recruitment app: showing position detail / edit position
 
 Now, click in a position to show the position detail. For instance, click on the position with id 10, "Cloud Architect":
