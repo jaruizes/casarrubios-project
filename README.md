@@ -2,8 +2,6 @@
 
 
 
-# Casarrubios' Project 
-
 This repository serves as a personal portfolio, showcasing various topics and concepts about architecture, software development, and artificial intelligence through a practical use case. 
 
 For this reason, the solutions shown in this repository may be more complex than they should be in a production environment, but as mentioned, the goal of this repository is to use it as a didactical and playground tool.
@@ -14,7 +12,7 @@ For this reason, the solutions shown in this repository may be more complex than
 
 <br />
 
-## Current Status
+# Current Status
 
 This project is actively being developed as a **portfolio and learning platform**. The current version (MVP) includes:
 
@@ -52,7 +50,7 @@ This project is actively being developed as a **portfolio and learning platform*
 
 <br>
 
-## Project Structure
+# Project Structure
 
 The structure of the project is the following:
 
@@ -72,7 +70,7 @@ The structure of the project is the following:
 
 <br />
 
-## The Business Case
+# The "Business Case"
 
 For this project, I've selected a recruitment process as the business case. The scenario involves a company that publishes job positions on its portal where interested candidates can apply and submit their resumes:
 
@@ -90,13 +88,13 @@ This approach helps streamline the recruitment process by automatically identify
 
 
 
-## Requirements
+# Requirements
 In [this document](doc/core/functional/requirements.md) you can find a **detailed requirements list** for this project
 
 
 <br />
 
-## Functional Overview: candidates and recruitment applications
+# Functional Overview: candidates and recruitment applications
 
 The project includes **two fully functional applications** that work together to create a complete recruitment ecosystem:
 
@@ -120,7 +118,7 @@ For detailed information about the functionality of both applications, please re
 
 <br />
 
-## How to Execute It
+# How to Execute It
 
 ### Prerequisites
 
@@ -169,20 +167,20 @@ Before you begin, ensure you have the following installed:
 
 <br />
 
-## Demo Guide and Technical details
+# Demo Guide and Technical details
 
 In [this document](doc/core/functional/quick_demo_guide.md) you can find a **detailed demo guide** including technical details
 
 <br />
 
 
-## Architecture
+# Architecture
 
 In [this document](doc/core/architecture/architecture.md) you can find **all the architecture details about this project**
 
 <br>
 
-## CI/CD
+# CI/CD
 
 The project implements a Continuous Integration and Continuous Deployment (CI/CD) pipeline based on **GitHub Actions**. The pipeline automates the process of building, creating Docker images, and publishing them to **GitHub Packages**:
 
@@ -200,7 +198,7 @@ This automation ensures consistent builds and deployments, making it easier to m
 
 <br />
 
-## Additional Topics Covered
+# Additional Topics Covered
 
 This section explains various concepts, patterns, and technologies implemented in this project. Each topic includes a link to detailed documentation:
 
