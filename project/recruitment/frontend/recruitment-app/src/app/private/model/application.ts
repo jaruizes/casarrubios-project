@@ -56,7 +56,7 @@ interface Scoring {
 
 export interface Skill{
   skill: string;
-  level: number;
+  level: string;
 }
 
 interface Analysis {

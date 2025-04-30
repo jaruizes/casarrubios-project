@@ -6,13 +6,13 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class ReqAndSkillsPipe implements PipeTransform {
 
-  transform(status: number): string {
+  transform(status: string): string {
     switch (status) {
-      case 1:
+      case "1":
         return 'Básico';
-      case 2:
+      case "2":
         return 'Intermedio';
-      case 3:
+      case "3":
         return 'Avanzado';
       default:
         return 'Intermedio';

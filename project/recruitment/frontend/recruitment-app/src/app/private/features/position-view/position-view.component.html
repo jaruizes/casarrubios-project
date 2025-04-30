@@ -33,7 +33,7 @@
         <div class="card-body">
           <ul class="pt-2">
             <li *ngFor="let req of position.requirements" class="lead">
-              <strong>{{ req.key }}</strong> (nivel: {{ Number(req.value) | reqAndSkillsPipe}}): {{ req.description }}
+              <strong>{{ req.key }}</strong> (nivel: {{ req.value | reqAndSkillsPipe}}): {{ req.description }}
               <span *ngIf="req.mandatory" class="text-danger">(Obligatorio)</span>
             </li>
           </ul>
