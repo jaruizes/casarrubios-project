@@ -89,8 +89,9 @@ For this demo, we are going to use the following URLs:
 Now, let's go to the demo!
 
 
+<br />
 
-### Recruitment and Candidates apps
+### 1) Recruitment and Candidates apps
 
 The first step is **open the recruitment app to show the list of the positions already loaded** in the system. So, open the [Recruiment App](http://localhost:9070/) in your browser:
 
@@ -108,7 +109,7 @@ If we open the [Candidates App](http://localhost:8081/), we will see the same da
 
 
 
-### Recruitment app: creating new position
+### 2) Recruitment app: creating new position
 
 From the Recruitment Home, click the 'Nueva Position' button. You will see an empty screen ready to be filled with all the data regarding the new position.
 
@@ -176,7 +177,7 @@ The information is aggregated into an event that is consumed by "positions servi
 
 <br />
 
-### Recruitment app: showing position detail / edit position
+### 3) Recruitment app: showing position detail / edit position
 
 Now, click in a position to show the position detail. For instance, click on the position with id 10, "Cloud Architect":
 
@@ -192,7 +193,7 @@ If you do scroll down, you'll see tasks and benefits. In this section, you can a
 
 
 
-### Recruitment app: candidate view
+### 4) Recruitment app: candidate view
 
 From the recruitment application is possible to check how a position is going to be shown to the candidates. Click the ![demo-eye_icon](img/demo/demo-eye_icon.jpg) from any row of the positions list to get this feature:
 
@@ -200,7 +201,7 @@ From the recruitment application is possible to check how a position is going to
 
 <br />
 
-### Candidates app: positions list
+### 5) Candidates app: positions list
 
 As we've already seen, positions are replicated from Recruitment context to Candidates context. So, if we open the [candidates app](http://localhost:8081/) we will see the list of the positions we can apply:
 
@@ -208,7 +209,7 @@ As we've already seen, positions are replicated from Recruitment context to Cand
 
 <br />
 
-### Candidates app: applying to a position
+### 6) Candidates app: applying to a position
 
 To apply to a position, just click on the row you choose and go to the position detail. For this demo, we are choosing to apply to "Cloud Architect" one (row with id number 10):
 
@@ -254,7 +255,7 @@ We can also **check application tables within the recruitment database schema**.
 
 <br />
 
-### Recruitment: scoring process
+### 7) Recruitment: scoring process
 
 Besides managing cdc message and storing the information regarding the application submitted in the recruitment tables, at the same time, **the scoring process is triggered**:
 
@@ -329,7 +330,7 @@ Finaly, **this event is consumed by the "applications service" that stores the a
 
 
 
-### Recruitment: notifications
+### 8) Recruitment: notifications
 
 The  "Application Scored Event" is also consumed by the "notifications service" that emits a notification if the scoring is greater than a configured value (~60%). If the condition is satisfied, the "Notifications service" publishes a notification to Kafka. This notification is consumed by the BFF that, by using Websockets, pushes the notification to frontend application:
 
@@ -351,7 +352,7 @@ And if we click on the notifications icon, the notification is shown:
 
 <br />
 
-### Recruitment: analysis and scoring information
+### 9) Recruitment: analysis and scoring information
 
 In this moment, we can consult analysis and scoring information in the  [Recruitment App](http://localhost:9070/). Go to the positions list, and click in the "applications icon" of the position where the resumé was submitted:
 
