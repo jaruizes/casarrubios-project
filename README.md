@@ -15,15 +15,26 @@ For this reason, the solutions shown in this repository may be more complex than
 ## Table of Contents
 
 - [Current Status](#current-status)
-- [The Business Case](#the-business-case)
+
 - [Project Structure](#project-structure)
+
+- [The Business Case](#the-business-case)
+
 - [Requirements](#requirements)
+
+- [Functional Overview: candidates and recruitment applications](#functional-Overview:-candidates-and-recruitment-applications)
+
 - [How to Execute It](#how-to-execute-it)
-- [Candidates and Recruitment Applications](#candidates-and-rRecruitment-aApplications)
+
+- [Demo Guide and Technical details](#demo-guide-and-technical-details)
+
 - [Architecture](#architecture)
+
 - [CI/CD](#cicd)
+
 - [Additional Topics Covered](#additional-topics-covered)
-- 
+
+  
 
 <br />
 
@@ -210,7 +221,29 @@ The technical requirements for working with this project are detailed [here](doc
 
 <br />
 
+## Functional Overview: candidates and recruitment applications
 
+The project includes **two fully functional applications** that work together to create a complete recruitment ecosystem:
+
+<br />
+
+### Candidates App
+
+This application allows candidates to browse available positions and submit their applications with resumes.
+
+![Candidates Application Map](doc/img/candidates_app_map.png)
+
+<br />
+
+### Recruitment App
+
+This application enables recruiters to manage job positions, review applications, and see AI-generated scoring and analysis.
+
+![Recruitment Application Map](doc/img/recruitment_app_map.png)
+
+For detailed information about the functionality of both applications, please refer to the [functional documentation](doc/core/functional/funtional.md).
+
+<br />
 
 ## How to Execute It
 
@@ -223,6 +256,8 @@ Before you begin, ensure you have the following installed:
 - An OpenAI API Key (required for the AI-powered scoring functionality)
 
 > **Note:** You don't need to build any services or images manually. All necessary images are pre-built and published as [GitHub Public Packages](https://github.com/jaruizes?tab=packages).
+
+
 
 ### Setup and Execution
 
@@ -257,47 +292,19 @@ Before you begin, ensure you have the following installed:
    | Jaeger                        | http://localhost:16686/search      | Distributed tracing system to monitor and troubleshoot transactions |
    | Minio                         | http://localhost:9001/login        | Object storage service (credentials: minioadmin/minioadmin) |
 
-
-
 <br />
 
-### Troubleshooting
+## Demo Guide and Technical details
 
-If you encounter any issues:
+In [this document](doc/core/functional/quick_demo_guide.md) you can find a **detailed demo guide** including technical details
 
-1. Check that all containers are running with `docker ps`
-2. View container logs with `docker logs <container_name>`
-3. Ensure your OpenAI API key is valid and has sufficient credits
+
 
 
 
 <br />
 
-## Functional Overview: candidates and recruitment applications
 
-The project includes **two fully functional applications** that work together to create a complete recruitment ecosystem:
-
-<br />
-
-### Candidates App
-
-**URL:** http://localhost:8081/
-
-This application allows candidates to browse available positions and submit their applications with resumes.
-
-![Candidates Application Map](doc/img/candidates_app_map.png)
-
-<br />
-
-### Recruitment App
-
-**URL:** http://localhost:9070/
-
-This application enables recruiters to manage job positions, review applications, and see AI-generated scoring and analysis.
-
-![Recruitment Application Map](doc/img/recruitment_app_map.png)
-
-For detailed information about the functionality of both applications, please refer to the [functional documentation](doc/core/functional/funtional.md).
 
 <br />
 
