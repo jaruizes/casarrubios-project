@@ -1,6 +1,19 @@
-# Quick Demo Guide
-
 In this section, we will provide a quick demo of the core functionalities of the recruitment platform. This guide is intended to quickly understand how to use the platform without going into too much detail.
+
+## Table of contents
+- [Prerequisites](#prerequisites)
+- [Checking Replicated Data](#checking-replicated-data)
+- [Demo](#demo)
+    - [Recruitment and Candidates Apps](#1-recruitment-and-candidates-apps)
+    - [Creating New Position](#2-recruitment-app-creating-new-position)
+    - [Position Detail/Edit](#3-recruitment-app-showing-position-detail--edit-position)
+    - [Candidate View](#4-recruitment-app-candidate-view)
+    - [Positions List](#5-candidates-app-positions-list)
+    - [Applying to a Position](#6-candidates-app-applying-to-a-position)
+    - [Scoring Process](#7-recruitment-scoring-process)
+    - [Notifications](#8-recruitment-notifications)
+    - [Analysis and Scoring Information](#9-recruitment-analysis-and-scoring-information)
+
 
 
 
