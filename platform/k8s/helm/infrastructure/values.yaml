@@ -6,29 +6,29 @@ global:
   namespace: infrastructure
 
 # PostgreSQL configuration
-postgresql:
-  enabled: true
-  image:
-    repository: postgres
-    tag: "14"
-    pullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
-    port: 5432
-  persistence:
-    enabled: true
-    size: 1Gi
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "512Mi"
-      cpu: "500m"
-  env:
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_USER: postgres
-    POSTGRES_DB: applications
+#postgresql:
+#  enabled: true
+#  image:
+#    repository: postgres
+#    tag: "14"
+#    pullPolicy: IfNotPresent
+#  service:
+#    type: ClusterIP
+#    port: 5432
+#  persistence:
+#    enabled: true
+#    size: 1Gi
+#  resources:
+#    requests:
+#      memory: "256Mi"
+#      cpu: "100m"
+#    limits:
+#      memory: "512Mi"
+#      cpu: "500m"
+#  env:
+#    POSTGRES_PASSWORD: postgres
+#    POSTGRES_USER: postgres
+#    POSTGRES_DB: applications
 
 # PgAdmin configuration
 pgadmin:
@@ -79,29 +79,29 @@ qdrant:
       cpu: "500m"
 
 # MinIO configuration
-minio:
-  enabled: true
-  image:
-    repository: quay.io/minio/minio
-    tag: latest
-    pullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
-    apiPort: 9000
-    consolePort: 9001
-  persistence:
-    enabled: true
-    size: 5Gi
-  resources:
-    requests:
-      memory: "256Mi"
-      cpu: "100m"
-    limits:
-      memory: "512Mi"
-      cpu: "500m"
-  env:
-    MINIO_ROOT_USER: minioadmin
-    MINIO_ROOT_PASSWORD: minioadmin
+#minio:
+#  enabled: true
+#  image:
+#    repository: quay.io/minio/minio
+#    tag: latest
+#    pullPolicy: IfNotPresent
+#  service:
+#    type: ClusterIP
+#    apiPort: 9000
+#    consolePort: 9001
+#  persistence:
+#    enabled: true
+#    size: 5Gi
+#  resources:
+#    requests:
+#      memory: "256Mi"
+#      cpu: "100m"
+#    limits:
+#      memory: "512Mi"
+#      cpu: "500m"
+#  env:
+#    MINIO_ROOT_USER: minioadmin
+#    MINIO_ROOT_PASSWORD: minioadmin
 
 # Zookeeper configuration
 zookeeper:
@@ -152,9 +152,9 @@ broker:
       cpu: "1000m"
   env:
     KAFKA_BROKER_ID: 1
-    KAFKA_ZOOKEEPER_CONNECT: "infrastructure-zookeeper:2181"
+    KAFKA_ZOOKEEPER_CONNECT: "zookeeper.infrastructure.svc.cluster.local:2181"
     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://infrastructure-broker:29092,PLAINTEXT_HOST://infrastructure-broker:9092
+    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka.infrastructure.svc.cluster.local:29092,PLAINTEXT_HOST://kafka.infrastructure.svc.cluster.local:9092
     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
     KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
@@ -185,8 +185,8 @@ kafkaui:
       cpu: "200m"
   env:
     SERVER_PORT: 8001
-    KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "infrastructure-broker:29092"
-    KAFKA_CLUSTERS_0_ZOOKEEPER: "infrastructure-zookeeper:2181"
+    KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka.infrastructure.svc.cluster.local:29092"
+    KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper.infrastructure.svc.cluster.local:2181"
     KAFKA_CLUSTERS_0_NAME: local
 
 # CDC Service configuration
@@ -208,7 +208,7 @@ cdcservice:
       cpu: "500m"
   env:
     KAFKA_LOG4J_OPTS: -Dlog4j.configuration=file:/opt/kafka/config/connect-log4j.properties
-    KAFKA_CONNECT_BOOTSTRAP_SERVERS: infrastructure-broker:29092
+    KAFKA_CONNECT_BOOTSTRAP_SERVERS: "kafka.infrastructure.svc.cluster.local:29092"
     KAFKA_CONNECT_CONFIGURATION: |
       key.converter=org.apache.kafka.connect.storage.StringConverter
       value.converter=org.apache.kafka.connect.json.JsonConverter
@@ -225,7 +225,7 @@ cdcservice:
     OTEL_SERVICE_NAME: cdc-service
     OTEL_TRACES_EXPORTER: otlp
     OTEL_METRICS_EXPORTER: none
-    OTEL_EXPORTER_OTLP_ENDPOINT: http://infrastructure-otel-collector:4317
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://otelcollector.infrastructure.svc.cluster.local:4317"
     OTEL_TRACES_SAMPLER: always_on
     STRIMZI_TRACING: opentelemetry
 
@@ -259,7 +259,7 @@ otelcollector:
       batch:
     exporters:
       otlp:
-        endpoint: infrastructure-jaeger:4317
+        endpoint: "jaeger.infrastructure.svc.cluster.local:4317"
         tls:
           insecure: true
     service:

@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-kafka-ui
+  name: {{ .Chart.Name }}-kafka-ui
   labels:
-    app: {{ .Release.Name }}-kafka-ui
+    app: {{ .Chart.Name }}-kafka-ui
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-kafka-ui
+      app: {{ .Chart.Name }}-kafka-ui
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-kafka-ui
+        app: {{ .Chart.Name }}-kafka-ui
     spec:
       containers:
         - name: kafka-ui
@@ -50,11 +50,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-kafka-ui
+  name: {{ .Chart.Name }}-kafka-ui
   labels:
-    app: {{ .Release.Name }}-kafka-ui
+    app: {{ .Chart.Name }}-kafka-ui
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   type: {{ .Values.kafkaui.service.type }}
   ports:
@@ -63,17 +63,17 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ .Release.Name }}-kafka-ui
+    app: {{ .Chart.Name }}-kafka-ui
 {{- if .Values.kafkaui.ingress.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-kafka-ui
+  name: {{ .Chart.Name }}-kafka-ui
   labels:
-    app: {{ .Release.Name }}-kafka-ui
+    app: {{ .Chart.Name }}-kafka-ui
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   ingressClassName: {{ .Values.kafkaui.ingress.className }}
   rules:
@@ -84,7 +84,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-kafka-ui
+                name: {{ .Chart.Name }}-kafka-ui
                 port:
                   number: {{ .Values.kafkaui.service.port }}
 {{- end }}

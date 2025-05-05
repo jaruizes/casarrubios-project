@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-jaeger
+  name: {{ .Chart.Name }}-jaeger
   labels:
-    app: {{ .Release.Name }}-jaeger
+    app: {{ .Chart.Name }}-jaeger
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-jaeger
+      app: {{ .Chart.Name }}-jaeger
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-jaeger
+        app: {{ .Chart.Name }}-jaeger
     spec:
       containers:
         - name: jaeger
@@ -56,11 +56,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-jaeger
+  name: {{ .Chart.Name }}-jaeger
   labels:
-    app: {{ .Release.Name }}-jaeger
+    app: {{ .Chart.Name }}-jaeger
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   type: {{ .Values.jaeger.service.type }}
   ports:
@@ -81,17 +81,17 @@ spec:
       protocol: TCP
       name: collector
   selector:
-    app: {{ .Release.Name }}-jaeger
+    app: {{ .Chart.Name }}-jaeger
 {{- if .Values.jaeger.ingress.enabled }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Release.Name }}-jaeger
+  name: {{ .Chart.Name }}-jaeger
   labels:
-    app: {{ .Release.Name }}-jaeger
+    app: {{ .Chart.Name }}-jaeger
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   ingressClassName: {{ .Values.jaeger.ingress.className }}
   rules:
@@ -102,7 +102,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Release.Name }}-jaeger
+                name: {{ .Chart.Name }}-jaeger
                 port:
                   number: {{ .Values.jaeger.service.port }}
 {{- end }}

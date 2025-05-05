@@ -9,7 +9,7 @@ variable "region" {
 variable "eks_workers_instance_types" {
   description = "Workers instance types"
   type        = list(string)
-  default     = ["m5.xlarge"]
+  default     = ["m5.large"]
 }
 
 variable "eks_workers_desired_capacity" {
@@ -31,21 +31,6 @@ variable "name_prefix" {
   default     = "casarrubios"
 }
 
-
-
-# VPC Variables
-variable "vpc_cidr" {
-  description = "CIDR block for the VPC"
-  type        = string
-  default     = "10.0.0.0/16"
-}
-
-variable "availability_zones" {
-  description = "List of availability zones to use"
-  type        = list(string)
-  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
-}
-
 # EKS Variables
 variable "eks_cluster_name" {
   description = "Name of the EKS cluster"
@@ -56,38 +41,7 @@ variable "eks_cluster_name" {
 variable "eks_cluster_version" {
   description = "Kubernetes version for the EKS cluster"
   type        = string
-  default     = "1.28"
-}
-
-variable "eks_node_group_instance_types" {
-  description = "Instance types for the EKS node group"
-  type        = list(string)
-  default     = ["t3.medium"]
-}
-
-variable "eks_node_group_desired_size" {
-  description = "Desired size of the EKS node group"
-  type        = number
-  default     = 2
-}
-
-variable "eks_node_group_min_size" {
-  description = "Minimum size of the EKS node group"
-  type        = number
-  default     = 1
-}
-
-variable "eks_node_group_max_size" {
-  description = "Maximum size of the EKS node group"
-  type        = number
-  default     = 3
-}
-
-# RDS Variables
-variable "db_instance_class" {
-  description = "Instance class for the RDS instance"
-  type        = string
-  default     = "db.t3.small"
+  default     = "1.29"
 }
 
 variable "db_name" {
@@ -96,30 +50,9 @@ variable "db_name" {
   default     = "casarrubios"
 }
 
-variable "db_username" {
-  description = "Username for the database"
-  type        = string
-  default     = "casarrubios"
-  sensitive   = true
-}
-
-variable "db_password" {
-  description = "Password for the database"
-  type        = string
-  default     = "changeme"  # This should be overridden in a secure way
-  sensitive   = true
-}
-
 # S3 and CloudFront Variables
 variable "s3_bucket_prefix" {
   description = "Prefix for S3 bucket names"
   type        = string
   default     = ""  # Empty by default, will use the exact names specified in the issue
-}
-
-# Database Initialization
-variable "db_init_script_path" {
-  description = "Path to the SQL script to initialize the database"
-  type        = string
-  default     = "platform/local/postgresql/inventory.sql"  # Path to the inventory.sql script
 }

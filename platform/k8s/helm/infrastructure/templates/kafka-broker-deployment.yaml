@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-broker
+  name: {{ .Chart.Name }}-broker
   labels:
-    app: {{ .Release.Name }}-broker
+    app: {{ .Chart.Name }}-broker
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-broker
+      app: {{ .Chart.Name }}-broker
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-broker
+        app: {{ .Chart.Name }}-broker
     spec:
       containers:
         - name: broker
@@ -61,7 +61,7 @@ spec:
         - name: broker-data
           {{- if .Values.broker.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-broker-data
+            claimName: {{ .Chart.Name }}-broker-data
           {{- else }}
           emptyDir: {}
           {{- end }}
@@ -69,11 +69,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-broker
+  name: {{ .Chart.Name }}-broker
   labels:
-    app: {{ .Release.Name }}-broker
+    app: {{ .Chart.Name }}-broker
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   type: {{ .Values.broker.service.type }}
   ports:
@@ -90,17 +90,17 @@ spec:
       protocol: TCP
       name: jmx
   selector:
-    app: {{ .Release.Name }}-broker
+    app: {{ .Chart.Name }}-broker
 {{- if .Values.broker.persistence.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-broker-data
+  name: {{ .Chart.Name }}-broker-data
   labels:
-    app: {{ .Release.Name }}-broker
+    app: {{ .Chart.Name }}-broker
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   accessModes:
     - ReadWriteOnce

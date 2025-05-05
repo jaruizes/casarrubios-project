@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-qdrant
+  name: {{ .Chart.Name }}-qdrant
   labels:
-    app: {{ .Release.Name }}-qdrant
+    app: {{ .Chart.Name }}-qdrant
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-qdrant
+      app: {{ .Chart.Name }}-qdrant
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-qdrant
+        app: {{ .Chart.Name }}-qdrant
     spec:
       containers:
         - name: qdrant
@@ -34,7 +34,7 @@ spec:
         - name: qdrant-data
           {{- if .Values.qdrant.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-qdrant-data
+            claimName: {{ .Chart.Name }}-qdrant-data
           {{- else }}
           emptyDir: {}
           {{- end }}
@@ -42,11 +42,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-qdrant
+  name: {{ .Chart.Name }}-qdrant
   labels:
-    app: {{ .Release.Name }}-qdrant
+    app: {{ .Chart.Name }}-qdrant
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   type: {{ .Values.qdrant.service.type }}
   ports:
@@ -59,17 +59,17 @@ spec:
       protocol: TCP
       name: grpc
   selector:
-    app: {{ .Release.Name }}-qdrant
+    app: {{ .Chart.Name }}-qdrant
 {{- if .Values.qdrant.persistence.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name }}-qdrant-data
+  name: {{ .Chart.Name }}-qdrant-data
   labels:
-    app: {{ .Release.Name }}-qdrant
+    app: {{ .Chart.Name }}-qdrant
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   accessModes:
     - ReadWriteOnce

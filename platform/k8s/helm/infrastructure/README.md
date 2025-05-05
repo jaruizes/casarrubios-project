@@ -6,7 +6,6 @@ This Helm chart deploys the infrastructure services required for the application
 
 This chart deploys the following infrastructure components:
 
-- PostgreSQL - Database server
 - PgAdmin - PostgreSQL administration tool
 - Qdrant - Vector database
 - MinIO - Object storage

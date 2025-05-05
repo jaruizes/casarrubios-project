@@ -31,10 +31,10 @@ This project is actively being developed as a **portfolio and learning platform*
 #### Short-term Goals
 
 - 🔄 Kubernetes deployment (Helm), Infrastructure as Code (IaC) for AWS and GitOps
-- 🔄 Include Schema Registry, Avro, AsyncAPI, Event Catalog / Apicurio
-- 🔄 Add an API Gateway (Kong for instance) to docker-compose runtime
-- 🔄 MCP (Model Context Protocol) and enhance the AI analysis capabilities with more detailed insights
-- 🔄 Add an Internal Development Portal (Backstage) 
+- 🔄 Schema Registry, Avro, AsyncAPI, Event Catalog / Apicurio
+- 🔄 API Gateway (Kong for instance) in docker-compose runtime
+- 🔄 Use case for MCP (Model Context Protocol) and enhance the AI analysis capabilities with more detailed insights
+- 🔄 Internal Development Portal (Backstage) 
 
 #### Mid-term Goals
 

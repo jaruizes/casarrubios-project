@@ -1,0 +1,116 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: recruitment.applications-received
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: recruitment.applications-analyzed
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: recruitment.applications-scored
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: recruitment.new-positions-published
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: recruitment.notifications
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: cdc.recruiters.positions
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: cdc.recruiters.requirements
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: cdc.recruiters.benefits
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: cdc.recruiters.tasks
+  labels:
+    strimzi.io/cluster: casarrubios-cluster
+spec:
+  partitions: 1
+  replicas: 1
+  config:
+    retention.ms: 7200000
+    segment.bytes: 1073741824

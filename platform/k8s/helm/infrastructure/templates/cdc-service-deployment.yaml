@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-cdc-service
+  name: {{ .Chart.Name }}-cdc-service
   labels:
-    app: {{ .Release.Name }}-cdc-service
+    app: {{ .Chart.Name }}-cdc-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ .Release.Name }}-cdc-service
+      app: {{ .Chart.Name }}-cdc-service
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-cdc-service
+        app: {{ .Chart.Name }}-cdc-service
     spec:
       containers:
         - name: cdc-service
@@ -51,11 +51,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-cdc-service
+  name: {{ .Chart.Name }}-cdc-service
   labels:
-    app: {{ .Release.Name }}-cdc-service
+    app: {{ .Chart.Name }}-cdc-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 spec:
   type: {{ .Values.cdcservice.service.type }}
   ports:
@@ -64,23 +64,23 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ .Release.Name }}-cdc-service
+    app: {{ .Chart.Name }}-cdc-service
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-cdc-connectors
+  name: {{ .Chart.Name }}-cdc-connectors
   labels:
-    app: {{ .Release.Name }}-cdc-service
+    app: {{ .Chart.Name }}-cdc-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
 data:
   applications-cdc-postgresql-connector.json: |
     {
       "name": "applications-cdc-postgresql-connector",
       "config": {
         "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-        "database.hostname": "{{ .Release.Name }}-postgresql",
+        "database.hostname": "{{ .Chart.Name }}-postgresql",
         "database.port": "5432",
         "database.user": "postgres",
         "database.password": "postgres",
@@ -102,7 +102,7 @@ data:
       "name": "recruiters-positions-cdc-connector",
       "config": {
         "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-        "database.hostname": "{{ .Release.Name }}-postgresql",
+        "database.hostname": "{{ .Chart.Name }}-postgresql",
         "database.port": "5432",
         "database.user": "postgres",
         "database.password": "postgres",
@@ -123,11 +123,11 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-cdc-init
+  name: {{ .Chart.Name }}-cdc-init
   labels:
-    app: {{ .Release.Name }}-cdc-init
+    app: {{ .Chart.Name }}-cdc-init
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    release: {{ .Release.Name }}
+    release: {{ .Chart.Name }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "0"
@@ -136,7 +136,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}-cdc-init
+        app: {{ .Chart.Name }}-cdc-init
     spec:
       restartPolicy: OnFailure
       containers:
@@ -147,13 +147,13 @@ spec:
             - -c
             - |
               echo "Waiting for CDC service to be ready..."
-              until curl -s http://{{ .Release.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}; do
+              until curl -s http://{{ .Chart.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}; do
                 echo "CDC service not ready yet, waiting..."
                 sleep 10
               done
               echo "Registering connectors..."
-              curl -X POST -H "Content-Type: application/json" --data @/connectors/applications-cdc-postgresql-connector.json http://{{ .Release.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}/connectors
-              curl -X POST -H "Content-Type: application/json" --data @/connectors/recruiters-positions-cdc-connector.json http://{{ .Release.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}/connectors
+              curl -X POST -H "Content-Type: application/json" --data @/connectors/applications-cdc-postgresql-connector.json http://{{ .Chart.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}/connectors
+              curl -X POST -H "Content-Type: application/json" --data @/connectors/recruiters-positions-cdc-connector.json http://{{ .Chart.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}/connectors
               echo "Connectors registered successfully"
           volumeMounts:
             - name: connectors
@@ -161,4 +161,4 @@ spec:
       volumes:
         - name: connectors
           configMap:
-            name: {{ .Release.Name }}-cdc-connectors
+            name: {{ .Chart.Name }}-cdc-connectors

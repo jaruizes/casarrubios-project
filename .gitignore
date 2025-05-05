@@ -44,3 +44,4 @@ sync
 .terraform/*
 terraform.tfstate
 terraform.tfstate.*
+/platform/cloud/aws/terraform/.terraform/
