@@ -15,7 +15,8 @@ installArgoCD() {
 }
 
 configureArgoCDApps() {
-  kubectl apply -f platform/k8s/argocd -n argocd
+  kubectl apply -f ../argocd/candidates/candidates-app.yaml -n argocd
+  kubectl apply -f ../argocd/recruitment/recruitment-app.yaml -n argocd
 }
 
 showInfo() {
