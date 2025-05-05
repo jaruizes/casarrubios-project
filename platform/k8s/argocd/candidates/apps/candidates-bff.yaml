@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: candidates-bff
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/jaruizes/casarrubios-project.git
+    targetRevision: HEAD
+    path: platform/k8s/helm/candidates/frontend/candidates-bff
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: candidates
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
