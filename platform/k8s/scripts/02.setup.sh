@@ -15,8 +15,11 @@ installArgoCD() {
 }
 
 configureArgoCDApps() {
+  kubectl apply -f ../argocd/settings -n argocd
   kubectl apply -f ../argocd/candidates/candidates-app.yaml -n argocd
   kubectl apply -f ../argocd/recruitment/recruitment-app.yaml -n argocd
+
+  sleep 10
 }
 
 showInfo() {
@@ -38,6 +41,7 @@ showInfo() {
 setup() {
   createCluster
   installArgoCD
+  configureArgoCDApps
   showInfo
 }
 

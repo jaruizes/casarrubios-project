@@ -1,0 +1,164 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-cdc-service
+  labels:
+    app: {{ .Release.Name }}-cdc-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-cdc-service
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-cdc-service
+    spec:
+      containers:
+        - name: cdc-service
+          image: "{{ .Values.cdcservice.image.repository }}:{{ .Values.cdcservice.image.tag }}"
+          imagePullPolicy: {{ .Values.cdcservice.image.pullPolicy }}
+          command: ["/opt/kafka/kafka_connect_run.sh"]
+          ports:
+            - containerPort: {{ .Values.cdcservice.service.port }}
+              name: http
+          env:
+            {{- range $key, $value := .Values.cdcservice.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.cdcservice.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-cdc-service
+  labels:
+    app: {{ .Release.Name }}-cdc-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.cdcservice.service.type }}
+  ports:
+    - port: {{ .Values.cdcservice.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Release.Name }}-cdc-service
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-cdc-connectors
+  labels:
+    app: {{ .Release.Name }}-cdc-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+data:
+  applications-cdc-postgresql-connector.json: |
+    {
+      "name": "applications-cdc-postgresql-connector",
+      "config": {
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "database.hostname": "{{ .Release.Name }}-postgresql",
+        "database.port": "5432",
+        "database.user": "postgres",
+        "database.password": "postgres",
+        "database.dbname": "applications",
+        "database.server.name": "applications",
+        "schema.include.list": "applications",
+        "table.include.list": "applications.applications",
+        "plugin.name": "pgoutput",
+        "topic.prefix": "cdc",
+        "transforms": "unwrap",
+        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+        "transforms.unwrap.drop.tombstones": "false",
+        "transforms.unwrap.delete.handling.mode": "rewrite",
+        "transforms.unwrap.add.fields": "op,table,lsn,source.ts_ms"
+      }
+    }
+  recruiters-positions-cdc-connector.json: |
+    {
+      "name": "recruiters-positions-cdc-connector",
+      "config": {
+        "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+        "database.hostname": "{{ .Release.Name }}-postgresql",
+        "database.port": "5432",
+        "database.user": "postgres",
+        "database.password": "postgres",
+        "database.dbname": "applications",
+        "database.server.name": "recruiters",
+        "schema.include.list": "recruiters",
+        "table.include.list": "recruiters.positions,recruiters.requirements,recruiters.benefits,recruiters.tasks",
+        "plugin.name": "pgoutput",
+        "topic.prefix": "cdc",
+        "transforms": "unwrap",
+        "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+        "transforms.unwrap.drop.tombstones": "false",
+        "transforms.unwrap.delete.handling.mode": "rewrite",
+        "transforms.unwrap.add.fields": "op,table,lsn,source.ts_ms"
+      }
+    }
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-cdc-init
+  labels:
+    app: {{ .Release.Name }}-cdc-init
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-cdc-init
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: cdc-init
+          image: curlimages/curl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for CDC service to be ready..."
+              until curl -s http://{{ .Release.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}; do
+                echo "CDC service not ready yet, waiting..."
+                sleep 10
+              done
+              echo "Registering connectors..."
+              curl -X POST -H "Content-Type: application/json" --data @/connectors/applications-cdc-postgresql-connector.json http://{{ .Release.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}/connectors
+              curl -X POST -H "Content-Type: application/json" --data @/connectors/recruiters-positions-cdc-connector.json http://{{ .Release.Name }}-cdc-service:{{ .Values.cdcservice.service.port }}/connectors
+              echo "Connectors registered successfully"
+          volumeMounts:
+            - name: connectors
+              mountPath: /connectors
+      volumes:
+        - name: connectors
+          configMap:
+            name: {{ .Release.Name }}-cdc-connectors

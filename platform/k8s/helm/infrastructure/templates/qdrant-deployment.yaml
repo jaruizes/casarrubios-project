@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-qdrant
+  labels:
+    app: {{ .Release.Name }}-qdrant
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-qdrant
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-qdrant
+    spec:
+      containers:
+        - name: qdrant
+          image: "{{ .Values.qdrant.image.repository }}:{{ .Values.qdrant.image.tag }}"
+          imagePullPolicy: {{ .Values.qdrant.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.qdrant.service.ports.http }}
+              name: http
+            - containerPort: {{ .Values.qdrant.service.ports.grpc }}
+              name: grpc
+          resources:
+            {{- toYaml .Values.qdrant.resources | nindent 12 }}
+          volumeMounts:
+            - name: qdrant-data
+              mountPath: /qdrant/storage
+      volumes:
+        - name: qdrant-data
+          {{- if .Values.qdrant.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-qdrant-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-qdrant
+  labels:
+    app: {{ .Release.Name }}-qdrant
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.qdrant.service.type }}
+  ports:
+    - port: {{ .Values.qdrant.service.ports.http }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.qdrant.service.ports.grpc }}
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+  selector:
+    app: {{ .Release.Name }}-qdrant
+{{- if .Values.qdrant.persistence.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-qdrant-data
+  labels:
+    app: {{ .Release.Name }}-qdrant
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  {{- if .Values.global.storageClass }}
+  storageClassName: {{ .Values.global.storageClass }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.qdrant.persistence.size }}
+{{- end }}

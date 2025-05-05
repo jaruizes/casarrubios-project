@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-pgadmin
+  labels:
+    app: {{ .Release.Name }}-pgadmin
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-pgadmin
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-pgadmin
+    spec:
+      containers:
+        - name: pgadmin
+          image: "{{ .Values.pgadmin.image.repository }}:{{ .Values.pgadmin.image.tag }}"
+          imagePullPolicy: {{ .Values.pgadmin.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            {{- range $key, $value := .Values.pgadmin.env }}
+            - name: {{ $key }}
+              value: "{{ $value }}"
+            {{- end }}
+          resources:
+            {{- toYaml .Values.pgadmin.resources | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-pgadmin
+  labels:
+    app: {{ .Release.Name }}-pgadmin
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.pgadmin.service.type }}
+  ports:
+    - port: {{ .Values.pgadmin.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ .Release.Name }}-pgadmin
+{{- if .Values.pgadmin.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}-pgadmin
+  labels:
+    app: {{ .Release.Name }}-pgadmin
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  ingressClassName: {{ .Values.pgadmin.ingress.className }}
+  rules:
+    - host: {{ .Values.pgadmin.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Release.Name }}-pgadmin
+                port:
+                  number: {{ .Values.pgadmin.service.port }}
+{{- end }}
