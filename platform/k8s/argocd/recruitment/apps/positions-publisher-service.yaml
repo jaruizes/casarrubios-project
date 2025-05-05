@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: positions-publisher-service
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/jaruizes/casarrubios-project.git
+    targetRevision: HEAD
+    path: platform/k8s/helm/recruitment/backend/positions-publisher-service
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: recruitment
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
