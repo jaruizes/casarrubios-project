@@ -15,7 +15,7 @@ spec:
     repoURL: oci://quay.io/strimzi-helm
     targetRevision: 0.46.0
     helm:
-      releaseName: strimzi-cluster-operator
+      releaseName: strimzi-kafka-operator
   syncPolicy:
     automated:
       prune: true
