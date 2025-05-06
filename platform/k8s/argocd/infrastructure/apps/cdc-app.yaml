@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kafka-topics
+  name: cdc-service
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "1"
@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/jaruizes/casarrubios-project.git
     targetRevision: HEAD
-    path: platform/k8s/manifests/kafka/topics
+    path: platform/k8s/manifests/kafka/cdc
   syncPolicy:
     automated:
       prune: true

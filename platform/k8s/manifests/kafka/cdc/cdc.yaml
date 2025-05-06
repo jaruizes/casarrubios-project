@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-connect-config
+  namespace: confluent
+data:
+  connect-configuration: |
+    key.converter=org.apache.kafka.connect.storage.StringConverter
+    value.converter=org.apache.kafka.connect.json.JsonConverter
+    key.converter.schemas.enable=false
+    value.converter.schemas.enable=false
+    group.id=debezium-connect
+    offset.storage.topic=connect-offsets
+    offset.storage.replication.factor=1
+    config.storage.topic=connect-configs
+    config.storage.replication.factor=1
+    status.storage.topic=connect-status
+    status.storage.replication.factor=1
+    producer.interceptor.classes=io.debezium.tracing.DebeziumTracingProducerInterceptor
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cdc-service
+  labels:
+    app: cdc-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cdc-service
+  template:
+    metadata:
+      labels:
+        app: cdc-service
+    spec:
+      containers:
+          - name: cdc-service
+            image: "ghcr.io/jaruizes/infrastructure/cdc-service:1.0.0"
+            imagePullPolicy: Always
+            command: ["/opt/kafka/kafka_connect_run.sh"]
+            ports:
+              - containerPort: 8083
+                name: http
+            env:
+              - name: KAFKA_LOG4J_OPTS
+                value: "-Dlog4j.configuration=file:/opt/kafka/config/connect-log4j.properties"
+              - name: KAFKA_CONNECT_BOOTSTRAP_SERVERS
+                value: "kafka.infrastructure.svc.cluster.local:29092"
+              - name: OTEL_SERVICE_NAME
+                value: "cdc-service"
+              - name: OTEL_TRACES_EXPORTER
+                value: "otlp"
+              - name: OTEL_METRICS_EXPORTER
+                value: "none"
+              - name: OTEL_EXPORTER_OTLP_ENDPOINT
+                value: "http://otelcollector.infrastructure.svc.cluster.local:4317"
+              - name: OTEL_TRACES_SAMPLER
+                value: "always_on"
+              - name: STRIMZI_TRACING
+                value: "opentelemetry"
+            envFrom:
+              - configMapRef:
+                  name: kafka-connect-config
+                  key: connect-configuration
+                  path: KAFKA_CONNECT_CONFIGURATION
+            resources:
+              requests:
+                memory: "256Mi"
+                cpu: "100m"
+              limits:
+                memory: "512Mi"
+                cpu: "500m"
+            livenessProbe:
+              httpGet:
+                path: /
+                port: http
+              initialDelaySeconds: 60
+              periodSeconds: 30
+              timeoutSeconds: 10
+              failureThreshold: 5
+            readinessProbe:
+              httpGet:
+                path: /
+                port: http
+              initialDelaySeconds: 30
+              periodSeconds: 10
+              timeoutSeconds: 5
+              failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cdc-service
+  labels:
+    app: cdc-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8083
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: cdc-service

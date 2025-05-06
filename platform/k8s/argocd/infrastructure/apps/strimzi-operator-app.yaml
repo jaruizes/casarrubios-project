@@ -4,7 +4,7 @@ metadata:
   name: strimzi-operator
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   destination:
     namespace: infrastructure
