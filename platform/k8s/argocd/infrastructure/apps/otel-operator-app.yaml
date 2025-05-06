@@ -16,6 +16,7 @@ spec:
     targetRevision: 0.88.4
     helm:
       releaseName: opentelemetry-operator
+      namespace: infrastructure
       values: |
         manager:
           collectorImage:
