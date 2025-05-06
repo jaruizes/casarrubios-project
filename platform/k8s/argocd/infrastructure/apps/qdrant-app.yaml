@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: qdrant
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    namespace: infrastructure
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    repoURL: https://github.com/jaruizes/casarrubios-project.git
+    targetRevision: HEAD
+    path: platform/k8s/manifests/embeddings
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
