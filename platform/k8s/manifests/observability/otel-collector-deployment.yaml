@@ -13,9 +13,9 @@ items:
           otlp:
             protocols:
               grpc:
-                endpoint: otel-collector:4317
+                endpoint: 0.0.0.0:4317
               http:
-                endpoint: otel-collector:4318
+                endpoint: 0.0.0.0:4318
         
         exporters:
           otlp/jaeger:
