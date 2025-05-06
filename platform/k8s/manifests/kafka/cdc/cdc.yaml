@@ -26,7 +26,7 @@ spec:
               - name: KAFKA_LOG4J_OPTS
                 value: "-Dlog4j.configuration=file:/opt/kafka/config/connect-log4j.properties"
               - name: KAFKA_CONNECT_BOOTSTRAP_SERVERS
-                value: "kafka.infrastructure.svc.cluster.local:29092"
+                value: "casarrubios-cluster-kafka-bootstrap.infrastructure.svc.cluster.local:9092"
               - name: OTEL_SERVICE_NAME
                 value: "cdc-service"
               - name: OTEL_TRACES_EXPORTER
