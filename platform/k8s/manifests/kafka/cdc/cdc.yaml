@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kafka-connect-config
-  namespace: confluent
+  name: cdc-service-config
 data:
   connect-configuration: |
     key.converter=org.apache.kafka.connect.storage.StringConverter
@@ -61,7 +60,7 @@ spec:
                 value: "opentelemetry"
             envFrom:
               - configMapRef:
-                  name: kafka-connect-config
+                  name: cdc-service-config
                   key: connect-configuration
                   path: KAFKA_CONNECT_CONFIGURATION
             resources:
