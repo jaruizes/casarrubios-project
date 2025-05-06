@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: otel-collector-config
+      labels:
+        app: otel-collector
+    data:
+      otel-collector-config.yaml: |
+        receivers:
+          otlp:
+            protocols:
+              grpc:
+                endpoint: otel-collector.infrastructure.svc.cluster.local:4317
+              http:
+                endpoint: otel-collector.infrastructure.svc.cluster.local:4318
+        
+        exporters:
+          otlp/jaeger:
+            endpoint: jaeger.infrastructure.svc.cluster.local:4317
+            tls:
+              insecure: true
+        
+        processors:
+          batch:
+        
+        service:
+          telemetry:
+            logs:
+              level: debug
+          pipelines:
+            traces:
+              receivers: [otlp]
+              processors: [batch]
+              exporters: [otlp/jaeger]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  labels:
+    app: otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      containers:
+        - name: otel-collector
+          image: "otel/opentelemetry-collector:latest"
+          imagePullPolicy: IfNotPresent
+          command:
+            - /otelcol
+            - --config=/etc/otel-collector-config.yaml
+          ports:
+            - containerPort: 4317
+              name: grpc
+            - containerPort: 4318
+              name: http
+            - containerPort: 13133
+              name: health
+          volumeMounts:
+            - name: otel-collector-config
+              mountPath: /etc/otel-collector-config.yaml
+              subPath: otel-collector-config.yaml
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: otel-collector-config
+          configMap:
+            name: otel-collector-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  labels:
+    app: otel-collector
+spec:
+  type: ClusterIP
+  ports:
+    - port: 4317
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
+    - port: 4318
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: 13133
+      targetPort: health
+      protocol: TCP
+      name: health
+  selector:
+    app: otel-collector
