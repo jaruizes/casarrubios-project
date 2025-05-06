@@ -77,22 +77,6 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "200m"
-          livenessProbe:
-            httpGet:
-              path: /
-              port: health
-            initialDelaySeconds: 20
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /
-              port: health
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
       volumes:
         - name: otel-collector-config
           configMap:
