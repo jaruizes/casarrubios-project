@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     chart: strimzi-kafka-operator
-    repoURL: oci://quay.io/strimzi-helm
+    repoURL: https://strimzi.io/charts/
     targetRevision: 0.46.0
     helm:
       releaseName: strimzi-kafka-operator
