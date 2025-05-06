@@ -2,8 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cdc-service-config
+  namespace: infrastructure
 data:
-  connect-configuration: |
+    KAFKA_CONNECT_CONFIGURATION: |
     key.converter=org.apache.kafka.connect.storage.StringConverter
     value.converter=org.apache.kafka.connect.json.JsonConverter
     key.converter.schemas.enable=false
@@ -61,8 +62,6 @@ spec:
             envFrom:
               - configMapRef:
                   name: cdc-service-config
-                  key: connect-configuration
-                  path: KAFKA_CONNECT_CONFIGURATION
             resources:
               requests:
                 memory: "256Mi"
