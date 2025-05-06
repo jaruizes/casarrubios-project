@@ -16,6 +16,12 @@ spec:
     targetRevision: 0.88.4
     helm:
       releaseName: opentelemetry-operator
+      values: |
+        manager:
+          collectorImage:
+            repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib
+          admissionWebhooks:
+            enabled: true
   syncPolicy:
     automated:
       prune: true
