@@ -11,8 +11,9 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    repoURL: https://github.com/open-telemetry/opentelemetry-operator/
+    repoURL: https://github.com/open-telemetry/opentelemetry-operator.git
     path: releases/latest/download/opentelemetry-operator.yaml
+    targetRevision: HEAD
   syncPolicy:
     automated:
       prune: true
