@@ -15,7 +15,7 @@ variable "eks_workers_instance_types" {
 variable "eks_workers_desired_capacity" {
   description = "Number of workers (desired)"
   type        = number
-  default     = 3
+  default     = 2
 }
 
 
