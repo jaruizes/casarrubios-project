@@ -11,4 +11,4 @@ COPY project/recruitment/cdc/connectors/recruiters-positions-cdc-connector.json 
 
 RUN chmod +x /register-connectors.sh
 
-CMD ["register-connectors.sh"]
+CMD ["/register-connectors.sh"]
