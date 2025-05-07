@@ -12,7 +12,7 @@ COPY project/recruitment/cdc/connectors/recruiters-new-applications-outbox-conne
 COPY project/recruitment/cdc/connectors/recruiters-positions-cdc-connector.json /connectors/
 
 # Create register-connectors.sh script
-COPY platform/local/cdc/register-connectors-k8s.sh /register-connectors.sh
+COPY platform/k8s/cdc/register-connectors-k8s.sh /register-connectors.sh
 
 # Make the script executable
 RUN chmod +x /register-connectors.sh
