@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'platform/local/cdc/**'
+      - 'platform/k8s/cdc/**'
       - 'project/candidates/cdc/connectors/**'
       - 'project/recruiters/cdc/connectors/**'
   pull_request:
     paths:
-      - 'platform/local/cdc/**'
+      - 'platform/k8s/cdc/**'
       - 'project/candidates/cdc/connectors/**'
       - 'project/recruiters/cdc/connectors/**'
 
