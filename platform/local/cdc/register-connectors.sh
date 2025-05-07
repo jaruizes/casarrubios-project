@@ -1,3 +1,5 @@
+#!/bin/sh
+
 echo "Registrando conector <applications-cdc-postgresql-connector>..."
 curl -i -X POST -H "Accept:application/json" -H  "Content-Type:application/json" http://cdc-service:8083/connectors/ -d @/connectors/applications-cdc-postgresql-connector.json
 sleep 20
