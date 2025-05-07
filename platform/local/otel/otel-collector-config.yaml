@@ -6,7 +6,6 @@ receivers:
       http:
         endpoint: otel-collector:4318
 
-
 exporters:
   otlp/jaeger:
     endpoint: jaeger:4317
@@ -18,9 +17,6 @@ processors:
   filter/exclusions_kafka_connect_spans:
     traces:
       span:
-#        - resource.attributes["service.name"] == "cdc-service" and attributes["span.kind"] == "client"
-#        - resource.attributes["service.name"] == "cdc-service" and attributes["span.kind"] == "server"
-
 
 service:
   telemetry:
