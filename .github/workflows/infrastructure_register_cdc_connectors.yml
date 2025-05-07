@@ -1,0 +1,45 @@
+name: (Infrastructure) Data Loader
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'platform/local/cdc/**'
+      - 'project/candidates/cdc/connectors/**'
+      - 'project/recruiters/cdc/connectors/**'
+  pull_request:
+    paths:
+      - 'platform/local/cdc/**'
+      - 'project/candidates/cdc/connectors/**'
+      - 'project/recruiters/cdc/connectors/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build -f platform/local/cdc/Dockerfile -t ghcr.io/${{ github.repository_owner }}/infrastructure/register-cdc-connectors:1.0.0 .
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/infrastructure/register-cdc-connectors:1.0.0
+  
