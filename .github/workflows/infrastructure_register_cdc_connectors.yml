@@ -1,4 +1,4 @@
-name: (Infrastructure) Data Loader
+name: (Infrastructure) Register CDC Connectors
 
 on:
   workflow_dispatch:
