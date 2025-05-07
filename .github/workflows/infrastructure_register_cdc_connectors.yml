@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -f platform/local/cdc/Dockerfile -t ghcr.io/${{ github.repository_owner }}/infrastructure/register-cdc-connectors:1.0.0 .
+          docker build -f platform/k8s/cdc/Dockerfile -t ghcr.io/${{ github.repository_owner }}/infrastructure/register-cdc-connectors:1.0.0 .
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
