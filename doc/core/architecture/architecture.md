@@ -2,7 +2,7 @@
 
 The project architecture is presented in a layered approach, starting from the business architecture and progressing to the physical implementation.
 
-
+> **📋 Architecture Decision Records**: For detailed rationale behind key architectural decisions, see [Architecture Decision Records (ADRs)](../../adrs/README.md)
 
 ![architecture-process](img/architecture-process.png)
 
@@ -13,6 +13,8 @@ The project architecture is presented in a layered approach, starting from the b
 This section defines the business (or functional) architecture of the project.
 
 The following diagram illustrates the two distinct contexts (candidates and recruitment), the identified use cases, and how they are supported by various services:
+
+> **Related ADRs**: [ADR-005: Domain-Driven Design with Bounded Contexts](../../adrs/005-domain-driven-design-bounded-contexts.md) explains the rationale for organizing the system into these two contexts.
 
 ![Business Architecture](img/business-achitecture.png)
 
@@ -25,6 +27,10 @@ The **information architecture** supporting both contexts is defined as follows:
 <br />
 
 As shown in the diagram, entities like "Position" and "Application" exist in both contexts. The design intentionally keeps these contexts separated to allow them to evolve independently. This approach uses concepts of "master data" and "replicated data" (or "projections"):
+
+> **Related ADRs**: 
+> - [ADR-003: Change Data Capture with Debezium](../../adrs/003-change-data-capture-debezium.md) explains how data is synchronized between contexts
+> - [ADR-004: Transactional Outbox Pattern](../../adrs/004-transactional-outbox-pattern.md) ensures reliable event publishing
 
 - **Candidates Context**:
 
@@ -67,6 +73,8 @@ As shown in the diagram, entities like "Position" and "Application" exist in bot
 ### Logical Architecture (How?)
 
 I designed this logical architecture showing the main pieces I need to develop and execute the "AI Recruitment System":
+
+> **Related ADR**: [ADR-002: Event-Driven Architecture](../../adrs/002-event-driven-architecture.md) explains the event-driven integration pattern between components.
 
 ![logical_architecture-components](img/logical_architecture-components.png)
 
@@ -126,6 +134,8 @@ Below is a detailed description of the main components within its respective con
 ### Physical Architectures (With What?)
 
 In this section I'll expose several alternatives to implement each logical component.
+
+> **Related ADR**: [ADR-001: Polyglot Architecture](../../adrs/001-polyglot-architecture.md) explains the rationale for choosing different technologies for different services.
 
 ![physical_arch](img/physical_arch.png)
 
