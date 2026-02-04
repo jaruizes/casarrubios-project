@@ -196,3 +196,15 @@ Now, let's check **infrastructure components**:
 | Tracing tool            | Jaeger         | It shows traces within executions                            |
 
 <br>
+
+---
+
+## Additional Architecture Documentation
+
+For more detailed information about specific architectural aspects:
+
+- **[Deployment Architecture](deployment.md)** - Docker Compose, Kubernetes, and cloud deployment strategies
+- **[Events and AsyncAPI](events.md)** - Event catalog, event flows, and AsyncAPI specifications
+- **[Architecture Decision Records](../../adrs/README.md)** - Detailed rationale for key architectural decisions
+
+---
