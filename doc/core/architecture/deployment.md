@@ -49,16 +49,17 @@ platform/local/
 
 **Backend Services (Candidates Context):**
 - Applications Manager: Spring Boot on port 8083
-- Positions Service: Spring Boot on port 8082
+- Positions Service: Spring Boot on port 8080
 
 **Backend Services (Recruitment Context):**
 - Positions Manager: Quarkus on port 9072
+- Positions Publisher: Quarkus/Kafka Streams (transforms CDC events to business events)
 - Applications Service: Python/FastAPI on port 9073
-- Resume Analyzer: Spring Boot on port 9074
-- Scoring Service: Python on port 9075
-- Insights Service: Quarkus on port 9076
-- Notifications Service: Quarkus on port 9077
-- Applications Updater: Quarkus on port 9078
+- Resume Analyzer: Spring Boot on port 9082
+- Scoring Service: Python (internal service, no exposed port)
+- Insights Service: Quarkus/Kafka Streams on port 9090
+- Notifications Service: Quarkus (internal service, no exposed port)
+- Applications Updater: Quarkus (internal service, no exposed port)
 
 **Infrastructure Services:**
 - PostgreSQL: Port 5432 (candidates, recruitment databases)

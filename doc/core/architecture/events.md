@@ -41,12 +41,13 @@ See [ADR-002: Event-Driven Architecture](../../adrs/002-event-driven-architectur
 
 #### Candidates Context CDC
 
-**Topic**: `cdc.candidates.applications.applications`
+**Topic**: `cdc.postgresql.applications.applications`
 - **Producer**: Debezium (Applications Database CDC Connector)
 - **Purpose**: Captures changes to applications table
 - **Consumers**: Applications Updater (Recruitment context)
 - **Operations**: INSERT, UPDATE, DELETE
 - **Schema**: Debezium envelope with application data
+- **Configuration**: topic.prefix="cdc", database.server.name="postgresql"
 
 **Payload Fields:**
 ```json
@@ -79,28 +80,30 @@ See [ADR-002: Event-Driven Architecture](../../adrs/002-event-driven-architectur
 
 #### Recruitment Context CDC
 
-**Topic**: `cdc.recruiters.positions.positions`
+**Topic**: `cdc.postgresql.recruiters.positions`
 - **Producer**: Debezium (Positions Database CDC Connector)
 - **Purpose**: Captures changes to positions table
 - **Consumers**: Positions Publisher → Positions Service (Candidates context)
 - **Operations**: INSERT, UPDATE, DELETE
+- **Configuration**: topic.prefix="cdc", database.server.name="postgresql"
 
-**Topic**: `cdc.recruiters.positions.requirements`
+**Topic**: `cdc.postgresql.recruiters.requirements`
 - **Producer**: Debezium (Positions Database CDC Connector)
 - **Purpose**: Captures changes to position requirements
 - **Related Entity**: Positions
 
-**Topic**: `cdc.recruiters.positions.responsibilities`
+**Topic**: `cdc.postgresql.recruiters.tasks`
 - **Producer**: Debezium (Positions Database CDC Connector)
-- **Purpose**: Captures changes to position responsibilities
+- **Purpose**: Captures changes to position responsibilities/tasks
 - **Related Entity**: Positions
+- **Note**: Table name is TASKS, not RESPONSIBILITIES
 
-**Topic**: `cdc.recruiters.positions.benefits`
+**Topic**: `cdc.postgresql.recruiters.benefits`
 - **Producer**: Debezium (Positions Database CDC Connector)
 - **Purpose**: Captures changes to position benefits
 - **Related Entity**: Positions
 
-**Topic**: `cdc.recruiters.outbox`
+**Topic**: `cdc.postgresql.recruiters.outbox`
 - **Producer**: Debezium (Outbox Table CDC Connector)
 - **Purpose**: Captures outbox events for transactional event publishing
 - **Consumers**: Outbox Publisher (routes to business topics)
@@ -303,9 +306,9 @@ PositionCreated:
 └──────────┬──────────────────┘
            │
            ▼ (Publishes)
-┌─────────────────────────────────────┐
-│ Topic: cdc.candidates.applications  │
-└──────────┬──────────────────────────┘
+┌─────────────────────────────────────────┐
+│ Topic: cdc.postgresql.applications.applications │
+└──────────┬──────────────────────────────┘
            │
            ▼ (Consumes)
 ┌─────────────────────────────┐
@@ -322,9 +325,9 @@ PositionCreated:
 └──────────┬──────────────────┘
            │
            ▼ (CDC from Outbox)
-┌─────────────────────────────┐
-│ Topic: cdc.recruiters.outbox│
-└──────────┬──────────────────┘
+┌─────────────────────────────────────────┐
+│ Topic: cdc.postgresql.recruiters.outbox │
+└──────────┬────────────────────────────────┘
            │
            ▼ (Transform & Route)
 ┌────────────────────────────────────────┐
@@ -394,13 +397,13 @@ PositionCreated:
 └──────────┬──────────────────┘
            │
            ▼ (Multiple topics)
-┌────────────────────────────────────┐
-│ Topics:                            │
-│ - cdc.recruiters.positions.positions     │
-│ - cdc.recruiters.positions.requirements  │
-│ - cdc.recruiters.positions.responsibilities │
-│ - cdc.recruiters.positions.benefits      │
-└──────────┬─────────────────────────┘
+┌──────────────────────────────────────────────┐
+│ Topics:                                      │
+│ - cdc.postgresql.recruiters.positions        │
+│ - cdc.postgresql.recruiters.requirements     │
+│ - cdc.postgresql.recruiters.tasks            │
+│ - cdc.postgresql.recruiters.benefits         │
+└──────────┬───────────────────────────────────┘
            │
            ▼ (Kafka Streams)
 ┌─────────────────────────────┐
