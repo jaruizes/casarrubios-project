@@ -48,7 +48,7 @@ platform/local/
 - Recruitment BFF: NestJS on port 9071
 
 **Backend Services (Candidates Context):**
-- Applications Manager: Spring Boot on port 8083
+- Applications Manager: Spring Boot on port 8090
 - Positions Service: Spring Boot on port 8080
 
 **Backend Services (Recruitment Context):**

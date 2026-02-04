@@ -60,17 +60,17 @@ We will use **Debezium** for Change Data Capture (CDC) to propagate data changes
 **Positions Synchronization (Recruitment → Candidates):**
 1. **Debezium Connector** reads PostgreSQL WAL (Write-Ahead Log) from Recruitment Positions Database
 2. Publishes changes to topics:
-   - `cdc.recruiters.positions.positions`
-   - `cdc.recruiters.positions.requirements`
-   - `cdc.recruiters.positions.responsibilities`
-   - `cdc.recruiters.positions.benefits`
+   - `cdc.postgresql.recruiters.positions`
+   - `cdc.postgresql.recruiters.requirements`
+   - `cdc.postgresql.recruiters.tasks`
+   - `cdc.postgresql.recruiters.benefits`
 3. **Positions Publisher** (Quarkus service with Kafka Streams) consumes CDC events
 4. Transforms and publishes to business-level topic `recruiters.positions`
 5. **Positions Service** (Candidates context) consumes and updates local database
 
 **Applications Synchronization (Candidates → Recruitment):**
 1. **Debezium Connector** reads PostgreSQL WAL from Candidates Applications Database
-2. Publishes changes to topic: `cdc.candidates.applications.applications`
+2. Publishes changes to topic: `cdc.postgresql.applications.applications`
 3. **Applications Updater** (Recruitment context, Quarkus) consumes CDC events
 4. Updates local Applications Database and publishes business event via Outbox pattern
 

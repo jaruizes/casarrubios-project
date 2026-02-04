@@ -47,7 +47,8 @@ See [ADR-002: Event-Driven Architecture](../../adrs/002-event-driven-architectur
 - **Consumers**: Applications Updater (Recruitment context)
 - **Operations**: INSERT, UPDATE, DELETE
 - **Schema**: Debezium envelope with application data
-- **Configuration**: topic.prefix="cdc", database.server.name="postgresql"
+- **Configuration**: topic.prefix="cdc", database.server.name="postgresql", schema="APPLICATIONS"
+- **Note**: Database name is "applications", schema is "APPLICATIONS"
 
 **Payload Fields:**
 ```json
